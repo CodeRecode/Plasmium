@@ -1,15 +1,16 @@
 #pragma once
 #include "GL\glew.h"
 #include <gl\GL.h>
+#include <string>
 
 namespace Plasmium
 {
     class Shader
     {
     private:
-        GLuint vertexShader;
-        GLuint fragmentShader;
         GLuint program;
+
+        GLint CompileShader(std::string fileType, GLenum type) const;
 
     public:
         void Create();
