@@ -1,7 +1,11 @@
-#include <Windows.h>
 #include "Renderer.h"
+#include <Windows.h>
+#include "Types.h"
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+
+Plasmium::Renderer renderer;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -33,10 +37,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     ShowWindow(hWnd, nCmdShow);
 
-    Plasmium::Renderer renderer;
-
-    renderer.Initialize(hWnd);
-
     MSG msg;
     while (true) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) 
@@ -62,13 +62,19 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 {
     switch (message)
     {
-    case WM_DESTROY:
+    case WM_CREATE:
         {
-            PostQuitMessage(0);
+            renderer.Initialize(hWnd);
             return 0;
         }
         break;
+    case WM_DESTROY:
+        {
+            renderer.Cleanup();
+            return 0;
+        }
+        break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
     }
-
-    return DefWindowProc(hWnd, message, wParam, lParam);
 }

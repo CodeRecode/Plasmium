@@ -1,26 +1,25 @@
 #pragma once
 #include <Windows.h>
+#include "GL/glew.h"
+#include <GL/GL.h>
+#include "Shader.h"
 
-class IDXGISwapChain;
-class ID3D11Device;
-class ID3D11DeviceContext;
-class ID3D11RenderTargetView;
 
 namespace Plasmium
 {
     class Renderer
     {
     private:
-        IDXGISwapChain *swapChain;
-        ID3D11Device *device;
-        ID3D11DeviceContext *deviceContext;
-        ID3D11RenderTargetView *backBuffer;
+        HWND hWnd;
+        HGLRC OGLRenderContext;
+        Shader shader; 
+        GLuint vao;
 
     public:
         const static int WINDOW_WIDTH = 500;
         const static int WINDOW_HEIGHT = 400;
 
-        bool Initialize(HWND hWnd);
+        void Initialize(HWND hWnd);
         void RenderFrame();
         void Cleanup();
     };
