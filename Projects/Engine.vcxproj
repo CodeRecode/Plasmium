@@ -135,7 +135,6 @@
     <ClCompile Include="..\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\D3DMacros.h" />
     <ClInclude Include="..\Engine\Renderer.h" />
     <ClInclude Include="..\Engine\Shader.h" />
     <ClInclude Include="..\Engine\Types.h" />
