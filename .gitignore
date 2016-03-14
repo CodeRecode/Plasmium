@@ -33,3 +33,6 @@
 *.lastbuildstate
 *.opendb
 *.idb
+
+#Libraries
+/Libraries/*
