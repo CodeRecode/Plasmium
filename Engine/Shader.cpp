@@ -1,25 +1,16 @@
 #include "Shader.h"
-
-#pragma comment (lib, "opengl32.lib")
-#pragma comment (lib, "glew32d.lib")
+#include <fstream>
+#include <string>
 
 namespace Plasmium
 {
     void Shader::Create()
     {
-        const char* vertex_shader =
-            "#version 400\n"
-            "in vec3 vp;"
-            "void main () {"
-            "  gl_Position = vec4 (vp, 1.0);"
-            "}";
+        std::ifstream vs("Assets\\Shaders\\Basic.vs");
+        std::ifstream fs("Assets\\Shaders\\Basic.fs");
 
-        const char* fragment_shader =
-            "#version 400\n"
-            "out vec4 frag_colour;"
-            "void main () {"
-            "  frag_colour = vec4 (1.0, 1.0, 1.0, 1.0);"
-            "}";
+        const char* vertex_shader = std::string((std::istreambuf_iterator<char>(vs)), std::istreambuf_iterator<char>()).c_str();
+        const char* fragment_shader = std::string((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>()).c_str();
 
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vertex_shader, nullptr);

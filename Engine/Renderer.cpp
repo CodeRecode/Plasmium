@@ -1,9 +1,6 @@
 #include "Types.h"
 #include "Renderer.h"
 
-#pragma comment (lib, "opengl32.lib")
-#pragma comment (lib, "glew32d.lib")
-
 namespace Plasmium
 {
     void Renderer::Initialize(HWND hWnd)

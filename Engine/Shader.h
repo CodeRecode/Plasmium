@@ -10,6 +10,7 @@ namespace Plasmium
         GLuint vertexShader;
         GLuint fragmentShader;
         GLuint program;
+
     public:
         void Create();
         void Bind();

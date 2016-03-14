@@ -35,4 +35,4 @@
 *.idb
 
 #Libraries
-/Libraries/*
+Libraries/*
