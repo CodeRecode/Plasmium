@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include <stdio.h>
 #include <Windows.h>
 #include "Types.h"
 
@@ -25,6 +26,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     {
         return -1;
     }
+
+    AllocConsole();
+    FILE *stream;
+    freopen_s(&stream, "conout$", "w", stdout);
+    freopen_s(&stream, "conout$", "w", stderr);
 
     hWnd = CreateWindowEx(NULL, "PSMWindowClass", "Plasmium Engine", WS_OVERLAPPEDWINDOW, 1000, 300, 
         Plasmium::Renderer::WINDOW_WIDTH, Plasmium::Renderer::WINDOW_HEIGHT, NULL, NULL, hInstance, NULL);

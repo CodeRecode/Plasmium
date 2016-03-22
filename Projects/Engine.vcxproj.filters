@@ -18,6 +18,9 @@
     <ClCompile Include="..\Engine\Shader.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="..\Engine\Model.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Engine\Types.h">
@@ -27,6 +30,9 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Shader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\Model.h">
       <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 #include <GL/GL.h>
 #include "Shader.h"
-
+#include "Model.h"
 
 namespace Plasmium
 {
@@ -13,7 +13,7 @@ namespace Plasmium
         HWND hWnd;
         HGLRC OGLRenderContext;
         Shader shader; 
-        GLuint vao;
+        Model model;
 
     public:
         const static int WINDOW_WIDTH = 500;

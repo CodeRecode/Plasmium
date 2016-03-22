@@ -130,11 +130,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Engine\Model.cpp" />
     <ClCompile Include="..\Engine\Renderer.cpp" />
     <ClCompile Include="..\Engine\Shader.cpp" />
     <ClCompile Include="..\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Engine\Model.h" />
     <ClInclude Include="..\Engine\Renderer.h" />
     <ClInclude Include="..\Engine\Shader.h" />
     <ClInclude Include="..\Engine\Types.h" />

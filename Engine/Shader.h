@@ -13,7 +13,7 @@ namespace Plasmium
         GLint CompileShader(std::string fileType, GLenum type) const;
 
     public:
-        void Create();
+        void Create(std::string ShaderName);
         void Bind();
     };
 }

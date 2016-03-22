@@ -4,10 +4,9 @@
 
 namespace Plasmium
 {
-
-    GLint Shader::CompileShader(std::string fileType, GLenum type) const
+    GLint Shader::CompileShader(std::string file, GLenum type) const
     {
-        std::ifstream fileStream("Assets\\Shaders\\Basic" + fileType);
+        std::ifstream fileStream("Assets\\Shaders\\" + file);
         std::string shaderString((std::istreambuf_iterator<char>(fileStream)), std::istreambuf_iterator<char>());
         const char* shaderSource = shaderString.c_str();
 
@@ -23,7 +22,7 @@ namespace Plasmium
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
             char* buffer = new char[length];
             glGetShaderInfoLog(shader, length, NULL, buffer);
-            printf("ERROR: Shader %s compiled unsuccessfully: \n%s\n", fileType.c_str(), buffer);
+            printf("ERROR: Shader %s compiled unsuccessfully: \n%s\n", file.c_str(), buffer);
             delete buffer;
 
             return 0;
@@ -32,10 +31,10 @@ namespace Plasmium
         return shader;
     }
 
-    void Shader::Create()
+    void Shader::Create(std::string ShaderName)
     {
-        GLuint vertexShader = CompileShader(".vs", GL_VERTEX_SHADER);
-        GLuint fragmentShader = CompileShader(".fs", GL_FRAGMENT_SHADER);
+        GLuint vertexShader = CompileShader(ShaderName + ".vs", GL_VERTEX_SHADER);
+        GLuint fragmentShader = CompileShader(ShaderName + ".fs", GL_FRAGMENT_SHADER);
 
         program = glCreateProgram();
 
