@@ -7,6 +7,9 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{39459a5e-1360-423a-a636-4a71abc31ab9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{a81ad0ea-44bd-4edf-a44f-30943e112334}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Engine\WinMain.cpp">
@@ -21,6 +24,15 @@
     <ClCompile Include="..\Engine\Model.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Engine\Types.h">
@@ -34,6 +46,15 @@
     </ClInclude>
     <ClInclude Include="..\Engine\Model.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
