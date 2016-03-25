@@ -38,6 +38,11 @@ namespace Plasmium
         return *this;
     }
 
+    inline float vec2::operator[](uint32 index)
+    {
+        return (&x)[index];
+    }
+
     inline vec2 operator+(const vec2& lhs, const vec2& rhs)
     {
         return vec2(lhs.x + rhs.x, lhs.y + rhs.y);

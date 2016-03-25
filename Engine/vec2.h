@@ -1,4 +1,5 @@
 #pragma once
+#include "Types.h"
 
 namespace Plasmium
 {
@@ -17,6 +18,8 @@ namespace Plasmium
 
         vec2 operator*=(float scalar);
         vec2 operator/=(float scalar);
+
+        float operator[](uint32 index);
     };
 
     vec2 operator+(const vec2& lhs, const vec2& rhs);

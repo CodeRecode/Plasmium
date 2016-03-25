@@ -1,11 +1,15 @@
 #pragma once
+#include "Types.h"
 
 namespace Plasmium
 {
     class vec4
     {
     public:
-        float x, y, z, w;
+        union {
+            struct { float x, y, z, w; };
+            struct { float r, g, b, a; };
+        };
 
         vec4() : x(0), y(0), z(0), w(0) { };
         vec4(float val) : x(val), y(val), z(val), w(val) { };
@@ -17,6 +21,8 @@ namespace Plasmium
 
         vec4 operator*=(float scalar);
         vec4 operator/=(float scalar);
+
+        float operator[](uint32 index);
     };
 
     vec4 operator+(const vec4& lhs, const vec4& rhs);

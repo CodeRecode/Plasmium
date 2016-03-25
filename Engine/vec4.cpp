@@ -48,6 +48,11 @@ namespace Plasmium
         return *this;
     }
 
+    inline float vec4::operator[](uint32 index)
+    {
+        return (&x)[index];
+    }
+
     inline vec4 operator+(const vec4& lhs, const vec4& rhs)
     {
         return vec4(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z, lhs.w + rhs.w);

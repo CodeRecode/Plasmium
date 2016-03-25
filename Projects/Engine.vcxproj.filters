@@ -24,13 +24,13 @@
     <ClCompile Include="..\Engine\Model.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="vec2.cpp">
+    <ClCompile Include="..\Engine\vec2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="vec3.cpp">
+    <ClCompile Include="..\Engine\vec3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="vec4.cpp">
+    <ClCompile Include="..\Engine\vec4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,13 +47,16 @@
     <ClInclude Include="..\Engine\Model.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="vec2.h">
+    <ClInclude Include="..\Engine\mat4.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="vec3.h">
+    <ClInclude Include="..\Engine\vec2.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="vec4.h">
+    <ClInclude Include="..\Engine\vec3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\vec4.h">
       <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
