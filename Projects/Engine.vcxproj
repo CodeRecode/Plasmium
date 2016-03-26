@@ -130,12 +130,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Engine\mat4.cpp" />
     <ClCompile Include="..\Engine\Model.cpp" />
     <ClCompile Include="..\Engine\Renderer.cpp" />
     <ClCompile Include="..\Engine\Shader.cpp" />
-    <ClCompile Include="..\Engine\vec2.cpp" />
-    <ClCompile Include="..\Engine\vec3.cpp" />
-    <ClCompile Include="..\Engine\vec4.cpp" />
+    <ClCompile Include="..\Engine\vec2.inl" />
+    <ClCompile Include="..\Engine\vec3.inl" />
+    <ClCompile Include="..\Engine\vec4.inl" />
     <ClCompile Include="..\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>

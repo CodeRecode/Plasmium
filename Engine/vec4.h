@@ -22,7 +22,7 @@ namespace Plasmium
         vec4 operator*=(float scalar);
         vec4 operator/=(float scalar);
 
-        float operator[](uint32 index);
+        float& operator[](uint32 index);
     };
 
     vec4 operator+(const vec4& lhs, const vec4& rhs);

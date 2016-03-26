@@ -15,14 +15,14 @@ namespace Plasmium
         vec3(float val) : x(val), y(val), z(val) { };
         vec3(float x, float y, float z) : x(x), y(y), z(z) { };
 
-        vec3 operator=(const vec3& rhs);
-        vec3 operator+=(const vec3& rhs);
-        vec3 operator-=(const vec3& rhs);
+        vec3& operator=(const vec3& rhs);
+        vec3& operator+=(const vec3& rhs);
+        vec3& operator-=(const vec3& rhs);
 
-        vec3 operator*=(float scalar);
-        vec3 operator/=(float scalar);
+        vec3& operator*=(float scalar);
+        vec3& operator/=(float scalar);
 
-        float operator[](uint32 index);
+        float& operator[](uint32 index);
     };
 
     vec3 operator+(const vec3& lhs, const vec3& rhs);

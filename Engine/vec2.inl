@@ -3,42 +3,42 @@
 
 namespace Plasmium
 {
-    inline vec2 vec2::operator=(const vec2& rhs)
+    inline vec2& vec2::operator=(const vec2& rhs)
     {
         x = rhs.x;
         y = rhs.y;
         return *this;
     }
 
-    inline vec2 vec2::operator+=(const vec2& rhs)
+    inline vec2& vec2::operator+=(const vec2& rhs)
     {
         x += rhs.x;
         y += rhs.y;
         return *this;
     }
 
-    inline vec2 vec2::operator-=(const vec2& rhs)
+    inline vec2& vec2::operator-=(const vec2& rhs)
     {
         x -= rhs.x;
         y -= rhs.y;
         return *this;
     }
 
-    inline vec2 vec2::operator*=(float scalar)
+    inline vec2& vec2::operator*=(float scalar)
     {
         x *= scalar;
         y *= scalar;
         return *this;
     }
 
-    inline vec2 vec2::operator/=(float scalar)
+    inline vec2& vec2::operator/=(float scalar)
     {
         x /= scalar;
         y /= scalar;
         return *this;
     }
 
-    inline float vec2::operator[](uint32 index)
+    inline float& vec2::operator[](uint32 index)
     {
         return (&x)[index];
     }

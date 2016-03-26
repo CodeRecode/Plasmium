@@ -12,14 +12,14 @@ namespace Plasmium
         vec2(float val) : x(val), y(val) { };
         vec2(float x, float y) : x(x), y(y) { };
 
-        vec2 operator=(const vec2& rhs);
-        vec2 operator+=(const vec2& rhs);
-        vec2 operator-=(const vec2& rhs);
+        vec2& operator=(const vec2& rhs);
+        vec2& operator+=(const vec2& rhs);
+        vec2& operator-=(const vec2& rhs);
 
-        vec2 operator*=(float scalar);
-        vec2 operator/=(float scalar);
+        vec2& operator*=(float scalar);
+        vec2& operator/=(float scalar);
 
-        float operator[](uint32 index);
+        float& operator[](uint32 index);
     };
 
     vec2 operator+(const vec2& lhs, const vec2& rhs);

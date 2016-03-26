@@ -1,9 +1,10 @@
-#include "vec4.h"
+#pragma once
 #include "math.h"
+#include "vec4.h"
 
 namespace Plasmium
 {
-    inline vec4 vec4::operator=(const vec4& rhs)
+    vec4 vec4::operator=(const vec4& rhs)
     {
         x = rhs.x;
         y = rhs.y;
@@ -12,7 +13,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec4 vec4::operator+=(const vec4& rhs)
+    vec4 vec4::operator+=(const vec4& rhs)
     {
         x += rhs.x;
         y += rhs.y;
@@ -21,7 +22,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec4 vec4::operator-=(const vec4& rhs)
+    vec4 vec4::operator-=(const vec4& rhs)
     {
         x -= rhs.x;
         y -= rhs.y;
@@ -30,7 +31,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec4 vec4::operator*=(float scalar)
+    vec4 vec4::operator*=(float scalar)
     {
         x *= scalar;
         y *= scalar;
@@ -39,7 +40,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec4 vec4::operator/=(float scalar)
+    vec4 vec4::operator/=(float scalar)
     {
         x /= scalar;
         y /= scalar;
@@ -48,7 +49,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline float vec4::operator[](uint32 index)
+    float& vec4::operator[](uint32 index)
     {
         return (&x)[index];
     }

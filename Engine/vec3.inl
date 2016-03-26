@@ -3,7 +3,7 @@
 
 namespace Plasmium
 {
-    inline vec3 vec3::operator=(const vec3& rhs)
+    vec3& vec3::operator=(const vec3& rhs)
     {
         x = rhs.x;
         y = rhs.y;
@@ -11,7 +11,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec3 vec3::operator+=(const vec3& rhs)
+    vec3& vec3::operator+=(const vec3& rhs)
     {
         x += rhs.x;
         y += rhs.y;
@@ -19,7 +19,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec3 vec3::operator-=(const vec3& rhs)
+    vec3& vec3::operator-=(const vec3& rhs)
     {
         x -= rhs.x;
         y -= rhs.y;
@@ -27,7 +27,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec3 vec3::operator*=(float scalar)
+    vec3& vec3::operator*=(float scalar)
     {
         x *= scalar;
         y *= scalar;
@@ -35,7 +35,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline vec3 vec3::operator/=(float scalar)
+    vec3& vec3::operator/=(float scalar)
     {
         x /= scalar;
         y /= scalar;
@@ -43,7 +43,7 @@ namespace Plasmium
         return *this;
     }
 
-    inline float vec3::operator[](uint32 index)
+    float& vec3::operator[](uint32 index)
     {
         return (&x)[index];
     }
