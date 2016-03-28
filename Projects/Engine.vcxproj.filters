@@ -27,13 +27,13 @@
     <ClCompile Include="..\Engine\mat4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\vec2.inl">
+    <ClCompile Include="..\Engine\vec2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\vec3.inl">
+    <ClCompile Include="..\Engine\vec3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\vec4.inl">
+    <ClCompile Include="..\Engine\vec4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
