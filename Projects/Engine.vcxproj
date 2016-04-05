@@ -134,12 +134,15 @@
     <ClCompile Include="..\Engine\Model.cpp" />
     <ClCompile Include="..\Engine\Renderer.cpp" />
     <ClCompile Include="..\Engine\Shader.cpp" />
+    <ClCompile Include="..\Engine\Core.cpp" />
     <ClCompile Include="..\Engine\vec2.cpp" />
     <ClCompile Include="..\Engine\vec3.cpp" />
     <ClCompile Include="..\Engine\vec4.cpp" />
+    <ClCompile Include="..\Engine\Window.cpp" />
     <ClCompile Include="..\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Engine\Core.h" />
     <ClInclude Include="..\Engine\mat4.h" />
     <ClInclude Include="..\Engine\Model.h" />
     <ClInclude Include="..\Engine\Renderer.h" />
@@ -148,6 +151,7 @@
     <ClInclude Include="..\Engine\vec2.h" />
     <ClInclude Include="..\Engine\vec3.h" />
     <ClInclude Include="..\Engine\vec4.h" />
+    <ClInclude Include="..\Engine\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

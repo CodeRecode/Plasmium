@@ -36,6 +36,10 @@
     <ClCompile Include="..\Engine\vec4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\Engine\Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Engine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Engine\Types.h">
@@ -61,6 +65,12 @@
     </ClInclude>
     <ClInclude Include="..\Engine\mat4.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\Window.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
