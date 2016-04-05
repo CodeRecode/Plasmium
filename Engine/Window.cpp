@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include "GL/glew.h"
 #include <GL/GL.h>
+#include <stdio.h>
 
 namespace Plasmium
 {
@@ -17,10 +18,6 @@ namespace Plasmium
         case WM_DESTROY:
         {
             PostQuitMessage(0);
-            return 0;
-        }
-        case WM_QUIT:
-        {
             return 0;
         }
         break;
@@ -97,6 +94,13 @@ namespace Plasmium
             TranslateMessage(&msg);
             DispatchMessage(&msg);
 
+            if (msg.message == WM_KEYDOWN)
+            {
+                if (msg.wParam == VK_ESCAPE) {
+                    shouldQuit = true;
+                }
+            }
+
             if (msg.message == WM_QUIT)
             {
                 shouldQuit = true;
@@ -107,5 +111,13 @@ namespace Plasmium
     void Window::SwapBuffers()
     {
         ::SwapBuffers(GetDC(handle));
+    }
+
+    void Window::CreateConsole()
+    {
+        AllocConsole();
+        FILE *stream;
+        freopen_s(&stream, "conout$", "w", stdout);
+        freopen_s(&stream, "conout$", "w", stderr);
     }
 }

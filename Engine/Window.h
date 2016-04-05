@@ -21,5 +21,7 @@ namespace Plasmium
         bool ShouldQuit() { return shouldQuit; }
         void PumpMessages();
         void SwapBuffers();
+
+        static void CreateConsole();
     };
 }
