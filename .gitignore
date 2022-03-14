@@ -34,6 +34,7 @@
 *.lastbuildstate
 *.opendb
 *.idb
+*.recipe
 
 # Folders
 Assets/*
