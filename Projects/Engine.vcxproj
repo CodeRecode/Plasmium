@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,33 +21,33 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2F4AD36A-310A-48C0-8862-C273C33EBD51}</ProjectGuid>
     <RootNamespace>Plasmium</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -70,23 +70,29 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\Libraries\glew-1.13.0\include</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)\Libraries\glew-1.13.0\lib\Debug\Win32</LibraryPath>
+    <IncludePath>$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(VC_IncludePath);C:\Users\David\code\rapidjson-master\include;C:\Users\David\code\OpenFBX-master\src</IncludePath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(VC_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <SourcePath>C:\Users\David\code\OpenFBX-master\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\Libraries\glew-1.13.0\include</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)\Libraries\glew-1.13.0\lib\Debug\Win32</LibraryPath>
+    <IncludePath>$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(VC_IncludePath);C:\Users\David\code\rapidjson-master\include;C:\Users\David\code\OpenFBX-master\src</IncludePath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(VC_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <SourcePath>C:\Users\David\code\OpenFBX-master\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxgi.lib;d3d11.lib;d3dx11.lib;d3dx10.lib;d3dcompiler.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,13 +112,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxgi.lib;d3d11.lib;d3dx11.lib;d3dx10.lib;d3dcompiler.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,28 +137,113 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Engine\mat4.cpp" />
-    <ClCompile Include="..\Engine\Model.cpp" />
-    <ClCompile Include="..\Engine\Renderer.cpp" />
-    <ClCompile Include="..\Engine\Shader.cpp" />
-    <ClCompile Include="..\Engine\Core.cpp" />
-    <ClCompile Include="..\Engine\vec2.cpp" />
-    <ClCompile Include="..\Engine\vec3.cpp" />
-    <ClCompile Include="..\Engine\vec4.cpp" />
-    <ClCompile Include="..\Engine\Window.cpp" />
-    <ClCompile Include="..\Engine\WinMain.cpp" />
+    <ClCompile Include="..\..\OpenFBX-master\src\miniz.c" />
+    <ClCompile Include="..\..\OpenFBX-master\src\ofbx.cpp" />
+    <ClCompile Include="..\Source\Engine\Camera.cpp" />
+    <ClCompile Include="..\Source\Engine\CameraManager.cpp" />
+    <ClCompile Include="..\Source\Engine\ControllerComponent.cpp" />
+    <ClCompile Include="..\Source\Engine\EntityManager.cpp" />
+    <ClCompile Include="..\Source\Engine\FileResource.cpp" />
+    <ClCompile Include="..\Source\Engine\Level.cpp" />
+    <ClCompile Include="..\Source\Engine\LevelManager.cpp" />
+    <ClCompile Include="..\Source\Engine\mat4.cpp" />
+    <ClCompile Include="..\Source\Engine\MaterialShader.cpp" />
+    <ClCompile Include="..\Source\Engine\Model.cpp" />
+    <ClCompile Include="..\Source\Engine\ModelComponent.cpp" />
+    <ClCompile Include="..\Source\Engine\PlayerControllerComponent.cpp" />
+    <ClCompile Include="..\Source\Engine\rect.cpp" />
+    <ClCompile Include="..\Source\Engine\Renderer.cpp" />
+    <ClCompile Include="..\Source\Engine\RendererUtils.cpp" />
+    <ClCompile Include="..\Source\Engine\ResourceManager.cpp" />
+    <ClCompile Include="..\Source\Engine\Serialization.cpp" />
+    <ClCompile Include="..\Source\Engine\Shader.cpp" />
+    <ClCompile Include="..\Source\Engine\Core.cpp" />
+    <ClCompile Include="..\Source\Engine\Sprite.cpp" />
+    <ClCompile Include="..\Source\Engine\SpriteShader.cpp" />
+    <ClCompile Include="..\Source\Engine\StaticLevel.cpp" />
+    <ClCompile Include="..\Source\Engine\FontManager.cpp" />
+    <ClCompile Include="..\Source\Engine\Texture.cpp" />
+    <ClCompile Include="..\Source\Engine\TextureShader.cpp" />
+    <ClCompile Include="..\Source\Engine\vec2.cpp" />
+    <ClCompile Include="..\Source\Engine\vec3.cpp" />
+    <ClCompile Include="..\Source\Engine\vec4.cpp" />
+    <ClCompile Include="..\Source\Engine\Window.cpp" />
+    <ClCompile Include="..\Source\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\Core.h" />
-    <ClInclude Include="..\Engine\mat4.h" />
-    <ClInclude Include="..\Engine\Model.h" />
-    <ClInclude Include="..\Engine\Renderer.h" />
-    <ClInclude Include="..\Engine\Shader.h" />
-    <ClInclude Include="..\Engine\Types.h" />
-    <ClInclude Include="..\Engine\vec2.h" />
-    <ClInclude Include="..\Engine\vec3.h" />
-    <ClInclude Include="..\Engine\vec4.h" />
-    <ClInclude Include="..\Engine\Window.h" />
+    <ClInclude Include="..\Source\Engine\FontManager.h" />
+    <ClInclude Include="..\Source\Engine\Plasmath.h" />
+    <ClInclude Include="..\Source\Engine\Array.h" />
+    <ClInclude Include="..\Source\Engine\Camera.h" />
+    <ClInclude Include="..\Source\Engine\CameraManager.h" />
+    <ClInclude Include="..\Source\Engine\MaterialShader.h" />
+    <ClInclude Include="..\Source\Engine\ComponentManager.h" />
+    <ClInclude Include="..\Source\Engine\ControllerComponent.h" />
+    <ClInclude Include="..\Source\Engine\Core.h" />
+    <ClInclude Include="..\Source\Engine\Entity.h" />
+    <ClInclude Include="..\Source\Engine\EntityManager.h" />
+    <ClInclude Include="..\Source\Engine\Event.h" />
+    <ClInclude Include="..\Source\Engine\FileResource.h" />
+    <ClInclude Include="..\Source\Engine\Handler.h" />
+    <ClInclude Include="..\Source\Engine\HashTable.h" />
+    <ClInclude Include="..\Source\Engine\InputTypes.h" />
+    <ClInclude Include="..\Source\Engine\Level.h" />
+    <ClInclude Include="..\Source\Engine\LevelManager.h" />
+    <ClInclude Include="..\Source\Engine\mat4.h" />
+    <ClInclude Include="..\Source\Engine\Material.h" />
+    <ClInclude Include="..\Source\Engine\Model.h" />
+    <ClInclude Include="..\Source\Engine\ModelComponent.h" />
+    <ClInclude Include="..\Source\Engine\Component.h" />
+    <ClInclude Include="..\Source\Engine\PlayerControllerComponent.h" />
+    <ClInclude Include="..\Source\Engine\rect.h" />
+    <ClInclude Include="..\Source\Engine\RenderUtils.h" />
+    <ClInclude Include="..\Source\Engine\ShaderTypes.h" />
+    <ClInclude Include="..\Source\Engine\Sprite.h" />
+    <ClInclude Include="..\Source\Engine\SpriteShader.h" />
+    <ClInclude Include="..\Source\Engine\StaticLevel.h" />
+    <ClInclude Include="..\Source\Engine\TextureShader.h" />
+    <ClInclude Include="..\Source\Engine\Tile.h" />
+    <ClInclude Include="..\Source\Engine\TransformComponent.h" />
+    <ClInclude Include="..\Source\Engine\Renderer.h" />
+    <ClInclude Include="..\Source\Engine\ResourceManager.h" />
+    <ClInclude Include="..\Source\Engine\Serialization.h" />
+    <ClInclude Include="..\Source\Engine\Shader.h" />
+    <ClInclude Include="..\Source\Engine\CoreSystem.h" />
+    <ClInclude Include="..\Source\Engine\Texture.h" />
+    <ClInclude Include="..\Source\Engine\Types.h" />
+    <ClInclude Include="..\Source\Engine\vec2.h" />
+    <ClInclude Include="..\Source\Engine\vec3.h" />
+    <ClInclude Include="..\Source\Engine\vec4.h" />
+    <ClInclude Include="..\Source\Engine\Vertex.h" />
+    <ClInclude Include="..\Source\Engine\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl" />
+    <None Include="..\Source\Engine\Shaders\MaterialVertex.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\TypeNatvis.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Source\Engine\Shaders\SpritePixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\Source\Engine\Shaders\SpriteVertex.hlsl" />
+    <FxCompile Include="..\Source\Engine\Shaders\TexturePixel.hlsl">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </DeploymentContent>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\Source\Engine\Shaders\TextureVertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -10,69 +10,289 @@
     <Filter Include="Math">
       <UniqueIdentifier>{a81ad0ea-44bd-4edf-a44f-30943e112334}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{a75c235d-0912-4cbf-8868-13b555e3dfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataStructures">
+      <UniqueIdentifier>{627216bf-22f8-4042-aad8-79089ffb9189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shaders">
+      <UniqueIdentifier>{4b450626-44f5-44c8-b321-734d2283aebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File">
+      <UniqueIdentifier>{3717d6b9-92f1-4749-9302-51a411ae9e57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_External">
+      <UniqueIdentifier>{47cee315-b498-418e-b2f8-d9a8a4de5c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{fdd56146-a4d0-432d-a61b-2df6935554bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level">
+      <UniqueIdentifier>{8f86beb6-c1c9-476a-ad4c-1e32f9ee7d31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gameplay">
+      <UniqueIdentifier>{2360164d-1d24-48b8-800d-d6cd9354a439}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Engine\WinMain.cpp">
+    <ClCompile Include="..\Source\Engine\Core.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Renderer.cpp">
+    <ClCompile Include="..\Source\Engine\vec3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\vec4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\vec2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Model.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Shader.cpp">
+    <ClCompile Include="..\Source\Engine\Renderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Model.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Engine\mat4.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Engine\vec2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Engine\vec3.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Engine\vec4.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Engine\Core.cpp">
+    <ClCompile Include="..\Source\Engine\WinMain.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Engine\Window.cpp">
+    <ClCompile Include="..\Source\Engine\Window.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\mat4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Texture.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\EntityManager.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\FileResource.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Serialization.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\ResourceManager.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\ModelComponent.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OpenFBX-master\src\ofbx.cpp">
+      <Filter>_External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OpenFBX-master\src\miniz.c">
+      <Filter>_External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\ControllerComponent.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Camera.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\CameraManager.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Level.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\PlayerControllerComponent.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\LevelManager.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\StaticLevel.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\RendererUtils.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Shader.cpp">
+      <Filter>Rendering\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\MaterialShader.cpp">
+      <Filter>Rendering\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\TextureShader.cpp">
+      <Filter>Rendering\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\SpriteShader.cpp">
+      <Filter>Rendering\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\rect.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Sprite.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\FontManager.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\Types.h">
+    <ClInclude Include="..\Source\Engine\Core.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Renderer.h">
+    <ClInclude Include="..\Source\Engine\Component.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\vec4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\vec3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\vec2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Model.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Shader.h">
+    <ClInclude Include="..\Source\Engine\Renderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Model.h">
-      <Filter>Rendering</Filter>
+    <ClInclude Include="..\Source\Engine\Array.h">
+      <Filter>DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\vec2.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Engine\vec3.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Engine\vec4.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Engine\mat4.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Engine\Core.h">
+    <ClInclude Include="..\Source\Engine\Window.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Engine\Window.h">
+    <ClInclude Include="..\Source\Engine\mat4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Types.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Engine\Texture.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\TransformComponent.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\EntityManager.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\HashTable.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\FileResource.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\CoreSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Serialization.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\ResourceManager.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Handler.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Vertex.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Event.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\ModelComponent.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\ComponentManager.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Plasmath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Material.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\ControllerComponent.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\InputTypes.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Camera.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\CameraManager.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Level.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Entity.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\PlayerControllerComponent.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\LevelManager.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\StaticLevel.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Tile.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\RenderUtils.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\ShaderTypes.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Shader.h">
+      <Filter>Rendering\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\MaterialShader.h">
+      <Filter>Rendering\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\TextureShader.h">
+      <Filter>Rendering\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\SpriteShader.h">
+      <Filter>Rendering\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\rect.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Sprite.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\FontManager.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl">
+      <Filter>Rendering\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Engine\Shaders\MaterialVertex.hlsl">
+      <Filter>Rendering\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\TypeNatvis.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Source\Engine\Shaders\TexturePixel.hlsl">
+      <Filter>Rendering\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Source\Engine\Shaders\TextureVertex.hlsl">
+      <Filter>Rendering\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Source\Engine\Shaders\SpritePixel.hlsl">
+      <Filter>Rendering\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Source\Engine\Shaders\SpriteVertex.hlsl">
+      <Filter>Rendering\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 *.lo
 *.o
 *.obj
+*.cso
 
 # Precompiled Headers
 *.gch
@@ -34,5 +35,8 @@
 *.opendb
 *.idb
 
-#Libraries
-Libraries/*
+# Folders
+Assets/*
+Debug/*
+Release/*
+.vs/*
