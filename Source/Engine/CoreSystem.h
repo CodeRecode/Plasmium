@@ -8,7 +8,7 @@ namespace Plasmium
     private:
     public:
         virtual void Initialize() {}
-        virtual void Update() {}
+        virtual void Update(milliseconds deltaTime) {}
         virtual void ProcessEvent(const GenericEvent& event) {}
         virtual ~CoreSystem() {}
     };

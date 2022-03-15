@@ -14,10 +14,10 @@ namespace Plasmium {
     class EntityManager : public CoreSystem, public ComponentManager {
     private:
         struct TransformAnimation {
-            uint64 endFrame;
+            milliseconds endTime;
             EntityId id;
-            vec3 positionStep;
-            vec3 rotationStep;
+            vec3 positionDiff;
+            vec3 rotationDiff;
             vec3 finalPostion;
             vec3 finalRotation;
         };
@@ -39,7 +39,7 @@ namespace Plasmium {
 
         TransformComponent* GetTransform(EntityId id) { return transforms.GetObjectPtr(id); }
 
-        void Update() override;
+        void Update(milliseconds deltaTime) override;
         void ProcessEvent(const GenericEvent& event) override;
 
         template<typename... Args>

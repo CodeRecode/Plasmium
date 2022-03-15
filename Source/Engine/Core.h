@@ -16,6 +16,8 @@ namespace Plasmium
     {
     private:
         uint64 frame = 0;
+        uint64 frameStartTime = 0;
+        double timeFrequency = 0;
         CameraManager cameraManager;
         EntityManager entityManager;
         LevelManager levelManager;
@@ -43,6 +45,6 @@ namespace Plasmium
         const LevelManager& GetLevelManager() { return levelManager; }
         ResourceManager& GetResourceManager() { return resourceManager; }
 
-        uint64 GetFrame() const { return frame; }
+        milliseconds GetFrameStartTime() const { return frameStartTime / timeFrequency; }
     };
 }

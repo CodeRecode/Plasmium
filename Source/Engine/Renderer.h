@@ -5,6 +5,7 @@
 #include "ModelComponent.h"
 #include "Shader.h"
 #include "Sprite.h"
+#include "Text2D.h"
 #include "Window.h"
 
 #include "MaterialShader.h"
@@ -29,6 +30,8 @@ namespace Plasmium
 
         FontManager fontManager;
         Handler<EntityId, ModelComponent> modelComponents;
+        Array<Sprite> sprites;
+        Array<Text2D> texts;
         
         vec4 clearColor = vec4(0.05f, 0.05f, 0.05f, 1.0f);
         float screenNear = 0.1f;
@@ -56,13 +59,11 @@ namespace Plasmium
         mat4 projectionMatrix;
         mat4 orthoMatrix;
 
-        Sprite* sprite;
-
     public:
         static const D3D_FEATURE_LEVEL FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
         void Initialize();
-        void Update() override;
+        void Update(milliseconds deltaTime) override;
         void Release();
 
         void ProcessEvent(const GenericEvent& event) override;

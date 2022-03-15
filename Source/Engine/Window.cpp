@@ -80,7 +80,7 @@ namespace Plasmium
         RegisterRawInputDevices(rid, 1, sizeof(rid[0]));
     }
 
-    void Window::Update()
+    void Window::Update(milliseconds deltaTime)
     {
         bool _result = GetKeyboardState(static_cast<PBYTE>(winKeyStates));
         if (!_result) {

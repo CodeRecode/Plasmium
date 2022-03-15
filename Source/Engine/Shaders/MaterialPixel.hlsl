@@ -22,20 +22,22 @@ struct PixelInputType
 
 float4 main(PixelInputType input) : SV_TARGET
 {
-
-	float lambert = saturate(dot(input.normal, lightDirection));
-	float4 lightColor = ambientColor;
-	float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-
-	if (lambert > 0.0f) {
-		lightColor += lightDiffuseColor * lambert;
-		lightColor = saturate(lightColor);
-
-		float3 reflection = normalize(2 * lambert * input.normal - lightDirection);
-
-		specular = pow(saturate(dot(reflection, input.viewDirection)), shininess / 4.0f);
-	}
+    float3 N = normalize(input.normal);
+    float3 V = normalize(input.viewDirection);
+    float3 L = normalize(lightDirection);
+    float3 H = normalize(V + L);
+    float HdotL = dot(H, L);
+    float PI = 3.141592;
+    float alpha = 10;
+    float3 specular = float3(.1, .1, .1);
 	
-	float4 objectColor = float4(diffuseColor.xyz, 1.0f);
-	return saturate(lightColor * objectColor + specular);
+    float3 F = specular + (1 - specular) * pow(1 - HdotL, 5);
+    float D = ((alpha + 2) / (2 * PI)) * pow(max(0.0f, dot(H, N)), alpha);
+    float G = 1 / (HdotL * HdotL);
+	
+    float3 ambient = diffuseColor * .15;
+    float3 brdf = max(0.0, dot(N, L)) * (diffuseColor + F * D * G);
+	
+    return float4(ambient + brdf, 1);
+
 }

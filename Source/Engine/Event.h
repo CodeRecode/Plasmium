@@ -15,6 +15,7 @@ namespace Plasmium
         MoveEntity,
         ModelLoaded,
         TextureLoaded,
+        PerformanceCounters,
         EventTypeCount
     };
 
@@ -73,12 +74,35 @@ namespace Plasmium
 
     struct ModelLoadedEvent : BaseEvent {
         FileResource file;
-        ModelLoadedEvent(FileResource file) : BaseEvent(EventType::ModelLoaded), file(file) { }
+        ModelLoadedEvent(FileResource file) :
+            BaseEvent(EventType::ModelLoaded),
+            file(file)
+        { }
     };
 
     struct TextureLoadedEvent : BaseEvent {
         FileResource file;
-        TextureLoadedEvent(FileResource file) : BaseEvent(EventType::TextureLoaded), file(file) { }
+        TextureLoadedEvent(FileResource file) :
+            BaseEvent(EventType::TextureLoaded),
+            file(file)
+        { }
+    };
+
+    struct PerformanceCountersEvent : BaseEvent {
+        uint64 frame;
+        milliseconds time;
+        float fps;
+        float cpuPercent;
+        PerformanceCountersEvent(uint64 frame,
+            milliseconds time,
+            float fps,
+            float cpuPercent) :
+            BaseEvent(EventType::PerformanceCounters),
+            frame(frame),
+            time(time),
+            fps(fps),
+            cpuPercent(cpuPercent)
+        { }
     };
 
     // Order should be sync'd with EventType
@@ -86,5 +110,6 @@ namespace Plasmium
         MoveCameraEvent,
         MoveEntityEvent,
         ModelLoadedEvent,
-        TextureLoadedEvent> GenericEvent;
+        TextureLoadedEvent,
+        PerformanceCountersEvent> GenericEvent;
 }

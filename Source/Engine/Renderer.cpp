@@ -55,8 +55,6 @@ namespace Plasmium
         textureShader.Initialize(device);
         spriteShader.Initialize(device);
 
-        sprite = new Sprite(FileResource("Assets\\gobling.jpg"), rect(10,10,50,50));
-        sprite->Initialize(device, deviceContext);
         fontManager.Initialize(device, swapChain);
 
         auto& resourceManager = Core::GetInstance().GetResourceManager();
@@ -66,9 +64,14 @@ namespace Plasmium
         for (auto& texture : resourceManager.GetAllTextures()) {
             texture.Initialize(device);
         }
+
+        sprites.Push(Sprite(FileResource("Assets\\gobling.jpg"), rect(10, 10, 50, 50)));
+        for (auto& sprite : sprites) {
+            sprite.Initialize(device, deviceContext);
+        }
     }
 
-    void Renderer::Update()
+    void Renderer::Update(milliseconds deltaTime)
     {
         deviceContext->OMSetDepthStencilState(depthStencilState, 1);
         deviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
@@ -100,9 +103,11 @@ namespace Plasmium
         deviceContext->OMSetDepthStencilState(depthDisabledStencilState, 1);
         ShaderInternal::MatrixInfo matrixInfo(orthoMatrix, camera.GetViewMatrix(), mat4(1.0f));
         spriteShader.Bind(deviceContext, matrixInfo);
-        sprite->Draw(deviceContext);
+        for (auto& sprite : sprites) {
+            sprite.Draw(deviceContext);
+        }
 
-        fontManager.Draw();
+        fontManager.Draw(texts);
 
         const auto& window = Core::GetInstance().GetWindow();
         if (window.GetVsyncEnabled()) {
@@ -119,6 +124,9 @@ namespace Plasmium
         textureShader.Release();
         materialShader.Release();
 
+        for (auto& sprite : sprites) {
+            sprite.Release();
+        }
         auto& resourceManager = Core::GetInstance().GetResourceManager();
         for (auto& model : resourceManager.GetAllModels()) {
             model.Release();
@@ -190,6 +198,19 @@ namespace Plasmium
                 Release();
                 Initialize();
             }
+        }
+        if ((EventType)event.index() == EventType::PerformanceCounters) {
+            auto& performanceCountersEvent = 
+                std::get<PerformanceCountersEvent>(event);
+            texts.Clear();
+
+            const auto& window = Core::GetInstance().GetWindow();
+            vec4 drawColor(0.0f, 1.0f, 0.0f, 0.9f);
+            rect drawArea((float)window.GetWidth() - 200, 10, 200, 100);
+
+            char buffer[256];
+            sprintf_s(buffer, "FPS: %.2f", performanceCountersEvent.fps);
+            texts.Push(Text2D(buffer, drawArea, drawColor));
         }
     }
 

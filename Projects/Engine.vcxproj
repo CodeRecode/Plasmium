@@ -162,6 +162,7 @@
     <ClCompile Include="..\Source\Engine\SpriteShader.cpp" />
     <ClCompile Include="..\Source\Engine\StaticLevel.cpp" />
     <ClCompile Include="..\Source\Engine\FontManager.cpp" />
+    <ClCompile Include="..\Source\Engine\Text2D.cpp" />
     <ClCompile Include="..\Source\Engine\Texture.cpp" />
     <ClCompile Include="..\Source\Engine\TextureShader.cpp" />
     <ClCompile Include="..\Source\Engine\vec2.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\Source\Engine\Sprite.h" />
     <ClInclude Include="..\Source\Engine\SpriteShader.h" />
     <ClInclude Include="..\Source\Engine\StaticLevel.h" />
+    <ClInclude Include="..\Source\Engine\Text2D.h" />
     <ClInclude Include="..\Source\Engine\TextureShader.h" />
     <ClInclude Include="..\Source\Engine\Tile.h" />
     <ClInclude Include="..\Source\Engine\TransformComponent.h" />
@@ -220,9 +222,6 @@
   <ItemGroup>
     <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl" />
     <None Include="..\Source\Engine\Shaders\MaterialVertex.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="..\TypeNatvis.natvis" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Source\Engine\Shaders\SpritePixel.hlsl">

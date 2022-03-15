@@ -33,9 +33,9 @@ namespace Plasmium {
         componentManagers[(uint32)type] = manager;
     }
 
-    void EntityManager::Update()
+    void EntityManager::Update(milliseconds deltaTime)
     {
-        uint64 frame = Core::GetInstance().GetFrame();
+        milliseconds currentTime = Core::GetInstance().GetFrameStartTime();
         for (uint32 index = 0; index < animations.Size(); ++index) {
             auto& animation = animations[index];
             auto* transform = GetTransform(animation.id);
@@ -45,7 +45,7 @@ namespace Plasmium {
                 continue;
             }
 
-            if (frame >= animation.endFrame) {
+            if (currentTime >= animation.endTime) {
                 transform->SetPosition(animation.finalPostion);
                 transform->SetRotation(animation.finalRotation);
                 transform->SetMoving(false);
@@ -53,8 +53,8 @@ namespace Plasmium {
                 --index;
                 continue;
             }
-            transform->AddPosition(animation.positionStep);
-            transform->AddRotation(animation.rotationStep);
+            transform->AddPosition(animation.positionDiff * deltaTime);
+            transform->AddRotation(animation.rotationDiff * deltaTime);
         }
     }
 
@@ -73,38 +73,38 @@ namespace Plasmium {
                 return;
             }
 
-            uint64 frame = Core::GetInstance().GetFrame();
-            float frameLength = 8;
+            milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+            const milliseconds AnimationTime = 150;
 
             vec3 finalPostion = moveEvent.position;
             vec3 finalRotation = moveEvent.rotation;
-            vec3 positionStep;
-            vec3 rotationStep;
+            vec3 positionDiff;
+            vec3 rotationDiff;
             if (moveEvent.positionRelative) {
                 finalPostion += transform.GetPosition();
-                positionStep = moveEvent.position / frameLength;
+                positionDiff = moveEvent.position;
             }
             else {
-                positionStep = (moveEvent.position - transform.GetPosition()) / frameLength;
+                positionDiff = (moveEvent.position - transform.GetPosition());
             }
 
             if (moveEvent.rotationRelative) {
                 finalRotation += transform.GetRotation();
-                rotationStep = moveEvent.rotation / frameLength;
+                rotationDiff = moveEvent.rotation;
             }
             else {
-                float angle = FindTurningAngle(transform.GetRotation().y, moveEvent.rotation.y);
-                rotationStep.y = angle;
-                rotationStep /= frameLength;
+                float angle = FindTurningAngle(transform.GetRotation().y, 
+                    moveEvent.rotation.y);
+                rotationDiff.y = angle;
             }
 
             TransformAnimation animation;
             animation.id = moveEvent.entity;
-            animation.endFrame = frame + (uint64)frameLength;
+            animation.endTime = startTime + AnimationTime;
             animation.finalPostion = finalPostion;
             animation.finalRotation = finalRotation;
-            animation.positionStep = positionStep;
-            animation.rotationStep = rotationStep;
+            animation.positionDiff = positionDiff / AnimationTime;
+            animation.rotationDiff = rotationDiff / AnimationTime;
             animations.Push(animation);
             transform.SetMoving(true);
         }

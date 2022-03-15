@@ -132,6 +132,9 @@
     <ClCompile Include="..\Source\Engine\FontManager.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Engine\Text2D.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Core.h">
@@ -269,6 +272,9 @@
     <ClInclude Include="..\Source\Engine\FontManager.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Engine\Text2D.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl">
@@ -277,9 +283,6 @@
     <None Include="..\Source\Engine\Shaders\MaterialVertex.hlsl">
       <Filter>Rendering\Shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="..\TypeNatvis.natvis" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Source\Engine\Shaders\TexturePixel.hlsl">

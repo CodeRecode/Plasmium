@@ -75,33 +75,28 @@ namespace Plasmium {
         }
     }
 
-    void FontManager::Draw()
+    void FontManager::Draw(const Array<Text2D>& texts)
     {
         const auto& window = Core::GetInstance().GetWindow();
         renderTarget->BeginDraw();
-        D2D1_RECT_F layoutRect = D2D1::RectF(
-            (float)window.GetWidth() - 100,
-            0,
-            (float)window.GetWidth(),
-            100);
 
-        renderTarget->DrawText(
-            L"Fps: 60",
-            7,
-            textFormat,
-            layoutRect,
-            fontBrush
-        );
-        //fontBrush->
-        layoutRect.top += 20;
-        layoutRect.bottom += 20;
-        renderTarget->DrawText(
-            L"Cpu: 60%",
-            7,
-            textFormat,
-            layoutRect,
-            fontBrush
-        );
+        for (const auto& text : texts) {
+            const rect& area = text.GetDrawArea();
+            D2D1_RECT_F layoutRect = D2D1::RectF(
+                area.x,
+                area.y,
+                area.x + area.width,
+                area.y + area.height);
+
+            fontBrush->SetColor((const D3DCOLORVALUE *)&text.GetDrawColor());
+            renderTarget->DrawText(
+                text.GetString(),
+                text.GetLength(),
+                textFormat,
+                layoutRect,
+                fontBrush
+            );
+        }
 
         renderTarget->EndDraw();
     }

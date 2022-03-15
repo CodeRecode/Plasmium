@@ -4,6 +4,8 @@
 #include <d2d1.h>
 #include <d2d1_1.h>
 #include <dwrite.h>
+#include "Array.h"
+#include "Text2D.h"
 #include "Types.h"
 
 namespace Plasmium {
@@ -18,7 +20,7 @@ namespace Plasmium {
 
     public:
         void Initialize(ID3D11Device* device, IDXGISwapChain* swapChain);
-        void Draw();
+        void Draw(const Array<Text2D>& texts);
         void Release();
     };
 }

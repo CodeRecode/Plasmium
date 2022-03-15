@@ -41,7 +41,7 @@ namespace Plasmium
         bool ShouldQuit() const { return shouldQuit; }
 
         void Initialize() override;
-        void Update() override;
+        void Update(milliseconds deltaTime) override;
 
         void Serialize();
         void Deserialize();
