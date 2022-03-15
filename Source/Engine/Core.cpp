@@ -11,6 +11,7 @@ namespace Plasmium
     void Core::RunGame()
     {
         Window::CreateConsole();
+        perfMonitor.Initialize();
 
         coreSystems.Push(&window);
         coreSystems.Push(&levelManager);
@@ -30,17 +31,9 @@ namespace Plasmium
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
         levelManager.LoadLevelFile(levelFile);
 
-        uint64 lastPerfTime = 0, lastPerfFrame = 0, lastFrameTime = 0, frequency = 0;
-        QueryPerformanceCounter((LARGE_INTEGER*)&lastPerfTime);
-        QueryPerformanceFrequency((LARGE_INTEGER*)&frequency);
-        timeFrequency = frequency / 1000.0f; // frequency is in seconds
-
-        lastFrameTime = lastPerfTime;
         while (!window.ShouldQuit())
         {
-            QueryPerformanceCounter((LARGE_INTEGER*)&frameStartTime);
-            milliseconds deltaTime = (frameStartTime - lastFrameTime) / timeFrequency;
-            Window::WriteError(std::to_string(deltaTime));
+            milliseconds deltaTime = perfMonitor.FrameStart();
             for (CoreSystem* system : coreSystems) {
                 system->Update(deltaTime);
             }
@@ -52,19 +45,7 @@ namespace Plasmium
                 ProcessEvent(event);
                 eventQueue.pop();
             }
-            ++frame;
-            lastFrameTime = frameStartTime;
-
-            milliseconds timeDelta = (frameStartTime - lastPerfTime) / (timeFrequency);
-            if (timeDelta > 100) {
-                PostEvent(PerformanceCountersEvent(frame,
-                    frameStartTime / timeFrequency,
-                    (float)(frame - lastPerfFrame) / (float)(timeDelta / 1000.0f),
-                    1.0f));
-
-                lastPerfTime = frameStartTime;
-                lastPerfFrame = frame;
-            }
+            perfMonitor.FrameEnd();
         }
 
         renderer.Release();

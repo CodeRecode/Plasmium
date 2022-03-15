@@ -4,8 +4,10 @@
 #include "EntityManager.h"
 #include "Event.h"
 #include "LevelManager.h"
+#include "PerfMonitor.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Window.h"
 
 #include <queue>
 
@@ -15,12 +17,10 @@ namespace Plasmium
     class Core
     {
     private:
-        uint64 frame = 0;
-        uint64 frameStartTime = 0;
-        double timeFrequency = 0;
         CameraManager cameraManager;
         EntityManager entityManager;
         LevelManager levelManager;
+        PerfMonitor perfMonitor;
         Renderer renderer;
         ResourceManager resourceManager;
         Window window;
@@ -45,6 +45,6 @@ namespace Plasmium
         const LevelManager& GetLevelManager() { return levelManager; }
         ResourceManager& GetResourceManager() { return resourceManager; }
 
-        milliseconds GetFrameStartTime() const { return frameStartTime / timeFrequency; }
+        milliseconds GetFrameStartTime() const { return perfMonitor.GetFrameStartTime(); }
     };
 }

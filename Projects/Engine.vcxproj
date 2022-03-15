@@ -150,6 +150,7 @@
     <ClCompile Include="..\Source\Engine\MaterialShader.cpp" />
     <ClCompile Include="..\Source\Engine\Model.cpp" />
     <ClCompile Include="..\Source\Engine\ModelComponent.cpp" />
+    <ClCompile Include="..\Source\Engine\PerfMonitor.cpp" />
     <ClCompile Include="..\Source\Engine\PlayerControllerComponent.cpp" />
     <ClCompile Include="..\Source\Engine\rect.cpp" />
     <ClCompile Include="..\Source\Engine\Renderer.cpp" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\FontManager.h" />
+    <ClInclude Include="..\Source\Engine\PerfMonitor.h" />
     <ClInclude Include="..\Source\Engine\Plasmath.h" />
     <ClInclude Include="..\Source\Engine\Array.h" />
     <ClInclude Include="..\Source\Engine\Camera.h" />

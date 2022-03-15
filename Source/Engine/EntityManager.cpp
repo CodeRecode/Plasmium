@@ -53,8 +53,8 @@ namespace Plasmium {
                 --index;
                 continue;
             }
-            transform->AddPosition(animation.positionDiff * deltaTime);
-            transform->AddRotation(animation.rotationDiff * deltaTime);
+            transform->AddPosition(animation.positionDiff * (float)deltaTime);
+            transform->AddRotation(animation.rotationDiff * (float)deltaTime);
         }
     }
 

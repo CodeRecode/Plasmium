@@ -69,6 +69,15 @@ namespace Plasmium
         for (auto& sprite : sprites) {
             sprite.Initialize(device, deviceContext);
         }
+
+        // Add counter debug text to slot 0 and 1
+        if (texts.Size() == 0) {
+            vec4 drawColor(0.0f, 1.0f, 0.0f, 0.9f);
+            rect drawArea((float)window.GetWidth() - 200, 10, 200, 100);
+            texts.Push(Text2D("Debug Counter", drawArea, drawColor));
+            drawArea.top += 20;
+            texts.Push(Text2D("Debug Counter", drawArea, drawColor));
+        }
     }
 
     void Renderer::Update(milliseconds deltaTime)
@@ -202,15 +211,12 @@ namespace Plasmium
         if ((EventType)event.index() == EventType::PerformanceCounters) {
             auto& performanceCountersEvent = 
                 std::get<PerformanceCountersEvent>(event);
-            texts.Clear();
-
-            const auto& window = Core::GetInstance().GetWindow();
-            vec4 drawColor(0.0f, 1.0f, 0.0f, 0.9f);
-            rect drawArea((float)window.GetWidth() - 200, 10, 200, 100);
-
             char buffer[256];
             sprintf_s(buffer, "FPS: %.2f", performanceCountersEvent.fps);
-            texts.Push(Text2D(buffer, drawArea, drawColor));
+            texts[0].ChangeString(buffer);
+
+            sprintf_s(buffer, "CPU: %.2f%%", performanceCountersEvent.cpuPercent);
+            texts[1].ChangeString(buffer);
         }
     }
 

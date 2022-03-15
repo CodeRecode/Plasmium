@@ -89,17 +89,10 @@ namespace Plasmium
     };
 
     struct PerformanceCountersEvent : BaseEvent {
-        uint64 frame;
-        milliseconds time;
-        float fps;
-        float cpuPercent;
-        PerformanceCountersEvent(uint64 frame,
-            milliseconds time,
-            float fps,
-            float cpuPercent) :
+        double fps;
+        double cpuPercent;
+        PerformanceCountersEvent(double fps, double cpuPercent) :
             BaseEvent(EventType::PerformanceCounters),
-            frame(frame),
-            time(time),
             fps(fps),
             cpuPercent(cpuPercent)
         { }
