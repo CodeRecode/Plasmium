@@ -51,23 +51,27 @@ namespace Plasmium
         {}
     };
 
+    enum class MovementType { Absolute, Relative };
     struct MoveEntityEvent : BaseEvent {
         EntityId entity;
+        vec3 logicalPosition;
         vec3 position;
+        MovementType positionType;
         vec3 rotation;
-        bool positionRelative;
-        bool rotationRelative;
+        MovementType rotationType;
         MoveEntityEvent(EntityId entity,
-            vec3 position, 
+            vec3 logicalPosition,
+            vec3 position,
+            MovementType positionType,
             vec3 rotation, 
-            bool positionRelative, 
-            bool rotationRelative) :
+            MovementType rotationType) :
             BaseEvent(EventType::MoveEntity),
             entity(entity),
+            logicalPosition(logicalPosition),
             position(position),
+            positionType(positionType),
             rotation(rotation),
-            positionRelative(positionRelative),
-            rotationRelative(rotationRelative)
+            rotationType(rotationType)
         {}
     };
 

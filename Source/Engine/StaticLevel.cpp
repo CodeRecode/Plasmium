@@ -66,6 +66,7 @@ namespace Plasmium {
 
                 entityManager.AddComponent(entity,
                     ComponentType::Transform,
+                    vec3(tilePosition),
                     vec3(TransformComponent::LogicalPointToWorld(tilePosition)),
                     vec3(),
                     vec3(1.0f));
@@ -100,12 +101,14 @@ namespace Plasmium {
                     ComponentType::PlayerController);
             }
 
+            vec3 logicalPosition = GetVecFromArray(gameObject["logical_position"].GetArray());
             vec3 position = GetVecFromArray(gameObject["position"].GetArray());
             vec3 rotation = GetVecFromArray(gameObject["rotation"].GetArray());
             vec3 scale = GetVecFromArray(gameObject["scale"].GetArray());
 
             entityManager.AddComponent(entity,
                 ComponentType::Transform,
+                logicalPosition,
                 position,
                 rotation,
                 scale);
@@ -132,7 +135,7 @@ namespace Plasmium {
                 for (uint32 row = 0; row < colliderHeight; ++row) {
                     for (uint32 col = 0; col < colliderWidth; ++col) {
                         vec3 square((float)col, 0, (float)row);
-                        square += TransformComponent::WorldPointToLogical(position) + start;
+                        square += logicalPosition + start;
                         map[(uint32)square.z][(uint32)square.x].SetCollision();
                     }
                 }

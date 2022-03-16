@@ -1,0 +1,17 @@
+#pragma once
+#include "Animation.h"
+#include "Array.h"
+#include "CoreSystem.h"
+#include "vec3.h"
+
+namespace Plasmium {
+    class AnimationManager : CoreSystem {
+    private:
+        Array<Animation> animations;
+    public:
+        virtual void Update(milliseconds deltaTime) override;
+
+        void CreateBumpAnimation(EntityId entityId, vec3 targetRotation);
+        void CreateWalkAnimation(EntityId entityId, vec3 endRotation, vec3 endPosition);
+    };
+}

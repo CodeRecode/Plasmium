@@ -31,6 +31,7 @@ public:
     uint32 Size() const { return m_size; }
     uint32 Capacity() const { return m_capacity; }
 
+    T& Back();
     void Clear();
     void Push(const T& object);
     void Push(T&& object);
@@ -116,6 +117,12 @@ const T& Array<T>::operator[](uint32 index) const
 }
 
 template<typename T>
+T& Array<T>::Back()
+{
+    return static_cast<T*>(m_data)[m_size - 1];
+}
+
+template<typename T>
 void Array<T>::Clear()
 {
     for (uint32 index = 0; index < m_size; ++index) {
@@ -151,6 +158,7 @@ T Array<T>::Pop()
 
     return value;
 }
+
 template<typename T>
 void Array<T>::Delete(uint32 index)
 {

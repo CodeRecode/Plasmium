@@ -148,11 +148,10 @@ namespace Plasmium
 
     vec3 operator*(const mat4& mat, const vec3& v)
     {
-        vec3 row0(mat[0].x, mat[0].y, mat[0].z);
-        vec3 row1(mat[1].x, mat[1].y, mat[1].z);
-        vec3 row2(mat[2].x, mat[2].y, mat[2].z);
+        vec4 intermediate = vec4(v.x, v.y, v.z, 0.0f);
+        intermediate = mat * intermediate;
 
-        return vec3(v.Dot(row0), v.Dot(row1), v.Dot(v));
+        return vec3(intermediate.x, intermediate.y, intermediate.z);
     }
 
     vec4 operator*(const mat4& mat, const vec4& v)

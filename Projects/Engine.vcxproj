@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\OpenFBX-master\src\miniz.c" />
     <ClCompile Include="..\..\OpenFBX-master\src\ofbx.cpp" />
+    <ClCompile Include="..\Source\Engine\AnimationManager.cpp" />
     <ClCompile Include="..\Source\Engine\Camera.cpp" />
     <ClCompile Include="..\Source\Engine\CameraManager.cpp" />
     <ClCompile Include="..\Source\Engine\ControllerComponent.cpp" />
@@ -173,6 +174,8 @@
     <ClCompile Include="..\Source\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Engine\Animation.h" />
+    <ClInclude Include="..\Source\Engine\AnimationManager.h" />
     <ClInclude Include="..\Source\Engine\FontManager.h" />
     <ClInclude Include="..\Source\Engine\PerfMonitor.h" />
     <ClInclude Include="..\Source\Engine\Plasmath.h" />

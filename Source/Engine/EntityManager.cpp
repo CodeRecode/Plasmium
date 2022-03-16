@@ -35,27 +35,7 @@ namespace Plasmium {
 
     void EntityManager::Update(milliseconds deltaTime)
     {
-        milliseconds currentTime = Core::GetInstance().GetFrameStartTime();
-        for (uint32 index = 0; index < animations.Size(); ++index) {
-            auto& animation = animations[index];
-            auto* transform = GetTransform(animation.id);
-            if (transform == nullptr) {
-                animations.Delete(index);
-                --index;
-                continue;
-            }
-
-            if (currentTime >= animation.endTime) {
-                transform->SetPosition(animation.finalPostion);
-                transform->SetRotation(animation.finalRotation);
-                transform->SetMoving(false);
-                animations.Delete(index);
-                --index;
-                continue;
-            }
-            transform->AddPosition(animation.positionDiff * (float)deltaTime);
-            transform->AddRotation(animation.rotationDiff * (float)deltaTime);
-        }
+        animationManager.Update(deltaTime);
     }
 
     void EntityManager::ProcessEvent(const GenericEvent& event)
@@ -69,44 +49,34 @@ namespace Plasmium {
         if ((EventType)event.index() == EventType::MoveEntity) {
             auto& moveEvent = std::get<MoveEntityEvent>(event);
             auto& transform = *GetTransform(moveEvent.entity);
-            if (transform.GetMoving()) {
+            if (transform.GetAnimating()) {
                 return;
             }
 
-            milliseconds startTime = Core::GetInstance().GetFrameStartTime();
-            const milliseconds AnimationTime = 150;
-
+            vec3 logicalDestination = moveEvent.logicalPosition;
             vec3 finalPostion = moveEvent.position;
             vec3 finalRotation = moveEvent.rotation;
-            vec3 positionDiff;
-            vec3 rotationDiff;
-            if (moveEvent.positionRelative) {
+
+            if (moveEvent.positionType == MovementType::Relative) {
                 finalPostion += transform.GetPosition();
-                positionDiff = moveEvent.position;
+                logicalDestination += transform.GetLogicalPosition();
             }
-            else {
-                positionDiff = (moveEvent.position - transform.GetPosition());
-            }
-
-            if (moveEvent.rotationRelative) {
+            if (moveEvent.rotationType == MovementType::Relative) {
                 finalRotation += transform.GetRotation();
-                rotationDiff = moveEvent.rotation;
-            }
-            else {
-                float angle = FindTurningAngle(transform.GetRotation().y, 
-                    moveEvent.rotation.y);
-                rotationDiff.y = angle;
             }
 
-            TransformAnimation animation;
-            animation.id = moveEvent.entity;
-            animation.endTime = startTime + AnimationTime;
-            animation.finalPostion = finalPostion;
-            animation.finalRotation = finalRotation;
-            animation.positionDiff = positionDiff / AnimationTime;
-            animation.rotationDiff = rotationDiff / AnimationTime;
-            animations.Push(animation);
-            transform.SetMoving(true);
+            const auto& levelManager = Core::GetInstance().GetLevelManager();
+            if (!levelManager.IsWalkable(logicalDestination)) {
+                animationManager.CreateBumpAnimation(moveEvent.entity,
+                    finalRotation);
+                return;
+            }
+
+            transform.SetLogicalPosition(logicalDestination);
+
+            animationManager.CreateWalkAnimation(moveEvent.entity, 
+                finalPostion,
+                finalRotation);
         }
     }
     void EntityManager::CreateComponent(const ComponentCreationArgs& creationArgs)
@@ -116,12 +86,18 @@ namespace Plasmium {
     }
 
     void EntityManager::CreateComponent(const ComponentCreationArgs& creationArgs,
+        const vec3& logicalPosition,
         const vec3& position,
         const vec3& rotation,
         const vec3& scale)
     {
         assert(creationArgs.type == ComponentType::Transform);
-        transforms.EmplaceObject(creationArgs.parent, TransformComponent(creationArgs, position, rotation, scale));
+        transforms.EmplaceObject(creationArgs.parent, TransformComponent(
+            creationArgs, 
+            logicalPosition, 
+            position, 
+            rotation, 
+            scale));
     }
 
     void EntityManager::DeleteComponent(EntityId id, ComponentType type)

@@ -30,6 +30,13 @@ namespace Plasmium {
             const vec3& c)
         { }
 
+        virtual void CreateComponent(const ComponentCreationArgs & creationArgs,
+            const vec3 & a,
+            const vec3 & b,
+            const vec3 & c,
+            const vec3& d)
+        { }
+
         virtual void DeleteComponent(EntityId id, ComponentType type) = 0;
     };
 }

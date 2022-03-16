@@ -9,6 +9,7 @@
 #include "Event.h"
 #include "CoreSystem.h"
 #include "PlayerControllerComponent.h"
+#include "AnimationManager.h"
 
 namespace Plasmium {
     class EntityManager : public CoreSystem, public ComponentManager {
@@ -28,7 +29,7 @@ namespace Plasmium {
         PlayerControllerComponent* playerControllerComponent;
 
         HashTable<uint32, ComponentManager*> componentManagers;
-        Array <TransformAnimation> animations;
+        AnimationManager animationManager;
 
     public:
         Entity* CreateEntity();
@@ -55,6 +56,7 @@ namespace Plasmium {
 
         void CreateComponent(const ComponentCreationArgs& creationArgs) override;
         void CreateComponent(const ComponentCreationArgs& creationArgs,
+            const vec3& logicalPosition,
             const vec3& position,
             const vec3& rotation,
             const vec3& scale) override;

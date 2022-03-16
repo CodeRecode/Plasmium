@@ -5,33 +5,27 @@
 namespace Plasmium {
     void ControllerComponent::TryMoveOrAttack(Direction direction)
     {
-        float xDir = 0;
-        float zDir = 0;
+        vec3 logicalPostion = vec3();
         if (direction == Direction::N || direction == Direction::NE || direction == Direction::NW) {
-            zDir = 2;
+            logicalPostion.z = -1;
         }
-        if (direction == Direction::S || direction == Direction::SE || direction == Direction::SW) {
-            zDir = -2;
+        else if (direction == Direction::S || direction == Direction::SE || direction == Direction::SW) {
+            logicalPostion.z = 1;
         }
 
         if (direction == Direction::E || direction == Direction::NE || direction == Direction::SE) {
-            xDir = 2;
+            logicalPostion.x = 1;
         }
-        if (direction == Direction::W || direction == Direction::NW || direction == Direction::SW) {
-            xDir = -2;
-        }
-
-        vec3 relativePosition = vec3(xDir, 0.0f, zDir);
-        auto& entityManager = Core::GetInstance().GetEntityManager();
-        vec3 currentPostion = entityManager.GetTransform(GetId())->GetPosition();
-
-        const auto& levelManager = Core::GetInstance().GetLevelManager();
-        vec3 logicalDestination = TransformComponent::WorldPointToLogical(currentPostion + relativePosition);
-        if (!levelManager.IsWalkable(logicalDestination)) {
-            return;
+        else if (direction == Direction::W || direction == Direction::NW || direction == Direction::SW) {
+            logicalPostion.x = -1;
         }
 
         vec3 rotation = vec3(0.0f, (int32)direction * 45.0f, 0.0f);
-        Core::GetInstance().PostEvent(MoveEntityEvent(GetId(), relativePosition, rotation, true, false));
+        Core::GetInstance().PostEvent(MoveEntityEvent(GetId(),
+            logicalPostion,
+            TransformComponent::LogicalPointToWorld(logicalPostion),
+            MovementType::Relative,
+            rotation,
+            MovementType::Absolute));
     }
 }
