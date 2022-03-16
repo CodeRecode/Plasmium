@@ -9,6 +9,13 @@ namespace Plasmium {
         bool walkable = true;
     public:
         bool IsWalkable() const { return walkable && !hasCreature; }
-        void SetCollision() { walkable = false; }
+        void SetWalkable(bool walkable) { this->walkable = walkable; }
+
+        void SetCreature(EntityId creature) {
+            this->creature = creature;  
+            hasCreature = true; 
+        }
+        EntityId GetCreature() { return creature; }
+        void ClearCreature() { hasCreature = false; }
     };
 }

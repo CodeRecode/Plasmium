@@ -11,11 +11,16 @@ namespace Plasmium {
         uint32 height = 0;
         uint32 width = 0;
 
+        bool IsPositionInBounds(vec3 logicalPostion);
+        Tile& GetTile(vec3 logicalPostion);
+
     public:
         Level() {}
         virtual ~Level() {}
         virtual void Load() = 0;
         virtual void Unload() = 0;
         bool IsWalkable(vec3 logicalPostion);
+        void SetCreature(EntityId entityId, vec3 logicalPostion);
+        void ClearCreature(vec3 logicalPostion);
     };
 }

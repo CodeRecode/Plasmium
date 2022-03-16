@@ -7,7 +7,9 @@ namespace Plasmium {
     {
     private:
     public:
-        PlayerControllerComponent(const ComponentCreationArgs& args) : ControllerComponent(args) {}
+        PlayerControllerComponent(const ComponentCreationArgs& args) :
+            ControllerComponent(args)
+        {}
         void ProcessInput(const InputEvent& event);
     };
 }

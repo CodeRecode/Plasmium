@@ -26,7 +26,6 @@ namespace Plasmium {
         EntityId nextEntityId;
         Handler<EntityId, Entity> entities;
         Handler<EntityId, TransformComponent> transforms;
-        PlayerControllerComponent* playerControllerComponent;
 
         HashTable<uint32, ComponentManager*> componentManagers;
         AnimationManager animationManager;
@@ -54,7 +53,6 @@ namespace Plasmium {
             entity->AddComponentType(type);
         }
 
-        void CreateComponent(const ComponentCreationArgs& creationArgs) override;
         void CreateComponent(const ComponentCreationArgs& creationArgs,
             const vec3& logicalPosition,
             const vec3& position,

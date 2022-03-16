@@ -3,7 +3,7 @@
 #include "Component.h"
 
 namespace Plasmium {
-    class ControllerComponent : Component
+    class ControllerComponent : public Component
     {
     private:
     public:

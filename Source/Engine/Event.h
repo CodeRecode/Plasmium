@@ -13,9 +13,11 @@ namespace Plasmium
         Input = 0,
         MoveCamera,
         MoveEntity,
+        MoveEntityComplete,
         ModelLoaded,
         TextureLoaded,
         PerformanceCounters,
+        EntityCreated,
         EventTypeCount
     };
 
@@ -53,25 +55,38 @@ namespace Plasmium
 
     enum class MovementType { Absolute, Relative };
     struct MoveEntityEvent : BaseEvent {
-        EntityId entity;
+        EntityId entityId;
         vec3 logicalPosition;
         vec3 position;
         MovementType positionType;
         vec3 rotation;
         MovementType rotationType;
-        MoveEntityEvent(EntityId entity,
+        MoveEntityEvent(EntityId entityId,
             vec3 logicalPosition,
             vec3 position,
             MovementType positionType,
             vec3 rotation, 
             MovementType rotationType) :
             BaseEvent(EventType::MoveEntity),
-            entity(entity),
+            entityId(entityId),
             logicalPosition(logicalPosition),
             position(position),
             positionType(positionType),
             rotation(rotation),
             rotationType(rotationType)
+        {}
+    };
+    struct MoveEntityCompleteEvent : BaseEvent {
+        EntityId entityId;
+        vec3 logicalPositionStart;
+        vec3 logicalPositionEnd;
+        MoveEntityCompleteEvent(EntityId entityId,
+            vec3 logicalPositionStart,
+            vec3 logicalPositionEnd) :
+            BaseEvent(EventType::MoveEntityComplete),
+            entityId(entityId),
+            logicalPositionStart(logicalPositionStart),
+            logicalPositionEnd(logicalPositionEnd)
         {}
     };
 
@@ -81,7 +96,7 @@ namespace Plasmium
         ModelLoadedEvent(FileResource file) :
             BaseEvent(EventType::ModelLoaded),
             file(file)
-        { }
+        {}
     };
 
     struct TextureLoadedEvent : BaseEvent {
@@ -89,7 +104,7 @@ namespace Plasmium
         TextureLoadedEvent(FileResource file) :
             BaseEvent(EventType::TextureLoaded),
             file(file)
-        { }
+        {}
     };
 
     struct PerformanceCountersEvent : BaseEvent {
@@ -99,14 +114,35 @@ namespace Plasmium
             BaseEvent(EventType::PerformanceCounters),
             fps(fps),
             cpuPercent(cpuPercent)
-        { }
+        {}
+    };
+
+    struct EntityCreatedEvent : BaseEvent {
+        EntityId entityId;
+        vec3 logicalPosition;
+        EntityCreatedEvent(EntityId entityId, vec3 logicalPosition) :
+            BaseEvent(EventType::EntityCreated),
+            entityId(entityId),
+            logicalPosition(logicalPosition)
+        {}
     };
 
     // Order should be sync'd with EventType
     typedef std::variant<InputEvent,
         MoveCameraEvent,
         MoveEntityEvent,
+        MoveEntityCompleteEvent,
         ModelLoadedEvent,
         TextureLoadedEvent,
-        PerformanceCountersEvent> GenericEvent;
+        PerformanceCountersEvent,
+        EntityCreatedEvent> GenericEvent;
+
+    struct DeferredEvent {
+        GenericEvent event;
+        milliseconds eventTime;
+        DeferredEvent(GenericEvent event, milliseconds eventTime) :
+            event(event),
+            eventTime(eventTime)
+        {}
+    };
 }

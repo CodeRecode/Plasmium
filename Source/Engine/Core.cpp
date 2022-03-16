@@ -14,7 +14,7 @@ namespace Plasmium
         perfMonitor.Initialize();
 
         coreSystems.Push(&window);
-        coreSystems.Push(&levelManager);
+        coreSystems.Push(&gameplayManager);
         coreSystems.Push(&resourceManager);
         coreSystems.Push(&cameraManager);
         coreSystems.Push(&entityManager);
@@ -26,10 +26,11 @@ namespace Plasmium
 
         entityManager.RegisterComponentManager(ComponentType::Model, &renderer);
         entityManager.RegisterComponentManager(ComponentType::Transform, &entityManager);
-        entityManager.RegisterComponentManager(ComponentType::PlayerController, &entityManager);
+        entityManager.RegisterComponentManager(ComponentType::PlayerController, &gameplayManager);
+        entityManager.RegisterComponentManager(ComponentType::MonsterController, &gameplayManager);
 
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
-        levelManager.LoadLevelFile(levelFile);
+        gameplayManager.LoadLevelFile(levelFile);
 
         while (!window.ShouldQuit())
         {
@@ -37,6 +38,16 @@ namespace Plasmium
             for (CoreSystem* system : coreSystems) {
                 system->Update(deltaTime);
             }
+
+            milliseconds frameStartTime = perfMonitor.GetFrameStartTime();
+            for (uint32 index = 0; index < deferredEvents.Size(); ++index) {
+                if (frameStartTime >= deferredEvents[index].eventTime) {
+                    PostEvent(std::move(deferredEvents[index].event));
+                    deferredEvents.Delete(index);
+                    --index;
+                }
+            }
+
             while (!eventQueue.empty()) {
                 auto& event = eventQueue.front();
                 for (CoreSystem* system : coreSystems) {
@@ -45,10 +56,16 @@ namespace Plasmium
                 ProcessEvent(event);
                 eventQueue.pop();
             }
+
             perfMonitor.FrameEnd();
         }
 
         renderer.Release();
+    }
+
+    void Core::PostDeferredEvent(DeferredEvent&& event)
+    {
+        deferredEvents.Push(event);
     }
 
     void Core::PostEvent(GenericEvent&& eventClass)

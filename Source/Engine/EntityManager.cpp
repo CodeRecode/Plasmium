@@ -22,6 +22,11 @@ namespace Plasmium {
     {
         auto& entity = *GetEntity(id);
         auto& componentTypes = entity.GetComponentTypes();
+
+        // Allow components to remove state dependent on other components
+        for (auto componentType : componentTypes) {
+            componentManagers[componentType]->PreDeleteComponent(id, (ComponentType)componentType);
+        }
         for (auto componentType : componentTypes) {
             componentManagers[componentType]->DeleteComponent(id, (ComponentType)componentType);
         }
@@ -40,15 +45,9 @@ namespace Plasmium {
 
     void EntityManager::ProcessEvent(const GenericEvent& event)
     {
-        if ((EventType)event.index() == EventType::Input) {
-            auto& input = std::get<InputEvent>(event);
-            if (playerControllerComponent != nullptr) {
-                playerControllerComponent->ProcessInput(input);
-            }
-        }
         if ((EventType)event.index() == EventType::MoveEntity) {
             auto& moveEvent = std::get<MoveEntityEvent>(event);
-            auto& transform = *GetTransform(moveEvent.entity);
+            auto& transform = *GetTransform(moveEvent.entityId);
             if (transform.GetAnimating()) {
                 return;
             }
@@ -65,24 +64,29 @@ namespace Plasmium {
                 finalRotation += transform.GetRotation();
             }
 
-            const auto& levelManager = Core::GetInstance().GetLevelManager();
-            if (!levelManager.IsWalkable(logicalDestination)) {
-                animationManager.CreateBumpAnimation(moveEvent.entity,
+            const auto& gameplayManager = Core::GetInstance().GetGameplayManager();
+            if (!gameplayManager.IsWalkable(logicalDestination)) {
+                animationManager.CreateBumpAnimation(moveEvent.entityId,
                     finalRotation);
                 return;
             }
 
-            transform.SetLogicalPosition(logicalDestination);
-
-            animationManager.CreateWalkAnimation(moveEvent.entity, 
+            milliseconds completionTime = animationManager.CreateWalkAnimation(
+                moveEvent.entityId,
                 finalPostion,
                 finalRotation);
+
+            Core::GetInstance().PostDeferredEvent(DeferredEvent(
+                MoveEntityCompleteEvent(moveEvent.entityId,
+                    transform.GetLogicalPosition(),
+                    logicalDestination), 
+                completionTime));
         }
-    }
-    void EntityManager::CreateComponent(const ComponentCreationArgs& creationArgs)
-    {
-        assert(creationArgs.type == ComponentType::PlayerController);
-        playerControllerComponent = new PlayerControllerComponent(creationArgs);
+        if ((EventType)event.index() == EventType::MoveEntityComplete) {
+            auto& entityMoved = std::get<MoveEntityCompleteEvent>(event);
+            auto& transform = *GetTransform(entityMoved.entityId);
+            transform.SetLogicalPosition(entityMoved.logicalPositionEnd);
+        }
     }
 
     void EntityManager::CreateComponent(const ComponentCreationArgs& creationArgs,
@@ -102,12 +106,9 @@ namespace Plasmium {
 
     void EntityManager::DeleteComponent(EntityId id, ComponentType type)
     {
-        assert(type == ComponentType::Transform || type == ComponentType::PlayerController);
+        assert(type == ComponentType::Transform);
         if (type == ComponentType::Transform) {
             transforms.DeleteObject(id);
-        }
-        else if (type == ComponentType::PlayerController) {
-            delete playerControllerComponent;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Plasmium {
 
     void StaticLevel::Unload()
     {
+        // Tear down immediately
         auto& entityManager = Core::GetInstance().GetEntityManager();
         for (EntityId entity : entities) {
             entityManager.DeleteEntity(entity);
@@ -101,6 +102,11 @@ namespace Plasmium {
                     ComponentType::PlayerController);
             }
 
+            if (gameObject.HasMember("monster_controller")) {
+                entityManager.AddComponent(entity,
+                    ComponentType::MonsterController);
+            }
+
             vec3 logicalPosition = GetVecFromArray(gameObject["logical_position"].GetArray());
             vec3 position = GetVecFromArray(gameObject["position"].GetArray());
             vec3 rotation = GetVecFromArray(gameObject["rotation"].GetArray());
@@ -136,10 +142,12 @@ namespace Plasmium {
                     for (uint32 col = 0; col < colliderWidth; ++col) {
                         vec3 square((float)col, 0, (float)row);
                         square += logicalPosition + start;
-                        map[(uint32)square.z][(uint32)square.x].SetCollision();
+                        map[(uint32)square.z][(uint32)square.x].SetWalkable(false);
                     }
                 }
             }
+
+            Core::GetInstance().PostEvent(EntityCreatedEvent(entity->GetId(), logicalPosition));
         }
     }
 }

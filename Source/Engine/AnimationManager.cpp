@@ -1,19 +1,18 @@
 #include "AnimationManager.h"
 #include "Core.h"
 #include "Plasmath.h"
+#include "Event.h"
 
 namespace Plasmium {
 
-    void AnimationManager::CreateBumpAnimation(EntityId entityId, vec3 targetRotation)
+    milliseconds AnimationManager::CreateBumpAnimation(EntityId entityId, vec3 targetRotation)
     {
         milliseconds startTime = Core::GetInstance().GetFrameStartTime();
         auto& transform = *Core::GetInstance()
             .GetEntityManager()
             .GetTransform(entityId);
 
-        if (transform.GetAnimating()) {
-            return;
-        }
+        assert(!transform.GetAnimating());
 
         Animation bumpAnimation;
         bumpAnimation.entityId = entityId;
@@ -55,9 +54,11 @@ namespace Plasmium {
 
         animations.Push(bumpAnimation);
         transform.SetAnimating(true);
+
+        return bumpAnimation.keys.Back().time;
     }
 
-    void AnimationManager::CreateWalkAnimation(EntityId entityId,
+    milliseconds AnimationManager::CreateWalkAnimation(EntityId entityId,
         vec3 endPosition,
         vec3 endRotation)
     {
@@ -65,10 +66,8 @@ namespace Plasmium {
         auto& transform = *Core::GetInstance()
             .GetEntityManager()
             .GetTransform(entityId);
-        
-        if (transform.GetAnimating()) {
-            return;
-        }
+
+        assert(!transform.GetAnimating());
 
         Animation walkAnimation;
         walkAnimation.entityId = entityId;
@@ -90,13 +89,15 @@ namespace Plasmium {
         }
 
         AnimationKey moveKey;
-        moveKey.time = walkAnimation.keys.Back().time + 200;
+        moveKey.time = walkAnimation.keys.Back().time + 150;
         moveKey.postion = endPosition;
         moveKey.rotation = endRotation;
         walkAnimation.keys.Push(moveKey);
 
         animations.Push(walkAnimation);
         transform.SetAnimating(true);
+
+        return walkAnimation.keys.Back().time;
     }
 
     void AnimationManager::Update(milliseconds deltaTime)

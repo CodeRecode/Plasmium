@@ -28,9 +28,6 @@
     <Filter Include="Input">
       <UniqueIdentifier>{fdd56146-a4d0-432d-a61b-2df6935554bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Level">
-      <UniqueIdentifier>{8f86beb6-c1c9-476a-ad4c-1e32f9ee7d31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Gameplay">
       <UniqueIdentifier>{2360164d-1d24-48b8-800d-d6cd9354a439}</UniqueIdentifier>
     </Filter>
@@ -96,17 +93,8 @@
     <ClCompile Include="..\Source\Engine\CameraManager.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Engine\Level.cpp">
-      <Filter>Level</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Engine\PlayerControllerComponent.cpp">
       <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Engine\LevelManager.cpp">
-      <Filter>Level</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Engine\StaticLevel.cpp">
-      <Filter>Level</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Engine\RendererUtils.cpp">
       <Filter>Rendering</Filter>
@@ -140,6 +128,18 @@
     </ClCompile>
     <ClCompile Include="..\Source\Engine\AnimationManager.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Level.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\GameplayManager.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\StaticLevel.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\MonsterControllerComponent.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,23 +233,11 @@
     <ClInclude Include="..\Source\Engine\CameraManager.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Engine\Level.h">
-      <Filter>Level</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Engine\Entity.h">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Engine\PlayerControllerComponent.h">
       <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\LevelManager.h">
-      <Filter>Level</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\StaticLevel.h">
-      <Filter>Level</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Tile.h">
-      <Filter>Level</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Engine\RenderUtils.h">
       <Filter>Rendering</Filter>
@@ -289,6 +277,21 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\Animation.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Tile.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Level.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\GameplayManager.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\StaticLevel.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\MonsterControllerComponent.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

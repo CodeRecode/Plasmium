@@ -6,6 +6,7 @@ namespace Plasmium {
         Transform,
         Model,
         PlayerController,
+        MonsterController,
         ComponentTypeCount
     };
 
