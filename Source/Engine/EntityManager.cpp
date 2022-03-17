@@ -87,6 +87,29 @@ namespace Plasmium {
             auto& transform = *GetTransform(entityMoved.entityId);
             transform.SetLogicalPosition(entityMoved.logicalPositionEnd);
         }
+        if ((EventType)event.index() == EventType::AttackEntity) {
+            auto& attackEvent = std::get<AttackEntityEvent>(event);
+
+            auto& transform = *GetTransform(attackEvent.attackerId);
+            milliseconds completionTime = animationManager.CreateAttackAnimation(
+                attackEvent.attackerId, attackEvent.rotation);
+        }
+        if ((EventType)event.index() == EventType::EntityKilled) {
+            auto& entityKilled = std::get<EntityKilledEvent>(event);
+            auto& transform = *GetTransform(entityKilled.dyingId);
+
+            milliseconds completionTime = animationManager.CreateDeathAnimation(
+                entityKilled.dyingId);
+
+            Core::GetInstance().PostDeferredEvent(DeferredEvent(
+                DestroyEntityEvent(entityKilled.dyingId),
+                completionTime));
+        }
+        if ((EventType)event.index() == EventType::DestroyEntity) {
+            auto& destroyEntity = std::get<DestroyEntityEvent>(event);
+
+            DeleteEntity(destroyEntity.entityId);
+        }
     }
 
     void EntityManager::CreateComponent(const ComponentCreationArgs& creationArgs,

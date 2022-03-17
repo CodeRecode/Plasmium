@@ -36,6 +36,19 @@ namespace Plasmium {
             currentLevel->SetCreature(entityMoved.entityId, entityMoved.logicalPositionEnd);
             currentLevel->ClearCreature(entityMoved.logicalPositionStart);
         }
+        if ((EventType)event.index() == EventType::AttackEntity) {
+            auto& attackEvent = std::get<AttackEntityEvent>(event);
+            auto& attacker = *combatComponents.GetObjectPtr(attackEvent.attackerId);
+            auto& defender = *combatComponents.GetObjectPtr(attackEvent.defenderId);
+
+            defender.DoDamage(attacker.GetDamage());
+
+            if (defender.GetHealth() <= 0.0f) {
+                Core::GetInstance().PostEvent(EntityKilledEvent(
+                    attackEvent.attackerId,
+                    attackEvent.defenderId));
+            }
+        }
     }
 
     void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs)
@@ -52,6 +65,14 @@ namespace Plasmium {
         }
     }
 
+    void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs,
+        float health,
+        float damage) {
+        assert(creationArgs.type == ComponentType::CombatComponent);
+        combatComponents.EmplaceObject(creationArgs.parent,
+            CombatComponent(creationArgs, health, damage));
+    }
+
     void GameplayManager::PreDeleteComponent(EntityId id, ComponentType type)
     {
         auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(id);
@@ -61,13 +82,17 @@ namespace Plasmium {
 
     void GameplayManager::DeleteComponent(EntityId id, ComponentType type)
     {
-        assert(type == ComponentType::PlayerController ||
-            type == ComponentType::MonsterController);
+        assert(type == ComponentType::PlayerController
+            || type == ComponentType::MonsterController
+            || type == ComponentType::CombatComponent);
         if (type == ComponentType::PlayerController) {
             playerControllerComponents.DeleteObject(id);
         }
         else if (type == ComponentType::MonsterController) {
             monsterControllerComponents.DeleteObject(id);
+        }
+        else if (type == ComponentType::CombatComponent) {
+            combatComponents.DeleteObject(id);
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Plasmium
         entityManager.RegisterComponentManager(ComponentType::Transform, &entityManager);
         entityManager.RegisterComponentManager(ComponentType::PlayerController, &gameplayManager);
         entityManager.RegisterComponentManager(ComponentType::MonsterController, &gameplayManager);
+        entityManager.RegisterComponentManager(ComponentType::CombatComponent, &gameplayManager);
 
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
         gameplayManager.LoadLevelFile(levelFile);

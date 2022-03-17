@@ -11,7 +11,9 @@ namespace Plasmium {
     public:
         virtual void Update(milliseconds deltaTime) override;
 
+        milliseconds CreateAttackAnimation(EntityId entityId, vec3 targetRotation);
         milliseconds CreateBumpAnimation(EntityId entityId, vec3 targetRotation);
+        milliseconds CreateDeathAnimation(EntityId entityId);
         milliseconds CreateWalkAnimation(EntityId entityId,
             vec3 endRotation, 
             vec3 endPosition);

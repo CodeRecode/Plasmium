@@ -7,6 +7,7 @@ namespace Plasmium {
         Model,
         PlayerController,
         MonsterController,
+        CombatComponent,
         ComponentTypeCount
     };
 

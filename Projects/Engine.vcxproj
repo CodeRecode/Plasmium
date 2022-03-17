@@ -177,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Animation.h" />
     <ClInclude Include="..\Source\Engine\AnimationManager.h" />
+    <ClInclude Include="..\Source\Engine\CombatComponent.h" />
     <ClInclude Include="..\Source\Engine\FontManager.h" />
     <ClInclude Include="..\Source\Engine\MonsterControllerComponent.h" />
     <ClInclude Include="..\Source\Engine\PerfMonitor.h" />

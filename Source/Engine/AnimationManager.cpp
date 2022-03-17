@@ -5,6 +5,59 @@
 
 namespace Plasmium {
 
+    milliseconds AnimationManager::CreateAttackAnimation(EntityId entityId, vec3 targetRotation)
+    {
+        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+        auto& transform = *Core::GetInstance()
+            .GetEntityManager()
+            .GetTransform(entityId);
+
+        assert(!transform.GetAnimating());
+
+        Animation attackAnimation;
+        attackAnimation.entityId = entityId;
+
+        AnimationKey startKey;
+        startKey.time = startTime;
+        startKey.postion = transform.GetPosition();
+        startKey.rotation = transform.GetRotation();
+        attackAnimation.keys.Push(startKey);
+
+        AnimationKey rotateKey;
+        rotateKey.time = startKey.time + 110;
+        rotateKey.postion = transform.GetPosition();
+        rotateKey.rotation = targetRotation;
+        attackAnimation.keys.Push(rotateKey);
+
+        vec3 bumpDistance = vec3(0.0f, 0.0f, 1.0f);
+        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation).Transpose();
+        vec3 bumpDelta = rotationMatrix * bumpDistance;
+        vec3 bumpPosition = transform.GetPosition() + bumpDelta;
+
+        AnimationKey moveForwardKey;
+        moveForwardKey.time = attackAnimation.keys.Back().time + 50;
+        moveForwardKey.postion = bumpPosition;
+        moveForwardKey.rotation = targetRotation;
+        attackAnimation.keys.Push(moveForwardKey);
+
+        AnimationKey stationaryKey;
+        stationaryKey.time = attackAnimation.keys.Back().time + 100;
+        stationaryKey.postion = bumpPosition;
+        stationaryKey.rotation = targetRotation;
+        attackAnimation.keys.Push(stationaryKey);
+
+        AnimationKey moveBackwardKey;
+        moveBackwardKey.time = attackAnimation.keys.Back().time + 250;
+        moveBackwardKey.postion = transform.GetPosition();
+        moveBackwardKey.rotation = targetRotation;
+        attackAnimation.keys.Push(moveBackwardKey);
+
+        animations.Push(attackAnimation);
+        transform.SetAnimating(true);
+
+        return attackAnimation.keys.Back().time;
+    }
+
     milliseconds AnimationManager::CreateBumpAnimation(EntityId entityId, vec3 targetRotation)
     {
         milliseconds startTime = Core::GetInstance().GetFrameStartTime();
@@ -24,7 +77,7 @@ namespace Plasmium {
         bumpAnimation.keys.Push(startKey);
 
         AnimationKey rotateKey;
-        rotateKey.time = startKey.time + 110;
+        rotateKey.time = bumpAnimation.keys.Back().time + 110;
         rotateKey.postion = transform.GetPosition();
         rotateKey.rotation = targetRotation;
         bumpAnimation.keys.Push(rotateKey);
@@ -56,6 +109,53 @@ namespace Plasmium {
         transform.SetAnimating(true);
 
         return bumpAnimation.keys.Back().time;
+    }
+
+    milliseconds AnimationManager::CreateDeathAnimation(EntityId entityId)
+    {
+        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+        auto& transform = *Core::GetInstance()
+            .GetEntityManager()
+            .GetTransform(entityId);
+
+        assert(!transform.GetAnimating());
+
+        vec3 up = vec3(0.0f, 1.0f, 0.0f);
+
+        vec3 targetRotation = transform.GetRotation() + vec3(-90.0f, 0.0f, 0.0f);
+        vec3 targetPosition = transform.GetPosition() + vec3(0.0f, 0.5f, 0.0f);
+
+        Animation deathAnimation;
+        deathAnimation.entityId = entityId;
+
+        AnimationKey startKey;
+        startKey.time = startTime;
+        startKey.postion = transform.GetPosition();
+        startKey.rotation = transform.GetRotation();
+        deathAnimation.keys.Push(startKey);
+
+        AnimationKey waitKey;
+        waitKey.time = deathAnimation.keys.Back().time + 80; // Sync with attack
+        waitKey.postion = transform.GetPosition();
+        waitKey.rotation = transform.GetRotation();
+        deathAnimation.keys.Push(waitKey);
+
+        AnimationKey deadKey;
+        deadKey.time = deathAnimation.keys.Back().time + 300;
+        deadKey.postion = targetPosition;
+        deadKey.rotation = targetRotation;
+        deathAnimation.keys.Push(deadKey);
+
+        AnimationKey despawnKey;
+        despawnKey.time = deathAnimation.keys.Back().time + 500;
+        despawnKey.postion = targetPosition;
+        despawnKey.rotation = targetRotation;
+        deathAnimation.keys.Push(despawnKey);
+
+        animations.Push(deathAnimation);
+        transform.SetAnimating(true);
+
+        return deathAnimation.keys.Back().time;
     }
 
     milliseconds AnimationManager::CreateWalkAnimation(EntityId entityId,
@@ -137,8 +237,10 @@ namespace Plasmium {
                 * (float)timeLerp 
                 + fromKey.postion;
 
-            float angle = FindTurningAngle(fromKey.rotation.y, toKey.rotation.y);
-            vec3 newRotation = (vec3(0, angle, 0)) * (float)timeLerp + fromKey.rotation;
+            float xAngle = FindTurningAngle(fromKey.rotation.x, toKey.rotation.x);
+            float yAngle = FindTurningAngle(fromKey.rotation.y, toKey.rotation.y);
+            float zAngle = FindTurningAngle(fromKey.rotation.z, toKey.rotation.z);
+            vec3 newRotation = (vec3(xAngle, yAngle, zAngle)) * (float)timeLerp + fromKey.rotation;
 
             transform.SetPosition(newPosition);
             transform.SetRotation(newRotation);

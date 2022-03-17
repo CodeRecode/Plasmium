@@ -27,6 +27,18 @@ namespace Plasmium {
        return IsPositionInBounds(logicalPostion) && GetTile(logicalPostion).IsWalkable();
     }
 
+    bool Level::HasCreature(vec3 logicalPostion)
+    {
+        return IsPositionInBounds(logicalPostion) && GetTile(logicalPostion).HasCreature();
+    }
+
+    EntityId Level::GetCreature(vec3 logicalPostion)
+    {
+        auto& tile = GetTile(logicalPostion);
+        assert(tile.HasCreature());
+        return tile.GetCreature();
+    }
+
     void Level::SetCreature(EntityId entityId, vec3 logicalPostion)
     {
         return GetTile(logicalPostion).SetCreature(entityId);

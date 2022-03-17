@@ -14,10 +14,13 @@ namespace Plasmium
         MoveCamera,
         MoveEntity,
         MoveEntityComplete,
+        AttackEntity,
+        EntityKilled,
         ModelLoaded,
         TextureLoaded,
         PerformanceCounters,
         EntityCreated,
+        DestroyEntity,
         EventTypeCount
     };
 
@@ -76,6 +79,7 @@ namespace Plasmium
             rotationType(rotationType)
         {}
     };
+
     struct MoveEntityCompleteEvent : BaseEvent {
         EntityId entityId;
         vec3 logicalPositionStart;
@@ -90,6 +94,30 @@ namespace Plasmium
         {}
     };
 
+    struct EntityKilledEvent : BaseEvent {
+        EntityId killerId;
+        EntityId dyingId;
+        EntityKilledEvent(EntityId killerId,
+            EntityId dyingId) :
+            BaseEvent(EventType::EntityKilled),
+            killerId(killerId),
+            dyingId(dyingId)
+        {}
+    };
+
+    struct AttackEntityEvent : BaseEvent {
+        EntityId attackerId;
+        EntityId defenderId;
+        vec3 rotation;
+        AttackEntityEvent(EntityId attackerId,
+            EntityId defenderId,
+            vec3 rotation) :
+            BaseEvent(EventType::AttackEntity),
+            attackerId(attackerId),
+            defenderId(defenderId),
+            rotation(rotation)
+        {}
+    };
 
     struct ModelLoadedEvent : BaseEvent {
         FileResource file;
@@ -115,7 +143,7 @@ namespace Plasmium
             fps(fps),
             cpuPercent(cpuPercent)
         {}
-    };
+    }; 
 
     struct EntityCreatedEvent : BaseEvent {
         EntityId entityId;
@@ -127,15 +155,26 @@ namespace Plasmium
         {}
     };
 
+    struct DestroyEntityEvent : BaseEvent {
+        EntityId entityId;
+        DestroyEntityEvent(EntityId entityId) :
+            BaseEvent(EventType::DestroyEntity),
+            entityId(entityId)
+        {}
+    };
+
     // Order should be sync'd with EventType
     typedef std::variant<InputEvent,
         MoveCameraEvent,
         MoveEntityEvent,
         MoveEntityCompleteEvent,
+        AttackEntityEvent,
+        EntityKilledEvent,
         ModelLoadedEvent,
         TextureLoadedEvent,
         PerformanceCountersEvent,
-        EntityCreatedEvent> GenericEvent;
+        EntityCreatedEvent,
+        DestroyEntityEvent> GenericEvent;
 
     struct DeferredEvent {
         GenericEvent event;

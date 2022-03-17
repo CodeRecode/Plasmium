@@ -107,6 +107,14 @@ namespace Plasmium {
                     ComponentType::MonsterController);
             }
 
+            if (gameObject.HasMember("combat")) {
+                auto& combatData = gameObject["combat"];
+                float health = combatData["health"].GetFloat();
+                float damage = combatData["damage"].GetFloat();
+                entityManager.AddComponent(entity,
+                    ComponentType::CombatComponent, health, damage);
+            }
+
             vec3 logicalPosition = GetVecFromArray(gameObject["logical_position"].GetArray());
             vec3 position = GetVecFromArray(gameObject["position"].GetArray());
             vec3 rotation = GetVecFromArray(gameObject["rotation"].GetArray());

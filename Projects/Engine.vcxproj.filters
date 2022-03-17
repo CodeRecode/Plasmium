@@ -293,6 +293,9 @@
     <ClInclude Include="..\Source\Engine\MonsterControllerComponent.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Engine\CombatComponent.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl">

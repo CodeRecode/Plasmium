@@ -15,6 +15,7 @@ namespace Plasmium {
             this->creature = creature;  
             hasCreature = true; 
         }
+        EntityId HasCreature() { return hasCreature; }
         EntityId GetCreature() { return creature; }
         void ClearCreature() { hasCreature = false; }
     };
