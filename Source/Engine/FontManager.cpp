@@ -75,7 +75,7 @@ namespace Plasmium {
         }
     }
 
-    void FontManager::Draw(const std::deque<Text2D>& texts)
+    void FontManager::Draw(const RingBuffer<Text2D>& texts)
     {
         const auto& window = Core::GetInstance().GetWindow();
         renderTarget->BeginDraw();

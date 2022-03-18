@@ -49,7 +49,7 @@ namespace Plasmium {
             for (uint32 col = 0; col < width; ++col) {
                 tiles.Push(Tile());
             }
-            map.Push(tiles);
+            map.Push(std::move(tiles));
         }
 
         auto& tileDefs = document["tile_defs"];

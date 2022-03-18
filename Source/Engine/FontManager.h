@@ -5,9 +5,9 @@
 #include <d2d1_1.h>
 #include <dwrite.h>
 #include "Array.h"
+#include "RingBuffer.h"
 #include "Text2D.h"
 #include "Types.h"
-#include <deque>
 
 namespace Plasmium {
     class FontManager {
@@ -21,7 +21,7 @@ namespace Plasmium {
 
     public:
         void Initialize(ID3D11Device* device, IDXGISwapChain* swapChain);
-        void Draw(const std::deque<Text2D>& texts);
+        void Draw(const RingBuffer<Text2D>& texts);
         void Draw(const Array<Text2D>& texts);
         void Release();
     };

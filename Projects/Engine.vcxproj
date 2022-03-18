@@ -211,6 +211,7 @@
     <ClInclude Include="..\Source\Engine\PlayerControllerComponent.h" />
     <ClInclude Include="..\Source\Engine\rect.h" />
     <ClInclude Include="..\Source\Engine\RenderUtils.h" />
+    <ClInclude Include="..\Source\Engine\RingBuffer.h" />
     <ClInclude Include="..\Source\Engine\ShaderTypes.h" />
     <ClInclude Include="..\Source\Engine\Sprite.h" />
     <ClInclude Include="..\Source\Engine\SpriteShader.h" />

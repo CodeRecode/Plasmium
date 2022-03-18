@@ -57,7 +57,11 @@ public:
         Realloc();
     }
 
+    HashTable(const HashTable<K, V>& copy) = delete;
+    HashTable<K, V>& operator=(const HashTable<K, V>& rhs) = delete;
+
     uint32 Size() const { return m_size; }
+    bool Empty() const { return m_size == 0; }
 
     bool Contains(K key) const;
     V& operator[](K key);
@@ -162,6 +166,11 @@ template <typename K, typename V>
 void HashTable<K, V>::Delete(K key) {
     uint32 bucketIndex = GetBucket(key);
     auto node = m_buckets[bucketIndex];
+
+    if (node == nullptr) {
+        // Not found
+        return;
+    }
 
     // If node is head, set the new head
     if (node != nullptr && node->key == key) {

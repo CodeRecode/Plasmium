@@ -50,13 +50,12 @@ namespace Plasmium
                 }
             }
 
-            while (!eventQueue.empty()) {
-                auto& event = eventQueue.front();
+            while (!eventQueue.Empty()) {
+                auto event = eventQueue.PopFront();
                 for (CoreSystem* system : coreSystems) {
                     system->ProcessEvent(event);
                 }
                 ProcessEvent(event);
-                eventQueue.pop();
             }
 
             perfMonitor.FrameEnd();
@@ -67,12 +66,12 @@ namespace Plasmium
 
     void Core::PostDeferredEvent(DeferredEvent&& event)
     {
-        deferredEvents.Push(event);
+        deferredEvents.Push(std::move(event));
     }
 
     void Core::PostEvent(GenericEvent&& eventClass)
     {
-        eventQueue.push(eventClass);
+        eventQueue.PushBack(std::move(eventClass));
     }
 
     void Core::ProcessEvent(const GenericEvent& event)
@@ -81,9 +80,7 @@ namespace Plasmium
             auto& inputEvent = std::get<InputEvent>(event);
 
             if (inputEvent.GetKeyDown(InputKey::F9)) {
-                while (eventQueue.size() > 1) {
-                    eventQueue.pop();
-                }
+                eventQueue.Clear();
                 deferredEvents.Clear();
 
                 // Tear down immediately in a safe order

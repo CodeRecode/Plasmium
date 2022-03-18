@@ -1,6 +1,7 @@
 #include "CppUnitTest.h"
 #include "..\Engine\Array.h"
 #include "..\Engine\HashTable.h"
+#include "..\Engine\RingBuffer.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -144,6 +145,26 @@ namespace UnitTest
             Assert::AreEqual(3u, testTable.Size());
         }
 
+        TEST_METHOD(ValueDeleteTest)
+        {
+            HashTable<EntityId, uint32> testTable;
+            testTable[1] = 3u;
+            testTable[2] = 4u;
+            testTable[3] = 5u;
+            testTable[4] = 6u;
+
+            Assert::AreEqual(4u, testTable.Size());
+            Assert::AreEqual(true, testTable.Contains(2));
+
+            testTable.Delete(2);
+
+            Assert::AreEqual(3u, testTable.Size());
+            Assert::AreEqual(false, testTable.Contains(2));
+            Assert::AreEqual(3u, testTable[1]);
+            Assert::AreEqual(5u, testTable[3]);
+            Assert::AreEqual(6u, testTable[4]);
+        }
+
         TEST_METHOD(StressTest)
         {
             HashTable<EntityId, uint32> testTable;
@@ -154,8 +175,102 @@ namespace UnitTest
             for (uint32 i = 0; i < 100; ++i) {
                 Assert::AreEqual(i, testTable[i]);
             }
-            testTable.Clear();
+            for (uint32 i = 0; i < 100; ++i) {
+                testTable.Delete(i);
+            }
             Assert::AreEqual(0u, testTable.Size());
+        }
+    };
+
+    TEST_CLASS(RingBufferTest)
+    {
+    public:
+
+        TEST_METHOD(ValueInsertTest)
+        {
+            RingBuffer<int32> testBuffer;
+            testBuffer.PushFront(1);
+            testBuffer.PushBack(2);
+            testBuffer.PushBack(3);
+            testBuffer.PushBack(4);
+            testBuffer.PushBack(5);
+            testBuffer.PushFront(0);
+            int32 checkVal = 0;
+            for (auto value : testBuffer) {
+                Assert::AreEqual(checkVal, value);
+                ++checkVal;
+            }
+
+        }
+
+        TEST_METHOD(ValuePopTest)
+        {
+            RingBuffer<int32> testBuffer;
+            testBuffer.PushFront(1);
+            testBuffer.PushFront(0);
+            testBuffer.PushBack(2);
+            testBuffer.PushBack(3);
+            testBuffer.PushBack(4);
+            testBuffer.PushBack(5);
+
+            Assert::AreEqual(0, testBuffer.PopFront());
+            Assert::AreEqual(1, testBuffer.PopFront());
+            Assert::AreEqual(5, testBuffer.PopBack());
+
+            int32 checkVal = 2;
+            for (auto value : testBuffer) {
+                Assert::AreEqual(checkVal, value);
+                ++checkVal;
+            }
+        }
+
+        TEST_METHOD(CopyTest)
+        {
+            RingBuffer<int32> testBuffer;
+            testBuffer.PushBack(1);
+            testBuffer.PushBack(2);
+            testBuffer.PushBack(3);
+
+            RingBuffer<int32> testBuffer2 = testBuffer;
+            testBuffer.Clear();
+
+            Assert::AreEqual(0u, testBuffer.Size());
+            Assert::AreEqual(3u, testBuffer2.Size());
+            Assert::AreEqual(1, testBuffer2[0]);
+            Assert::AreEqual(2, testBuffer2[1]);
+            Assert::AreEqual(3, testBuffer2[2]);
+        }
+
+        TEST_METHOD(StressTest)
+        {
+            RingBuffer<int32> testBuffer;
+            testBuffer.PushFront(0);
+            for (int32 i = 1; i < 100; ++i) {
+                testBuffer.PushBack(i);
+                testBuffer.PushFront(-i);
+            }
+            Assert::AreEqual(199u, testBuffer.Size());
+
+            int32 checkVal = -99;
+            for (auto value : testBuffer) {
+                Assert::AreEqual(checkVal, value);
+                ++checkVal;
+            }
+
+            for (int32 i = 99; i > 0; --i) {
+                Assert::AreEqual(i, testBuffer.PopBack());
+                Assert::AreEqual(-i, testBuffer.PopFront());
+            }
+            Assert::AreEqual(0, testBuffer.PopBack());
+            Assert::AreEqual(0u, testBuffer.Size());
+
+            RingBuffer<int32> testBuffer2;
+            for (int32 i = 0; i < 10; ++i) {
+                testBuffer.PushBack(i);
+                Assert::AreEqual(i, *testBuffer.begin());
+                Assert::AreEqual(i, testBuffer.PopFront());
+            }
+
         }
     };
 }

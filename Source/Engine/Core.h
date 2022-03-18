@@ -7,9 +7,9 @@
 #include "PerfMonitor.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "RingBuffer.h"
 #include "Window.h"
 
-#include <queue>
 
 namespace Plasmium
 {
@@ -25,7 +25,7 @@ namespace Plasmium
         ResourceManager resourceManager;
         Window window;
 
-        std::queue<GenericEvent> eventQueue;
+        RingBuffer<GenericEvent> eventQueue;
         Array<DeferredEvent> deferredEvents;
         Array<CoreSystem*> coreSystems;
 

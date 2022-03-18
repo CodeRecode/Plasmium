@@ -43,7 +43,7 @@ Object* Handler<Handle, Object>::EmplaceObject(Handle id, const Object& object)
 template <typename Handle, typename Object>
 Object* Handler<Handle, Object>::EmplaceObject(Handle id, Object&& object)
 {
-    objects.Push(object);
+    objects.Push(std::move(object));
     uint32 arrayIndex = objects.Size() - 1;
     lookup[id] = arrayIndex;
 
