@@ -31,10 +31,66 @@ namespace Plasmium {
                 currentLevel->SetCreature(id, entityCreated.logicalPosition);
             }
         }
-        if ((EventType)event.index() == EventType::MoveEntityComplete) {
-            auto& entityMoved = std::get<MoveEntityCompleteEvent>(event);
-            currentLevel->SetCreature(entityMoved.entityId, entityMoved.logicalPositionEnd);
-            currentLevel->ClearCreature(entityMoved.logicalPositionStart);
+        if ((EventType)event.index() == EventType::TryMoveEntity) {
+            auto& entityMove = std::get<TryMoveEntityEvent>(event);
+            auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(entityMove.entityId);
+            vec3 targetRotation = vec3(0.0f, (int32)entityMove.direction * 45.0f, 0.0f);
+
+            AnimateEntityParameters animationParams;
+            animationParams.entityId = entityMove.entityId;
+            animationParams.startPosition = transform.GetPosition();
+            animationParams.endPosition = transform.GetPosition();
+            animationParams.startRotation = transform.GetRotation();
+            animationParams.endRotation = targetRotation;
+
+            vec3 logicalDestination = transform.GetLogicalPosition() + entityMove.relativeLogicalPosition;
+            if (HasCreature(logicalDestination)) {
+                EntityId creature = GetCreature(logicalDestination);
+                auto* combatComponent = combatComponents.GetObjectPtr(creature);
+                if (combatComponent != nullptr) {
+                    animationParams.type = AnimationType::Attack;
+                    animationParams.targetId = creature;
+                    Core::GetInstance().PostEvent(AnimateEntityEvent(std::move(animationParams)));
+                    return;
+                }
+            }
+            
+            if (!IsWalkable(logicalDestination)) {
+                animationParams.type = AnimationType::Bump;
+                Core::GetInstance().PostEvent(AnimateEntityEvent(std::move(animationParams)));
+            }
+            else {
+                vec3 worldTarget = TransformComponent::LogicalPointToWorld(logicalDestination);
+                animationParams.type = AnimationType::Walk;
+                animationParams.endPosition = worldTarget;
+                Core::GetInstance().PostEvent(AnimateEntityEvent(std::move(animationParams)));
+
+                // Update logical postion immediately to avoid passing it through the animation
+                currentLevel->SetCreature(entityMove.entityId, logicalDestination);
+                currentLevel->ClearCreature(transform.GetLogicalPosition()); 
+                Core::GetInstance().PostEvent(ChangeTransformEvent(
+                    entityMove.entityId,
+                    ChangeTransformLogicalPosition,
+                    logicalDestination,
+                    vec3(),
+                    vec3(),
+                    vec3()));
+
+            }
+        }
+        if ((EventType)event.index() == EventType::AnimateEntityKey) {
+            auto& animationKey = std::get<AnimateEntityKeyEvent>(event).params;
+            if (animationKey.keyType == AnimationKeyType::Attack) {
+                Core::GetInstance().PostEvent(AttackEntityEvent(
+                    animationKey.animationParams.entityId, 
+                    animationKey.animationParams.targetId));
+            }
+            else if (animationKey.keyType == AnimationKeyType::AnimationComplete) {
+                if (animationKey.animationParams.type == AnimationType::Death) {
+                    Core::GetInstance().PostEvent(DestroyEntityEvent(
+                        animationKey.animationParams.entityId));
+                }
+            }
         }
         if ((EventType)event.index() == EventType::AttackEntity) {
             auto& attackEvent = std::get<AttackEntityEvent>(event);
@@ -65,6 +121,21 @@ namespace Plasmium {
                     defenderName.GetName());
                 StringId killString = resourceManager.CreateString(buffer);
                 Core::GetInstance().PostEvent(GameplayEventLogEvent(killString));
+
+                auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(
+                    attackEvent.defenderId);
+
+                AnimateEntityParameters animationParams;
+                animationParams.type = AnimationType::Death;
+                animationParams.entityId = attackEvent.defenderId;
+                animationParams.startPosition = transform.GetPosition();
+                animationParams.endPosition = transform.GetPosition();
+                animationParams.startRotation = transform.GetRotation();
+                animationParams.endRotation = transform.GetRotation();
+                Core::GetInstance().PostEvent(AnimateEntityEvent(std::move(animationParams)));
+
+                Core::GetInstance().PostEvent(DestroyComponentEvent(attackEvent.defenderId, 
+                    ComponentType::Combat));
             }
         }
     }

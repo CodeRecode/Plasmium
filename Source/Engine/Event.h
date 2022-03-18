@@ -1,10 +1,13 @@
 #pragma once
-#include "Types.h"
+#include "Animation.h"
+#include "Component.h"
 #include "Model.h"
-#include "Texture.h"
 #include "InputTypes.h"
-#include <variant>
+#include "Texture.h"
+#include "Types.h"
 #include "vec3.h"
+
+#include <variant>
 
 namespace Plasmium
 {
@@ -12,14 +15,17 @@ namespace Plasmium
     enum class EventType {
         Input = 0,
         MoveCamera,
-        MoveEntity,
-        MoveEntityComplete,
+        TryMoveEntity,
+        AnimateEntity,
+        AnimateEntityKey,
+        ChangeTransform,
         AttackEntity,
         EntityKilled,
         ModelLoaded,
         TextureLoaded,
         PerformanceCounters,
         EntityCreated,
+        DestroyComponent,
         DestroyEntity,
         GameplayEventLog,
         EventTypeCount
@@ -57,41 +63,73 @@ namespace Plasmium
         {}
     };
 
-    enum class MovementType { Absolute, Relative };
-    struct MoveEntityEvent : BaseEvent {
+    struct TryMoveEntityEvent : BaseEvent {
         EntityId entityId;
-        vec3 logicalPosition;
-        vec3 position;
-        MovementType positionType;
-        vec3 rotation;
-        MovementType rotationType;
-        MoveEntityEvent(EntityId entityId,
-            vec3 logicalPosition,
-            vec3 position,
-            MovementType positionType,
-            vec3 rotation, 
-            MovementType rotationType) :
-            BaseEvent(EventType::MoveEntity),
+        vec3 relativeLogicalPosition;
+        Direction direction;
+        TryMoveEntityEvent(EntityId entityId,
+            vec3 relativeLogicalPosition,
+            Direction direction) :
+            BaseEvent(EventType::TryMoveEntity),
             entityId(entityId),
-            logicalPosition(logicalPosition),
-            position(position),
-            positionType(positionType),
-            rotation(rotation),
-            rotationType(rotationType)
+            relativeLogicalPosition(relativeLogicalPosition),
+            direction(direction)
         {}
     };
 
-    struct MoveEntityCompleteEvent : BaseEvent {
+    struct AnimateEntityEvent : BaseEvent {
+        AnimateEntityParameters params;
+        AnimateEntityEvent(AnimateEntityParameters params) :
+            BaseEvent(EventType::AnimateEntity),
+            params(params)
+        {}
+    };
+        
+    struct AnimateEntityKeyEvent : BaseEvent{
+        AnimateEntityKeyEventParameters params;
+        AnimateEntityKeyEvent(AnimateEntityKeyEventParameters params) :
+            BaseEvent(EventType::AnimateEntityKey),
+            params(params)
+        {}
+    };
+
+    enum ChangeTransformValues {
+        ChangeTransformLogicalPosition = 0x01,
+        ChangeTransformPosition = 0x02,
+        ChangeTransformRotation = 0x04,
+        ChangeTransformScale = 0x08,
+    };
+    struct ChangeTransformEvent : BaseEvent {
         EntityId entityId;
-        vec3 logicalPositionStart;
-        vec3 logicalPositionEnd;
-        MoveEntityCompleteEvent(EntityId entityId,
-            vec3 logicalPositionStart,
-            vec3 logicalPositionEnd) :
-            BaseEvent(EventType::MoveEntityComplete),
+        uint32 changeValues;
+        vec3 logicalPosition;
+        vec3 position;
+        vec3 rotation;
+        vec3 scale;
+        ChangeTransformEvent(EntityId entityId,
+        uint32 changeValues,
+        vec3 logicalPosition,
+        vec3 position,
+        vec3 rotation,
+        vec3 scale) :
+            BaseEvent(EventType::ChangeTransform),
             entityId(entityId),
-            logicalPositionStart(logicalPositionStart),
-            logicalPositionEnd(logicalPositionEnd)
+            changeValues(changeValues),
+            logicalPosition(logicalPosition),
+            position(position),
+            rotation(rotation),
+            scale(scale)
+        {}
+    };
+
+    struct AttackEntityEvent : BaseEvent {
+        EntityId attackerId;
+        EntityId defenderId;
+        AttackEntityEvent(EntityId attackerId,
+            EntityId defenderId) :
+            BaseEvent(EventType::AttackEntity),
+            attackerId(attackerId),
+            defenderId(defenderId)
         {}
     };
 
@@ -103,20 +141,6 @@ namespace Plasmium
             BaseEvent(EventType::EntityKilled),
             killerId(killerId),
             dyingId(dyingId)
-        {}
-    };
-
-    struct AttackEntityEvent : BaseEvent {
-        EntityId attackerId;
-        EntityId defenderId;
-        vec3 rotation;
-        AttackEntityEvent(EntityId attackerId,
-            EntityId defenderId,
-            vec3 rotation) :
-            BaseEvent(EventType::AttackEntity),
-            attackerId(attackerId),
-            defenderId(defenderId),
-            rotation(rotation)
         {}
     };
 
@@ -156,6 +180,16 @@ namespace Plasmium
         {}
     };
 
+    struct DestroyComponentEvent : BaseEvent {
+        EntityId entityId;
+        ComponentType type;
+        DestroyComponentEvent(EntityId entityId, ComponentType type) :
+            BaseEvent(EventType::DestroyComponent),
+            entityId(entityId),
+            type(type)
+        {}
+    };
+
     struct DestroyEntityEvent : BaseEvent {
         EntityId entityId;
         DestroyEntityEvent(EntityId entityId) :
@@ -173,16 +207,19 @@ namespace Plasmium
     };
 
     // Order should be sync'd with EventType
-    typedef std::variant<InputEvent,
+    typedef std::variant < InputEvent,
         MoveCameraEvent,
-        MoveEntityEvent,
-        MoveEntityCompleteEvent,
+        TryMoveEntityEvent,
+        AnimateEntityEvent,
+        AnimateEntityKeyEvent,
+        ChangeTransformEvent,
         AttackEntityEvent,
         EntityKilledEvent,
         ModelLoadedEvent,
         TextureLoadedEvent,
         PerformanceCountersEvent,
         EntityCreatedEvent,
+        DestroyComponentEvent,
         DestroyEntityEvent,
         GameplayEventLogEvent> GenericEvent;
 

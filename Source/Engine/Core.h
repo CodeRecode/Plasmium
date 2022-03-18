@@ -44,7 +44,6 @@ namespace Plasmium
         const Window& GetWindow() { return window; }
         const CameraManager& GetCameraManager() { return cameraManager; }
         EntityManager& GetEntityManager() { return entityManager; }
-        const GameplayManager& GetGameplayManager() { return gameplayManager; }
         ResourceManager& GetResourceManager() { return resourceManager; }
 
         milliseconds GetFrameStartTime() const { return perfMonitor.GetFrameStartTime(); }

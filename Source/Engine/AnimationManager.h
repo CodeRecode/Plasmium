@@ -8,15 +8,15 @@ namespace Plasmium {
     class AnimationManager : CoreSystem {
     private:
         Array<Animation> animations;
+
+        void CreateAttackAnimation(const AnimateEntityParameters& params);
+        void CreateBumpAnimation(const AnimateEntityParameters& params);
+        void CreateDeathAnimation(const AnimateEntityParameters& params);
+        void CreateWalkAnimation(const AnimateEntityParameters& params);
+
     public:
         virtual void Update(milliseconds deltaTime) override;
+        void CreateAnimation(const AnimateEntityParameters& params);
         void StopAll();
-
-        milliseconds CreateAttackAnimation(EntityId entityId, vec3 targetRotation);
-        milliseconds CreateBumpAnimation(EntityId entityId, vec3 targetRotation);
-        milliseconds CreateDeathAnimation(EntityId entityId);
-        milliseconds CreateWalkAnimation(EntityId entityId,
-            vec3 endRotation, 
-            vec3 endPosition);
     };
 }

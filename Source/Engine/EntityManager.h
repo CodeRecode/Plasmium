@@ -29,6 +29,7 @@ namespace Plasmium {
 
         HashTable<uint32, ComponentManager*> componentManagers;
         AnimationManager animationManager;
+        TransformComponent* GetTransformInternal(EntityId id) { return transforms.GetObjectPtr(id); }
 
     public:
         Entity* CreateEntity();
@@ -38,7 +39,7 @@ namespace Plasmium {
 
         void RegisterComponentManager(ComponentType type, ComponentManager* manager);
 
-        TransformComponent* GetTransform(EntityId id) { return transforms.GetObjectPtr(id); }
+        const TransformComponent* GetTransform(EntityId id) { return transforms.GetObjectPtr(id); }
 
         void Update(milliseconds deltaTime) override;
         void ProcessEvent(const GenericEvent& event) override;

@@ -57,65 +57,36 @@ namespace Plasmium {
 
     void EntityManager::ProcessEvent(const GenericEvent& event)
     {
-        if ((EventType)event.index() == EventType::MoveEntity) {
-            auto& moveEvent = std::get<MoveEntityEvent>(event);
-            auto& transform = *GetTransform(moveEvent.entityId);
-            if (transform.GetAnimating()) {
-                return;
-            }
-
-            vec3 logicalDestination = moveEvent.logicalPosition;
-            vec3 finalPostion = moveEvent.position;
-            vec3 finalRotation = moveEvent.rotation;
-
-            if (moveEvent.positionType == MovementType::Relative) {
-                finalPostion += transform.GetPosition();
-                logicalDestination += transform.GetLogicalPosition();
-            }
-            if (moveEvent.rotationType == MovementType::Relative) {
-                finalRotation += transform.GetRotation();
-            }
-
-            const auto& gameplayManager = Core::GetInstance().GetGameplayManager();
-            if (!gameplayManager.IsWalkable(logicalDestination)) {
-                animationManager.CreateBumpAnimation(moveEvent.entityId,
-                    finalRotation);
-                return;
-            }
-
-            milliseconds completionTime = animationManager.CreateWalkAnimation(
-                moveEvent.entityId,
-                finalPostion,
-                finalRotation);
-
-            Core::GetInstance().PostDeferredEvent(DeferredEvent(
-                MoveEntityCompleteEvent(moveEvent.entityId,
-                    transform.GetLogicalPosition(),
-                    logicalDestination), 
-                completionTime));
+        if ((EventType)event.index() == EventType::AnimateEntity) {
+            auto& animateEntity = std::get<AnimateEntityEvent>(event);
+            animationManager.CreateAnimation(animateEntity.params);
         }
-        if ((EventType)event.index() == EventType::MoveEntityComplete) {
-            auto& entityMoved = std::get<MoveEntityCompleteEvent>(event);
-            auto& transform = *GetTransform(entityMoved.entityId);
-            transform.SetLogicalPosition(entityMoved.logicalPositionEnd);
+        if ((EventType)event.index() == EventType::ChangeTransform) {
+            auto& changeTransform = std::get<ChangeTransformEvent>(event);
+            auto& transform = *GetTransformInternal(changeTransform.entityId);
+            if (changeTransform.changeValues & ChangeTransformLogicalPosition)
+            {
+                transform.SetLogicalPosition(changeTransform.logicalPosition);
+            }
+            if (changeTransform.changeValues & ChangeTransformPosition)
+            {
+                transform.SetPosition(changeTransform.position);
+            }
+            if (changeTransform.changeValues & ChangeTransformRotation)
+            {
+                transform.SetRotation(changeTransform.rotation);
+            }
+            if (changeTransform.changeValues & ChangeTransformScale)
+            {
+                transform.SetScale(changeTransform.scale);
+            }
         }
-        if ((EventType)event.index() == EventType::AttackEntity) {
-            auto& attackEvent = std::get<AttackEntityEvent>(event);
+        if ((EventType)event.index() == EventType::DestroyComponent) {
+            auto& destroyComponent = std::get<DestroyComponentEvent>(event);
 
-            auto& transform = *GetTransform(attackEvent.attackerId);
-            milliseconds completionTime = animationManager.CreateAttackAnimation(
-                attackEvent.attackerId, attackEvent.rotation);
-        }
-        if ((EventType)event.index() == EventType::EntityKilled) {
-            auto& entityKilled = std::get<EntityKilledEvent>(event);
-            auto& transform = *GetTransform(entityKilled.dyingId);
-
-            milliseconds completionTime = animationManager.CreateDeathAnimation(
-                entityKilled.dyingId);
-
-            Core::GetInstance().PostDeferredEvent(DeferredEvent(
-                DestroyEntityEvent(entityKilled.dyingId),
-                completionTime));
+            componentManagers[(uint32)destroyComponent.type]->DeleteComponent(
+                destroyComponent.entityId, 
+                destroyComponent.type);
         }
         if ((EventType)event.index() == EventType::DestroyEntity) {
             auto& destroyEntity = std::get<DestroyEntityEvent>(event);

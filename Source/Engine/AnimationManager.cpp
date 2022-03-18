@@ -5,201 +5,183 @@
 
 namespace Plasmium {
 
-    milliseconds AnimationManager::CreateAttackAnimation(EntityId entityId, vec3 targetRotation)
+
+    void AnimationManager::CreateAnimation(const AnimateEntityParameters& params)
+    {
+        switch (params.type) {
+        case AnimationType::Attack:
+            CreateAttackAnimation(params);
+            break;
+        case AnimationType::Bump:
+            CreateBumpAnimation(params);
+            break;
+        case AnimationType::Death:
+            CreateDeathAnimation(params);
+            break;
+        case AnimationType::Walk:
+            CreateWalkAnimation(params);
+            break;
+        default:
+            assert(false && "Unknown animation type: " && params.type == AnimationType::AnimationTypeCount);
+        }
+    }
+
+    void AnimationManager::CreateAttackAnimation(const AnimateEntityParameters& params)
     {
         milliseconds startTime = Core::GetInstance().GetFrameStartTime();
-        auto& transform = *Core::GetInstance()
-            .GetEntityManager()
-            .GetTransform(entityId);
-
-        assert(!transform.GetAnimating());
 
         Animation attackAnimation;
-        attackAnimation.entityId = entityId;
+        attackAnimation.params = params;
+        attackAnimation.lastUpdateTime = startTime;
 
-        AnimationKey startKey;
-        startKey.time = startTime;
-        startKey.postion = transform.GetPosition();
-        startKey.rotation = transform.GetRotation();
-        attackAnimation.keys.Push(startKey);
+        // Start
+        attackAnimation.keys.Push(AnimationKey(AnimationKeyType::None, 
+            startTime,
+            params.startPosition,
+            params.startRotation));
 
-        AnimationKey rotateKey;
-        rotateKey.time = startKey.time + 110;
-        rotateKey.postion = transform.GetPosition();
-        rotateKey.rotation = targetRotation;
-        attackAnimation.keys.Push(rotateKey);
+        // Rotate
+        attackAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            attackAnimation.keys.Back().time + 110,
+            params.startPosition,
+            params.endRotation));
 
         vec3 attackDistance = vec3(0.0f, 0.0f, 0.8f);
-        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation * -1.0);
+        mat4 rotationMatrix = mat4(1.0f).Rotate(params.endRotation * -1.0);
         vec3 attackDelta = rotationMatrix * attackDistance;
-        vec3 attackPosition = transform.GetPosition() + attackDelta;
+        vec3 attackPosition = params.startPosition + attackDelta;
 
-        AnimationKey moveForwardKey;
-        moveForwardKey.time = attackAnimation.keys.Back().time + 50;
-        moveForwardKey.postion = attackPosition;
-        moveForwardKey.rotation = targetRotation;
-        attackAnimation.keys.Push(moveForwardKey);
+        // Move Forward
+        attackAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            attackAnimation.keys.Back().time + 50,
+            attackPosition,
+            params.endRotation));
 
-        AnimationKey stationaryKey;
-        stationaryKey.time = attackAnimation.keys.Back().time + 100;
-        stationaryKey.postion = attackPosition;
-        stationaryKey.rotation = targetRotation;
-        attackAnimation.keys.Push(stationaryKey);
+        // Attack
+        attackAnimation.keys.Push(AnimationKey(AnimationKeyType::Attack,
+            attackAnimation.keys.Back().time + 100,
+            attackPosition,
+            params.endRotation));
 
-        AnimationKey moveBackwardKey;
-        moveBackwardKey.time = attackAnimation.keys.Back().time + 250;
-        moveBackwardKey.postion = transform.GetPosition();
-        moveBackwardKey.rotation = targetRotation;
-        attackAnimation.keys.Push(moveBackwardKey);
+        // Return
+        attackAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            attackAnimation.keys.Back().time + 250,
+            params.startPosition,
+            params.endRotation));
 
         animations.Push(attackAnimation);
-        transform.SetAnimating(true);
-
-        return attackAnimation.keys.Back().time;
     }
 
-    milliseconds AnimationManager::CreateBumpAnimation(EntityId entityId, vec3 targetRotation)
+    void AnimationManager::CreateBumpAnimation(const AnimateEntityParameters& params)
     {
         milliseconds startTime = Core::GetInstance().GetFrameStartTime();
-        auto& transform = *Core::GetInstance()
-            .GetEntityManager()
-            .GetTransform(entityId);
-
-        assert(!transform.GetAnimating());
-
         Animation bumpAnimation;
-        bumpAnimation.entityId = entityId;
+        bumpAnimation.params = params;
+        bumpAnimation.lastUpdateTime = startTime;
 
-        AnimationKey startKey;
-        startKey.time = startTime;
-        startKey.postion = transform.GetPosition();
-        startKey.rotation = transform.GetRotation();
-        bumpAnimation.keys.Push(startKey);
+        // Start
+        bumpAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            startTime,
+            params.startPosition,
+            params.startRotation));
 
-        AnimationKey rotateKey;
-        rotateKey.time = bumpAnimation.keys.Back().time + 110;
-        rotateKey.postion = transform.GetPosition();
-        rotateKey.rotation = targetRotation;
-        bumpAnimation.keys.Push(rotateKey);
+        // Rotate
+        bumpAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            bumpAnimation.keys.Back().time + 110,
+            params.startPosition,
+            params.endRotation));
 
         vec3 bumpDistance = vec3(0.0f, 0.0f, 1.0f);
-        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation * -1.0);
+        mat4 rotationMatrix = mat4(1.0f).Rotate(params.endRotation * -1.0);
         vec3 bumpDelta = rotationMatrix * bumpDistance;
-        vec3 bumpPosition = transform.GetPosition() + bumpDelta;
+        vec3 bumpPosition = params.startPosition + bumpDelta;
 
-        AnimationKey moveForwardKey;
-        moveForwardKey.time = bumpAnimation.keys.Back().time + 100;
-        moveForwardKey.postion = bumpPosition;
-        moveForwardKey.rotation = targetRotation;
-        bumpAnimation.keys.Push(moveForwardKey);
+        // Move Forward
+        bumpAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            bumpAnimation.keys.Back().time + 100,
+            bumpPosition,
+            params.endRotation));
 
-        AnimationKey stationaryKey;
-        stationaryKey.time = bumpAnimation.keys.Back().time + 50;
-        stationaryKey.postion = bumpPosition;
-        stationaryKey.rotation = targetRotation;
-        bumpAnimation.keys.Push(stationaryKey);
+        // Bump
+        bumpAnimation.keys.Push(AnimationKey(AnimationKeyType::Bump,
+            bumpAnimation.keys.Back().time + 50,
+            bumpPosition,
+            params.endRotation));
 
-        AnimationKey moveBackwardKey;
-        moveBackwardKey.time = bumpAnimation.keys.Back().time + 200;
-        moveBackwardKey.postion = transform.GetPosition();
-        moveBackwardKey.rotation = targetRotation;
-        bumpAnimation.keys.Push(moveBackwardKey);
+        // Return
+        bumpAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            bumpAnimation.keys.Back().time + 200,
+            params.startPosition,
+            params.endRotation));
 
         animations.Push(bumpAnimation);
-        transform.SetAnimating(true);
-
-        return bumpAnimation.keys.Back().time;
     }
 
-    milliseconds AnimationManager::CreateDeathAnimation(EntityId entityId)
+    void AnimationManager::CreateDeathAnimation(const AnimateEntityParameters& params)
     {
         milliseconds startTime = Core::GetInstance().GetFrameStartTime();
-        auto& transform = *Core::GetInstance()
-            .GetEntityManager()
-            .GetTransform(entityId);
-
-        assert(!transform.GetAnimating());
+        Animation deathAnimation;
+        deathAnimation.params = params;
+        deathAnimation.lastUpdateTime = startTime;
 
         vec3 up = vec3(0.0f, 1.0f, 0.0f);
-
         vec3 rotationAxis = vec3(90.0f, 0.0f, 0.0f);
 
-        vec3 targetRotation = transform.GetRotation() + rotationAxis;
-        vec3 targetPosition = transform.GetPosition() + vec3(0.0f, 0.5f, 0.0f);
+        vec3 endPosition = params.startPosition + vec3(0.0f, 0.5f, 0.0f);
+        vec3 endRotation = params.startRotation + rotationAxis;
 
-        Animation deathAnimation;
-        deathAnimation.entityId = entityId;
+        // Start
+        deathAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            startTime,
+            params.startPosition,
+            params.startRotation));
 
-        AnimationKey startKey;
-        startKey.time = startTime;
-        startKey.postion = transform.GetPosition();
-        startKey.rotation = transform.GetRotation();
-        deathAnimation.keys.Push(startKey);
+        // Collapse
+        deathAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            deathAnimation.keys.Back().time + 150,
+            endPosition,
+            endRotation));
 
-        AnimationKey waitKey;
-        waitKey.time = deathAnimation.keys.Back().time + 80; // Sync with attack
-        waitKey.postion = transform.GetPosition();
-        waitKey.rotation = transform.GetRotation();
-        deathAnimation.keys.Push(waitKey);
-
-        AnimationKey deadKey;
-        deadKey.time = deathAnimation.keys.Back().time + 300;
-        deadKey.postion = targetPosition;
-        deadKey.rotation = targetRotation;
-        deathAnimation.keys.Push(deadKey);
-
-        AnimationKey despawnKey;
-        despawnKey.time = deathAnimation.keys.Back().time + 500;
-        despawnKey.postion = targetPosition;
-        despawnKey.rotation = targetRotation;
-        deathAnimation.keys.Push(despawnKey);
+        // Despawn
+        deathAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            deathAnimation.keys.Back().time + 500,
+            endPosition,
+            endRotation));
 
         animations.Push(deathAnimation);
-        transform.SetAnimating(true);
-
-        return deathAnimation.keys.Back().time;
     }
 
-    milliseconds AnimationManager::CreateWalkAnimation(EntityId entityId,
-        vec3 endPosition,
-        vec3 endRotation)
+    void AnimationManager::CreateWalkAnimation(const AnimateEntityParameters& params)
     {
-        milliseconds startTime = Core::GetInstance().GetFrameStartTime(); 
-        auto& transform = *Core::GetInstance()
-            .GetEntityManager()
-            .GetTransform(entityId);
-
-        assert(!transform.GetAnimating());
-
+        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
         Animation walkAnimation;
-        walkAnimation.entityId = entityId;
+        walkAnimation.params = params;
+        walkAnimation.lastUpdateTime = startTime;
 
-        AnimationKey startKey;
-        startKey.time = startTime;
-        startKey.postion = transform.GetPosition();
-        startKey.rotation = transform.GetRotation();
-        walkAnimation.keys.Push(startKey);
+        // Start
+        walkAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            startTime,
+            params.startPosition,
+            params.startRotation));
 
-        if (endRotation != transform.GetRotation()) {
-            float angle = FindTurningAngle(transform.GetRotation().y, endRotation.y);
-            AnimationKey rotateKey;
+
+        if (params.endRotation != params.startRotation) {
+            float angle = FindTurningAngle(params.startRotation.y, params.endRotation.y);
             // take ~1ms per degree
-            rotateKey.time = walkAnimation.keys.Back().time + fabsf(angle);
-            rotateKey.postion = transform.GetPosition();
-            rotateKey.rotation = endRotation;
-            walkAnimation.keys.Push(rotateKey);
+            walkAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+                walkAnimation.keys.Back().time + fabsf(angle),
+                params.startPosition,
+                params.endRotation));
         }
 
-        AnimationKey moveKey;
-        moveKey.time = walkAnimation.keys.Back().time + 150;
-        moveKey.postion = endPosition;
-        moveKey.rotation = endRotation;
-        walkAnimation.keys.Push(moveKey);
+
+        // Move Forward
+        walkAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            walkAnimation.keys.Back().time + 150,
+            params.endPosition,
+            params.endRotation));
 
         animations.Push(walkAnimation);
-        transform.SetAnimating(true);
-
-        return walkAnimation.keys.Back().time;
     }
 
     void AnimationManager::Update(milliseconds deltaTime)
@@ -208,9 +190,6 @@ namespace Plasmium {
 
         for (uint32 animationIndex = 0; animationIndex < animations.Size(); ++animationIndex) {
             auto& animation = animations[animationIndex];
-            auto& transform = *Core::GetInstance()
-                .GetEntityManager()
-                .GetTransform(animation.entityId);
 
             uint32 keyIndex = 1;
             auto& fromKey = animation.keys[keyIndex - 1];
@@ -223,10 +202,30 @@ namespace Plasmium {
                 ++keyIndex;
             }
 
+            // Fire the key event if we've just passed it
+            if (fromKey.time > animation.lastUpdateTime
+                && fromKey.time <= currentTime
+                && fromKey.type != AnimationKeyType::None) {
+                AnimateEntityKeyEventParameters keyParameters;
+                keyParameters.keyType = fromKey.type;
+                keyParameters.animationParams = animation.params;
+                Core::GetInstance().PostEvent(AnimateEntityKeyEvent(std::move(keyParameters)));
+            }
+
             if (keyIndex == animation.keys.Size() && currentTime >= toKey.time) {
-                transform.SetPosition(toKey.postion);
-                transform.SetRotation(toKey.rotation);
-                transform.SetAnimating(false);
+                Core::GetInstance().PostEvent(ChangeTransformEvent(
+                    animation.params.entityId,
+                    ChangeTransformPosition | ChangeTransformRotation,
+                    vec3(),
+                    toKey.position,
+                    toKey.rotation,
+                    vec3()));
+
+                AnimateEntityKeyEventParameters keyParameters;
+                keyParameters.keyType = AnimationKeyType::AnimationComplete;
+                keyParameters.animationParams = animation.params;
+                Core::GetInstance().PostEvent(AnimateEntityKeyEvent(std::move(keyParameters)));
+
                 animations.Delete(animationIndex);
                 --animationIndex;
                 continue;
@@ -235,29 +234,29 @@ namespace Plasmium {
             double timeLerp = (currentTime - fromKey.time) / 
                 (toKey.time - fromKey.time);
 
-            vec3 newPosition = (toKey.postion - fromKey.postion)
+            vec3 newPosition = (toKey.position - fromKey.position)
                 * (float)timeLerp 
-                + fromKey.postion;
+                + fromKey.position;
 
             float xAngle = FindTurningAngle(fromKey.rotation.x, toKey.rotation.x);
             float yAngle = FindTurningAngle(fromKey.rotation.y, toKey.rotation.y);
             float zAngle = FindTurningAngle(fromKey.rotation.z, toKey.rotation.z);
             vec3 newRotation = (vec3(xAngle, yAngle, zAngle)) * (float)timeLerp + fromKey.rotation;
 
-            transform.SetPosition(newPosition);
-            transform.SetRotation(newRotation);
+            Core::GetInstance().PostEvent(ChangeTransformEvent(
+                animation.params.entityId,
+                ChangeTransformPosition | ChangeTransformRotation,
+                vec3(),
+                newPosition,
+                newRotation,
+                vec3()));
+
+            animation.lastUpdateTime = currentTime;
         }
     }
 
     void AnimationManager::StopAll()
     {
-        for (uint32 animationIndex = 0; animationIndex < animations.Size(); ++animationIndex) {
-            auto& animation = animations[animationIndex];
-            auto& transform = *Core::GetInstance()
-                .GetEntityManager()
-                .GetTransform(animation.entityId);
-            transform.SetAnimating(false);
-        }
         animations.Clear();
     }
 }

@@ -10,7 +10,6 @@ namespace Plasmium {
         vec3 position;
         vec3 rotation;
         vec3 scale;
-        bool animating;
 
     public:
         TransformComponent(const ComponentCreationArgs& args, vec3 logicalPosition, vec3 position, vec3 rotation, vec3 scale) :
@@ -18,20 +17,17 @@ namespace Plasmium {
             logicalPosition(logicalPosition),
             position(position), 
             rotation(rotation),
-            scale(scale),
-            animating(false)
+            scale(scale)
         { }
-        const vec3& GetLogicalPosition() { return logicalPosition; }
-        const vec3& GetPosition() { return position; }
-        const vec3& GetRotation() { return rotation; }
-        const vec3& GetScale() { return scale; }
-        const bool GetAnimating() { return animating; }
+        const vec3& GetLogicalPosition() const { return logicalPosition; }
+        const vec3& GetPosition() const { return position; }
+        const vec3& GetRotation() const { return rotation; }
+        const vec3& GetScale() const { return scale; }
 
         void SetLogicalPosition(const vec3& newPosition) { logicalPosition = newPosition; }
         void SetPosition(const vec3& newPosition) { position = newPosition; }
         void SetRotation(const vec3& newRotation) { rotation = newRotation; }
         void SetScale(const vec3& newScale) { scale = newScale; }
-        void SetAnimating(bool newAnimating) { animating = newAnimating; }
 
         void AddPosition(const vec3& deltaPosition) { position += deltaPosition; }
         void AddRotation(const vec3& deltaRotation) { rotation += deltaRotation; }
