@@ -28,7 +28,8 @@ namespace Plasmium
         entityManager.RegisterComponentManager(ComponentType::Transform, &entityManager);
         entityManager.RegisterComponentManager(ComponentType::PlayerController, &gameplayManager);
         entityManager.RegisterComponentManager(ComponentType::MonsterController, &gameplayManager);
-        entityManager.RegisterComponentManager(ComponentType::CombatComponent, &gameplayManager);
+        entityManager.RegisterComponentManager(ComponentType::Combat, &gameplayManager);
+        entityManager.RegisterComponentManager(ComponentType::Name, &gameplayManager);
 
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
         gameplayManager.LoadLevelFile(levelFile);
@@ -76,5 +77,21 @@ namespace Plasmium
 
     void Core::ProcessEvent(const GenericEvent& event)
     {
+        if ((EventType)event.index() == EventType::Input) {
+            auto& inputEvent = std::get<InputEvent>(event);
+
+            if (inputEvent.GetKeyDown(InputKey::F9)) {
+                while (eventQueue.size() > 1) {
+                    eventQueue.pop();
+                }
+                deferredEvents.Clear();
+
+                // Tear down immediately in a safe order
+                entityManager.DeleteAllEntities();
+                renderer.Release();
+                renderer.Initialize();
+                gameplayManager.ReloadCurrentLevel();
+            }
+        }
     }
 }

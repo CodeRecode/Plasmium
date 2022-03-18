@@ -34,6 +34,7 @@ namespace Plasmium {
         Entity* CreateEntity();
         Entity* GetEntity(EntityId id);
         void DeleteEntity(EntityId id);
+        void DeleteAllEntities();
 
         void RegisterComponentManager(ComponentType type, ComponentManager* manager);
 

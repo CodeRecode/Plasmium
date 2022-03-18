@@ -141,6 +141,12 @@
     <ClCompile Include="..\Source\Engine\MonsterControllerComponent.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Engine\PlasString.cpp">
+      <Filter>DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\GameplayEventLog.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Core.h">
@@ -295,6 +301,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\CombatComponent.h">
       <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\NameComponent.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\GameplayEventLog.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\PlasString.h">
+      <Filter>DataStructures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 #include "Event.h"
 #include "Level.h"
 #include "MonsterControllerComponent.h"
+#include "NameComponent.h"
 #include "PlayerControllerComponent.h"
 
 namespace Plasmium {
@@ -14,9 +15,11 @@ namespace Plasmium {
         Handler<EntityId, PlayerControllerComponent> playerControllerComponents;
         Handler<EntityId, MonsterControllerComponent> monsterControllerComponents;
         Handler<EntityId, CombatComponent> combatComponents;
+        Handler<EntityId, NameComponent> nameComponents;
 
     public:
         void LoadLevelFile(FileResource levelFile);
+        void ReloadCurrentLevel();
         void ProcessEvent(const GenericEvent& event) override;
 
         bool IsWalkable(vec3 logicalPostion) const { return currentLevel->IsWalkable(logicalPostion); }
@@ -28,6 +31,8 @@ namespace Plasmium {
         void CreateComponent(const ComponentCreationArgs& creationArgs, 
             float health, 
             float damage) override;
+        void CreateComponent(const ComponentCreationArgs& creationArgs,
+            const char* name) override;
         void PreDeleteComponent(EntityId id, ComponentType type) override;
         void DeleteComponent(EntityId id, ComponentType type) override;
     };

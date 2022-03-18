@@ -12,7 +12,7 @@ namespace Plasmium
     {
         HRESULT result;
         result = D3DX11CreateShaderResourceViewFromFile(device, 
-            file.GetFileName().c_str(),
+            file.GetFileName(),
             nullptr,
             nullptr,
             &texture,

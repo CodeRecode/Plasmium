@@ -1,22 +1,32 @@
 #include "FileResource.h"
+#include "HashTable.h"
 
 namespace Plasmium {
 
-
-    FileResource::FileResource(const char* file)
+    FileExentionType FileResource::GetFileExtensionType() const
     {
-        strcpy_s(this->file, file);
-        size = strlen(this->file);
-        CreateId();
-    }
+        const char* fileStr = file.Get();
 
-    // https://stackoverflow.com/questions/8317508/hash-function-for-a-string
-    void FileResource::CreateId() {
-        uint32 hash = 37, index = 0;
-        while (index < size) {
-            hash = (hash * 54059) ^ (file[index] * 76963);
-            ++index;
+        const char* startIndex = "";
+        for (int32 index = file.Size() - 1; index >= 0; --index) {
+            if (fileStr[index] == '.') {
+                startIndex = &fileStr[index + 1];
+                break;
+            }
         }
-        id = hash;
+        if (strstr(startIndex, "lvl")) {
+            return FileExentionType::Level;
+        }
+        else if (strstr(startIndex, "ini")) {
+            return FileExentionType::Config;
+        }
+        else if (strstr(startIndex, "fbx")) {
+            return FileExentionType::FBX;
+        }
+        else if (strstr(startIndex, "obj")) {
+            return FileExentionType::OBJ;
+        }
+
+        return FileExentionType::Unknown;
     }
 }

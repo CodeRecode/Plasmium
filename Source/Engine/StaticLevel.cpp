@@ -14,12 +14,8 @@ namespace Plasmium {
 
     void StaticLevel::Unload()
     {
-        // Tear down immediately
-        auto& entityManager = Core::GetInstance().GetEntityManager();
-        for (EntityId entity : entities) {
-            entityManager.DeleteEntity(entity);
-        }
         entities.Clear();
+        map.Clear();
     }
 
     void StaticLevel::SerializeJSON(std::ofstream& output)
@@ -97,6 +93,12 @@ namespace Plasmium {
                     FileResource(modelFile));
             }
 
+            if (gameObject.HasMember("name")) {
+                entityManager.AddComponent<const char *>(entity,
+                    ComponentType::Name,
+                    gameObject["name"].GetString());
+            }
+
             if (gameObject.HasMember("player_controller")) {
                 entityManager.AddComponent(entity,
                     ComponentType::PlayerController);
@@ -112,7 +114,7 @@ namespace Plasmium {
                 float health = combatData["health"].GetFloat();
                 float damage = combatData["damage"].GetFloat();
                 entityManager.AddComponent(entity,
-                    ComponentType::CombatComponent, health, damage);
+                    ComponentType::Combat, health, damage);
             }
 
             vec3 logicalPosition = GetVecFromArray(gameObject["logical_position"].GetArray());

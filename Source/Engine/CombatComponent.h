@@ -8,6 +8,7 @@ namespace Plasmium {
         float currentHealth;
 
         float damage;
+
     public:
         CombatComponent(const ComponentCreationArgs& args, float health, float damage) : 
             Component(args),

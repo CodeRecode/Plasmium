@@ -21,6 +21,7 @@ namespace Plasmium
         PerformanceCounters,
         EntityCreated,
         DestroyEntity,
+        GameplayEventLog,
         EventTypeCount
     };
 
@@ -163,6 +164,14 @@ namespace Plasmium
         {}
     };
 
+    struct GameplayEventLogEvent : BaseEvent {
+        StringId stringId;
+        GameplayEventLogEvent(StringId stringId) :
+            BaseEvent(EventType::GameplayEventLog),
+            stringId(stringId)
+        {}
+    };
+
     // Order should be sync'd with EventType
     typedef std::variant<InputEvent,
         MoveCameraEvent,
@@ -174,7 +183,8 @@ namespace Plasmium
         TextureLoadedEvent,
         PerformanceCountersEvent,
         EntityCreatedEvent,
-        DestroyEntityEvent> GenericEvent;
+        DestroyEntityEvent,
+        GameplayEventLogEvent> GenericEvent;
 
     struct DeferredEvent {
         GenericEvent event;

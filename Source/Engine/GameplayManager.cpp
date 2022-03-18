@@ -10,17 +10,17 @@ namespace Plasmium {
         currentLevel->Load();
     }
 
+    void GameplayManager::ReloadCurrentLevel() {
+        currentLevel->Unload();
+        currentLevel->Load();
+    }
+
     void GameplayManager::ProcessEvent(const GenericEvent& event)
     {
         if ((EventType)event.index() == EventType::Input) {
             auto& inputEvent = std::get<InputEvent>(event);
             for (auto& pcc : playerControllerComponents.GetObjectsReference()) {
                 pcc.ProcessInput(inputEvent);
-            }
-
-            if (inputEvent.GetKeyDown(InputKey::F9)) {
-                currentLevel->Unload();
-                currentLevel->Load();
             }
         }
         if ((EventType)event.index() == EventType::EntityCreated) {
@@ -38,15 +38,33 @@ namespace Plasmium {
         }
         if ((EventType)event.index() == EventType::AttackEntity) {
             auto& attackEvent = std::get<AttackEntityEvent>(event);
-            auto& attacker = *combatComponents.GetObjectPtr(attackEvent.attackerId);
-            auto& defender = *combatComponents.GetObjectPtr(attackEvent.defenderId);
+            auto& attackerCombat = *combatComponents.GetObjectPtr(attackEvent.attackerId);
+            auto& defenderCombat = *combatComponents.GetObjectPtr(attackEvent.defenderId);
+            auto& attackerName = *nameComponents.GetObjectPtr(attackEvent.attackerId);
+            auto& defenderName = *nameComponents.GetObjectPtr(attackEvent.defenderId);
 
-            defender.DoDamage(attacker.GetDamage());
+            defenderCombat.DoDamage(attackerCombat.GetDamage());
 
-            if (defender.GetHealth() <= 0.0f) {
+            char buffer[256];
+            sprintf_s(buffer, "%s attacked %s for %i damage!",
+                attackerName.GetName(),
+                defenderName.GetName(),
+                (int32)attackerCombat.GetDamage());
+
+            auto& resourceManager = Core::GetInstance().GetResourceManager();
+            StringId attackString = resourceManager.CreateString(buffer);
+            Core::GetInstance().PostEvent(GameplayEventLogEvent(attackString));
+
+            if (defenderCombat.GetHealth() <= 0.0f) {
                 Core::GetInstance().PostEvent(EntityKilledEvent(
                     attackEvent.attackerId,
                     attackEvent.defenderId));
+
+                sprintf_s(buffer, "%s slew %s!",
+                    attackerName.GetName(),
+                    defenderName.GetName());
+                StringId killString = resourceManager.CreateString(buffer);
+                Core::GetInstance().PostEvent(GameplayEventLogEvent(killString));
             }
         }
     }
@@ -68,9 +86,16 @@ namespace Plasmium {
     void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs,
         float health,
         float damage) {
-        assert(creationArgs.type == ComponentType::CombatComponent);
+        assert(creationArgs.type == ComponentType::Combat);
         combatComponents.EmplaceObject(creationArgs.parent,
             CombatComponent(creationArgs, health, damage));
+    }
+
+    void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs,
+        const char* name) {
+        assert(creationArgs.type == ComponentType::Name);
+        nameComponents.EmplaceObject(creationArgs.parent,
+            NameComponent(creationArgs, name));
     }
 
     void GameplayManager::PreDeleteComponent(EntityId id, ComponentType type)
@@ -84,15 +109,19 @@ namespace Plasmium {
     {
         assert(type == ComponentType::PlayerController
             || type == ComponentType::MonsterController
-            || type == ComponentType::CombatComponent);
+            || type == ComponentType::Combat
+            || type == ComponentType::Name);
         if (type == ComponentType::PlayerController) {
             playerControllerComponents.DeleteObject(id);
         }
         else if (type == ComponentType::MonsterController) {
             monsterControllerComponents.DeleteObject(id);
         }
-        else if (type == ComponentType::CombatComponent) {
+        else if (type == ComponentType::Combat) {
             combatComponents.DeleteObject(id);
+        }
+        else if (type == ComponentType::Name) {
+            nameComponents.DeleteObject(id);
         }
     }
 }

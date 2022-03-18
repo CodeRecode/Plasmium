@@ -20,6 +20,9 @@ namespace Plasmium {
 
     void EntityManager::DeleteEntity(EntityId id)
     {
+        if (!entities.Contains(id)) {
+            return;
+        }
         auto& entity = *GetEntity(id);
         auto& componentTypes = entity.GetComponentTypes();
 
@@ -31,6 +34,15 @@ namespace Plasmium {
             componentManagers[componentType]->DeleteComponent(id, (ComponentType)componentType);
         }
         entities.DeleteObject(id);
+    }
+
+    void EntityManager::DeleteAllEntities()
+    {
+        animationManager.StopAll();
+        while (entities.GetObjectsReference().Size() > 0) {
+            auto& entity = entities.GetObjectsReference()[entities.GetObjectsReference().Size() - 1];
+            DeleteEntity(entity.GetId());
+        }
     }
 
     void EntityManager::RegisterComponentManager(ComponentType type, ComponentManager* manager)

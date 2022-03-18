@@ -31,7 +31,7 @@ namespace Plasmium {
             DWRITE_FONT_WEIGHT_NORMAL,
             DWRITE_FONT_STYLE_NORMAL,
             DWRITE_FONT_STRETCH_NORMAL,
-            20.0f,
+            16.0f,
             L"en-us",
             &textFormat
         );
@@ -73,6 +73,32 @@ namespace Plasmium {
             Window::WriteError("Could not create ID2D1SolidColorBrush");
             return;
         }
+    }
+
+    void FontManager::Draw(const std::deque<Text2D>& texts)
+    {
+        const auto& window = Core::GetInstance().GetWindow();
+        renderTarget->BeginDraw();
+
+        for (const auto& text : texts) {
+            const rect& area = text.GetDrawArea();
+            D2D1_RECT_F layoutRect = D2D1::RectF(
+                area.x,
+                area.y,
+                area.x + area.width,
+                area.y + area.height);
+
+            fontBrush->SetColor((const D3DCOLORVALUE*)&text.GetDrawColor());
+            renderTarget->DrawText(
+                text.GetString(),
+                text.GetLength(),
+                textFormat,
+                layoutRect,
+                fontBrush
+            );
+        }
+
+        renderTarget->EndDraw();
     }
 
     void FontManager::Draw(const Array<Text2D>& texts)

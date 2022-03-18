@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "ComponentManager.h"
 #include "FontManager.h"
+#include "GameplayEventLog.h"
 #include "ModelComponent.h"
 #include "Shader.h"
 #include "Sprite.h"
@@ -28,10 +29,11 @@ namespace Plasmium
         SpriteShader spriteShader;
         TextureShader textureShader;
 
+        GameplayEventLog gameplayEventLog;
         FontManager fontManager;
         Handler<EntityId, ModelComponent> modelComponents;
         Array<Sprite> sprites;
-        Array<Text2D> texts;
+        Array<Text2D> debugTexts;
         
         vec4 clearColor = vec4(0.05f, 0.05f, 0.05f, 1.0f);
         float screenNear = 0.1f;
@@ -61,6 +63,8 @@ namespace Plasmium
 
     public:
         static const D3D_FEATURE_LEVEL FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+
+        Renderer();
 
         void Initialize();
         void Update(milliseconds deltaTime) override;

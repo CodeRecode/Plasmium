@@ -9,6 +9,10 @@
 
 namespace Plasmium
 {
+    Renderer::Renderer()
+    {
+    }
+
     void Renderer::Initialize()
     {
         HRESULT result;
@@ -65,18 +69,18 @@ namespace Plasmium
             texture.Initialize(device);
         }
 
-        sprites.Push(Sprite(FileResource("Assets\\gobling.jpg"), rect(10, 10, 50, 50)));
+        sprites.Push(Sprite(FileResource("Assets\\EventLog.png"), rect(10, window.GetHeight() - 110.0f, 550, 100)));
         for (auto& sprite : sprites) {
             sprite.Initialize(device, deviceContext);
         }
 
         // Add counter debug text to slot 0 and 1
-        if (texts.Size() == 0) {
+        if (debugTexts.Size() == 0) {
             vec4 drawColor(0.0f, 1.0f, 0.0f, 0.9f);
             rect drawArea((float)window.GetWidth() - 200, 10, 200, 100);
-            texts.Push(Text2D("Debug Counter", drawArea, drawColor));
+            debugTexts.Push(Text2D("Debug Counter", drawArea, drawColor));
             drawArea.top += 20;
-            texts.Push(Text2D("Debug Counter", drawArea, drawColor));
+            debugTexts.Push(Text2D("Debug Counter", drawArea, drawColor));
         }
     }
 
@@ -116,7 +120,8 @@ namespace Plasmium
             sprite.Draw(deviceContext);
         }
 
-        fontManager.Draw(texts);
+        fontManager.Draw(debugTexts);
+        fontManager.Draw(gameplayEventLog.GetLogs());
 
         const auto& window = Core::GetInstance().GetWindow();
         if (window.GetVsyncEnabled()) {
@@ -129,6 +134,7 @@ namespace Plasmium
 
     void Renderer::Release()
     {
+        gameplayEventLog.ClearLog();
         spriteShader.Release();
         textureShader.Release();
         materialShader.Release();
@@ -201,22 +207,19 @@ namespace Plasmium
             auto& texture = resourceManager.GetTextureResource(textureEvent.file);
             texture.Initialize(device);
         }
-        if ((EventType)event.index() == EventType::Input) {
-            auto& inputEvent = std::get<InputEvent>(event);
-            if (inputEvent.GetKeyDown(InputKey::F9)) {
-                Release();
-                Initialize();
-            }
-        }
         if ((EventType)event.index() == EventType::PerformanceCounters) {
             auto& performanceCountersEvent = 
                 std::get<PerformanceCountersEvent>(event);
             char buffer[256];
             sprintf_s(buffer, "FPS: %.2f", performanceCountersEvent.fps);
-            texts[0].ChangeString(buffer);
+            debugTexts[0].ChangeString(buffer);
 
             sprintf_s(buffer, "CPU: %.2f%%", performanceCountersEvent.cpuPercent);
-            texts[1].ChangeString(buffer);
+            debugTexts[1].ChangeString(buffer);
+        }
+        if ((EventType)event.index() == EventType::GameplayEventLog) {
+            auto& gameplayEventLogEvent = std::get<GameplayEventLogEvent>(event);
+            gameplayEventLog.AddLog(gameplayEventLogEvent.stringId);
         }
     }
 

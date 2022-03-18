@@ -5,36 +5,42 @@
 
 #include "Array.h"
 #include "Vertex.h"
+#include "PlasString.h"
 
 namespace Plasmium
 {
+    enum class FileExentionType {
+        Unknown,
+        Level,
+        Config,
+        FBX,
+        OBJ,
+        FileExentionTypeCount
+    };
     class FileResource {
     private:
-        char file[256];
-        uint32 size;
-        FileId id = 0;
+        PlasString file;
+        FileResource(): file("") {}
 
-        void CreateId();
-
-        FileResource() { }
     public:
-        FileResource(const char* file);
+        FileResource(const char* file) : file(file) {}
 
-        std::string GetFileName() { return file; }
-        FileId GetId() { return id; }
+        const char* GetFileName() const { return file.Get(); }
+        FileExentionType GetFileExtensionType() const;
+        FileId GetId() const { return file.GetId(); }
 
         std::ifstream GetInputStream() {
-            return std::ifstream(file);
+            return std::ifstream(file.Get());
         }
 
         std::ofstream GetOutputStream() {
-            return std::ofstream(file);
+            return std::ofstream(file.Get());
         }
 
-        bool IsNone() const { return id == 0; }
         static const FileResource& None() {
             static FileResource none;
             return none;
         }
+        bool IsNone() const { return GetId() == None().GetId(); }
     };
 }

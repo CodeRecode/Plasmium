@@ -10,6 +10,7 @@ namespace Plasmium {
         Array<Animation> animations;
     public:
         virtual void Update(milliseconds deltaTime) override;
+        void StopAll();
 
         milliseconds CreateAttackAnimation(EntityId entityId, vec3 targetRotation);
         milliseconds CreateBumpAnimation(EntityId entityId, vec3 targetRotation);

@@ -14,6 +14,17 @@ inline uint32 HashFunc<uint32>(uint32 value) {
     return value;
 }
 
+// https://stackoverflow.com/questions/8317508/hash-function-for-a-string
+template <>
+inline uint32 HashFunc<const char *>(const char* value) {
+    uint32 hash = 37, index = 0;
+    while (value[index] != 0) {
+        hash = (hash * 54059) ^ (value[index] * 76963);
+        ++index;
+    }
+    return hash;
+}
+
 template<typename K, typename V>
 struct HashNode {
     K key;
@@ -35,8 +46,8 @@ private:
 
     void Realloc();
     HashNode<K, V>* GetNextEmpty();
-    uint32 GetBucket(K key);
-    HashNode<K, V>* GetNode(K key);
+    uint32 GetBucket(K key) const;
+    HashNode<K, V>* GetNode(K key) const;
 
 public:
     HashTable() : m_size(5) { 
@@ -48,7 +59,7 @@ public:
 
     uint32 Size() const { return m_size; }
 
-    bool Contains(K key);
+    bool Contains(K key) const;
     V& operator[](K key);
     void Delete(K key);
 
@@ -111,12 +122,12 @@ HashNode<K, V>* HashTable<K, V>::GetNextEmpty() {
 }
 
 template <typename K, typename V>
-uint32 HashTable<K, V>::GetBucket(K key) {
+uint32 HashTable<K, V>::GetBucket(K key) const {
     return HashFunc(key) % m_bucketCount;
 }
 
 template <typename K, typename V>
-HashNode<K, V>* HashTable<K, V>::GetNode(K key) {
+HashNode<K, V>* HashTable<K, V>::GetNode(K key) const {
     uint32 bucketIndex = GetBucket(key);
     auto node = m_buckets[bucketIndex];
     while (node != nullptr && node->key != key) {
@@ -127,7 +138,7 @@ HashNode<K, V>* HashTable<K, V>::GetNode(K key) {
 }
 
 template <typename K, typename V>
-bool HashTable<K, V>::Contains(K key) {
+bool HashTable<K, V>::Contains(K key) const {
     return GetNode(key) != nullptr;
 }
 

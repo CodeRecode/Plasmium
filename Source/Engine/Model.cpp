@@ -14,18 +14,17 @@ namespace Plasmium
     {
         HRESULT result;
 
-        auto fileName = file.GetFileName();
-        auto extension = fileName.substr(fileName.find('.') + 1, fileName.size() - fileName.find('.') - 1);
+        auto extensionType = file.GetFileExtensionType();
         ModelLoadResult loadResult;
-        if (extension == "obj") {
+        if (extensionType == FileExentionType::OBJ) {
             loadResult = GetOBJ();
         }
-        else if (extension == "fbx") {
+        else if (extensionType == FileExentionType::FBX) {
             loadResult = GetFBX();
         }
         else {
             std::string error = "Unrecognized model extension: ";
-            Window::WriteError(error + extension);
+            Window::WriteError(error + std::to_string((int32)extensionType));
             return false;
         }
 
@@ -202,7 +201,7 @@ namespace Plasmium
     {
         ModelLoadResult result;
         FILE* input;
-        fopen_s(&input, file.GetFileName().c_str(), "rb");
+        fopen_s(&input, file.GetFileName(), "rb");
         if (input == nullptr) {
             std::string error = "Failed to open file for: ";
             Window::WriteError(error + GetFileName());

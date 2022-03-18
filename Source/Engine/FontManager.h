@@ -7,6 +7,7 @@
 #include "Array.h"
 #include "Text2D.h"
 #include "Types.h"
+#include <deque>
 
 namespace Plasmium {
     class FontManager {
@@ -20,6 +21,7 @@ namespace Plasmium {
 
     public:
         void Initialize(ID3D11Device* device, IDXGISwapChain* swapChain);
+        void Draw(const std::deque<Text2D>& texts);
         void Draw(const Array<Text2D>& texts);
         void Release();
     };

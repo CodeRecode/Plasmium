@@ -145,6 +145,7 @@
     <ClCompile Include="..\Source\Engine\ControllerComponent.cpp" />
     <ClCompile Include="..\Source\Engine\EntityManager.cpp" />
     <ClCompile Include="..\Source\Engine\FileResource.cpp" />
+    <ClCompile Include="..\Source\Engine\GameplayEventLog.cpp" />
     <ClCompile Include="..\Source\Engine\Level.cpp" />
     <ClCompile Include="..\Source\Engine\GameplayManager.cpp" />
     <ClCompile Include="..\Source\Engine\mat4.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="..\Source\Engine\ModelComponent.cpp" />
     <ClCompile Include="..\Source\Engine\MonsterControllerComponent.cpp" />
     <ClCompile Include="..\Source\Engine\PerfMonitor.cpp" />
+    <ClCompile Include="..\Source\Engine\PlasString.cpp" />
     <ClCompile Include="..\Source\Engine\PlayerControllerComponent.cpp" />
     <ClCompile Include="..\Source\Engine\rect.cpp" />
     <ClCompile Include="..\Source\Engine\Renderer.cpp" />
@@ -178,8 +180,10 @@
     <ClInclude Include="..\Source\Engine\Animation.h" />
     <ClInclude Include="..\Source\Engine\AnimationManager.h" />
     <ClInclude Include="..\Source\Engine\CombatComponent.h" />
+    <ClInclude Include="..\Source\Engine\GameplayEventLog.h" />
     <ClInclude Include="..\Source\Engine\FontManager.h" />
     <ClInclude Include="..\Source\Engine\MonsterControllerComponent.h" />
+    <ClInclude Include="..\Source\Engine\NameComponent.h" />
     <ClInclude Include="..\Source\Engine\PerfMonitor.h" />
     <ClInclude Include="..\Source\Engine\Plasmath.h" />
     <ClInclude Include="..\Source\Engine\Array.h" />
@@ -203,6 +207,7 @@
     <ClInclude Include="..\Source\Engine\Model.h" />
     <ClInclude Include="..\Source\Engine\ModelComponent.h" />
     <ClInclude Include="..\Source\Engine\Component.h" />
+    <ClInclude Include="..\Source\Engine\PlasString.h" />
     <ClInclude Include="..\Source\Engine\PlayerControllerComponent.h" />
     <ClInclude Include="..\Source\Engine\rect.h" />
     <ClInclude Include="..\Source\Engine\RenderUtils.h" />

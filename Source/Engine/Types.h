@@ -18,6 +18,7 @@ typedef unsigned int       EntityId;
 
 typedef unsigned int       FileId;
 typedef unsigned int       ResourceId;
+typedef unsigned int       StringId;
 
 enum class Direction {
     N = 0,

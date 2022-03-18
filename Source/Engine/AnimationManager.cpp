@@ -29,20 +29,20 @@ namespace Plasmium {
         rotateKey.rotation = targetRotation;
         attackAnimation.keys.Push(rotateKey);
 
-        vec3 bumpDistance = vec3(0.0f, 0.0f, 1.0f);
-        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation).Transpose();
-        vec3 bumpDelta = rotationMatrix * bumpDistance;
-        vec3 bumpPosition = transform.GetPosition() + bumpDelta;
+        vec3 attackDistance = vec3(0.0f, 0.0f, 0.8f);
+        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation * -1.0);
+        vec3 attackDelta = rotationMatrix * attackDistance;
+        vec3 attackPosition = transform.GetPosition() + attackDelta;
 
         AnimationKey moveForwardKey;
         moveForwardKey.time = attackAnimation.keys.Back().time + 50;
-        moveForwardKey.postion = bumpPosition;
+        moveForwardKey.postion = attackPosition;
         moveForwardKey.rotation = targetRotation;
         attackAnimation.keys.Push(moveForwardKey);
 
         AnimationKey stationaryKey;
         stationaryKey.time = attackAnimation.keys.Back().time + 100;
-        stationaryKey.postion = bumpPosition;
+        stationaryKey.postion = attackPosition;
         stationaryKey.rotation = targetRotation;
         attackAnimation.keys.Push(stationaryKey);
 
@@ -83,7 +83,7 @@ namespace Plasmium {
         bumpAnimation.keys.Push(rotateKey);
 
         vec3 bumpDistance = vec3(0.0f, 0.0f, 1.0f);
-        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation).Transpose();
+        mat4 rotationMatrix = mat4(1.0f).Rotate(targetRotation * -1.0);
         vec3 bumpDelta = rotationMatrix * bumpDistance;
         vec3 bumpPosition = transform.GetPosition() + bumpDelta;
 
@@ -122,7 +122,9 @@ namespace Plasmium {
 
         vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
-        vec3 targetRotation = transform.GetRotation() + vec3(-90.0f, 0.0f, 0.0f);
+        vec3 rotationAxis = vec3(90.0f, 0.0f, 0.0f);
+
+        vec3 targetRotation = transform.GetRotation() + rotationAxis;
         vec3 targetPosition = transform.GetPosition() + vec3(0.0f, 0.5f, 0.0f);
 
         Animation deathAnimation;
@@ -245,5 +247,17 @@ namespace Plasmium {
             transform.SetPosition(newPosition);
             transform.SetRotation(newRotation);
         }
+    }
+
+    void AnimationManager::StopAll()
+    {
+        for (uint32 animationIndex = 0; animationIndex < animations.Size(); ++animationIndex) {
+            auto& animation = animations[animationIndex];
+            auto& transform = *Core::GetInstance()
+                .GetEntityManager()
+                .GetTransform(animation.entityId);
+            transform.SetAnimating(false);
+        }
+        animations.Clear();
     }
 }
