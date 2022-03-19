@@ -3,16 +3,17 @@
 #include "PlasString.h"
 
 namespace Plasmium {
-    class NameComponent : public Component {
+    class NameComponent : public Component<NameComponent> {
     private:
         PlasString name;
 
     public:
-        NameComponent(const ComponentCreationArgs& args, const char* name) :
-            Component(args),
+        NameComponent(EntityId entityId, const char* name) :
+            Component(entityId),
             name(name)
         {
         }
         const char* GetName() const { return name.Get(); }
     };
+    ComponentType NameComponent::type = ComponentType::Name;
 }

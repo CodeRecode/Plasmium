@@ -1,7 +1,11 @@
 #include "GameplayManager.h"
 
 #include "Core.h"
-#include "EntityManager.h"
+#include "CombatComponent.h"
+#include "PlayerControllerComponent.h"
+#include "MonsterControllerComponent.h"
+#include "NameComponent.h"
+#include "TransformComponent.h"
 #include "ResourceManager.h"
 
 namespace Plasmium {
@@ -21,21 +25,29 @@ namespace Plasmium {
     {
         if ((EventType)event.index() == EventType::Input) {
             auto& inputEvent = std::get<InputEvent>(event);
-            for (auto& pcc : playerControllerComponents.GetObjectsReference()) {
+            for (auto& pcc : Core::GetInstance().GetComponentArray<PlayerControllerComponent>()) {
                 pcc.ProcessInput(inputEvent);
             }
         }
         if ((EventType)event.index() == EventType::EntityCreated) {
             auto& entityCreated = std::get<EntityCreatedEvent>(event);
             EntityId id = entityCreated.entityId;
-            if (playerControllerComponents.Contains(id)
-                || monsterControllerComponents.Contains(id)) {
+            bool isPlayer = Core::GetInstance().GetComponent<PlayerControllerComponent>(id) != nullptr;
+            bool isMonster = Core::GetInstance().GetComponent<MonsterControllerComponent>(id) != nullptr;
+
+            auto* combat = Core::GetInstance().GetComponent<CombatComponent>(id);
+
+            if (isPlayer || isMonster) {
                 currentLevel->SetCreature(id, entityCreated.logicalPosition);
+            }
+            if (isPlayer) {
+                ruleManager.SetPlayer(id);
+                combat->SetFaction(FactionType::Player);
             }
         }
         if ((EventType)event.index() == EventType::TryMoveEntity) {
             auto& entityMove = std::get<TryMoveEntityEvent>(event);
-            auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(entityMove.entityId);
+            auto& transform = *Core::GetInstance().GetComponent<TransformComponent>(entityMove.entityId);
             vec3 targetRotation = vec3(0.0f, (int32)entityMove.direction * 45.0f, 0.0f);
 
             if (!ruleManager.EntityCanAct(entityMove.entityId)) {
@@ -52,7 +64,7 @@ namespace Plasmium {
             vec3 logicalDestination = transform.GetLogicalPosition() + entityMove.relativeLogicalPosition;
             if (HasCreature(logicalDestination)) {
                 EntityId creature = GetCreature(logicalDestination);
-                auto* combatComponent = combatComponents.GetObjectPtr(creature);
+                auto* combatComponent = Core::GetInstance().GetComponent<CombatComponent>(creature);
                 if (combatComponent != nullptr) {
                     animationParams.type = AnimationType::Attack;
                     animationParams.targetId = creature;
@@ -101,10 +113,10 @@ namespace Plasmium {
         }
         if ((EventType)event.index() == EventType::AttackEntity) {
             auto& attackEvent = std::get<AttackEntityEvent>(event);
-            auto* attackerCombat = combatComponents.GetObjectPtr(attackEvent.attackerId);
-            auto* defenderCombat = combatComponents.GetObjectPtr(attackEvent.defenderId);
-            auto& attackerName = *nameComponents.GetObjectPtr(attackEvent.attackerId);
-            auto& defenderName = *nameComponents.GetObjectPtr(attackEvent.defenderId);
+            auto* attackerCombat = Core::GetInstance().GetComponent<CombatComponent>(attackEvent.attackerId);
+            auto* defenderCombat = Core::GetInstance().GetComponent<CombatComponent>(attackEvent.defenderId);
+            auto& attackerName = *Core::GetInstance().GetComponent<NameComponent>(attackEvent.attackerId);
+            auto& defenderName = *Core::GetInstance().GetComponent<NameComponent>(attackEvent.defenderId);
 
             if (attackerCombat == nullptr || defenderCombat == nullptr) {
                 // Participant may have died
@@ -134,7 +146,7 @@ namespace Plasmium {
                 StringId killString = resourceManager.CreateString(buffer);
                 Core::GetInstance().PostEvent(GameplayEventLogEvent(killString));
 
-                auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(
+                auto& transform = *Core::GetInstance().GetComponent<TransformComponent>(
                     attackEvent.defenderId);
 
                 AnimateEntityParameters animationParams;
@@ -149,63 +161,6 @@ namespace Plasmium {
                 Core::GetInstance().PostEvent(DestroyComponentEvent(attackEvent.defenderId, 
                     ComponentType::Combat));
             }
-        }
-    }
-
-    void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs)
-    {
-        assert(creationArgs.type == ComponentType::PlayerController || 
-            creationArgs.type == ComponentType::MonsterController);
-        if (creationArgs.type == ComponentType::PlayerController) {
-            playerControllerComponents.EmplaceObject(creationArgs.parent,
-                PlayerControllerComponent(creationArgs));
-            ruleManager.SetPlayer(creationArgs.parent);
-        }
-        else if (creationArgs.type == ComponentType::MonsterController) {
-            monsterControllerComponents.EmplaceObject(creationArgs.parent,
-                MonsterControllerComponent(creationArgs));
-        }
-    }
-
-    void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs,
-        float health,
-        float damage) {
-        assert(creationArgs.type == ComponentType::Combat);
-        combatComponents.EmplaceObject(creationArgs.parent,
-            CombatComponent(creationArgs, health, damage));
-    }
-
-    void GameplayManager::CreateComponent(const ComponentCreationArgs& creationArgs,
-        const char* name) {
-        assert(creationArgs.type == ComponentType::Name);
-        nameComponents.EmplaceObject(creationArgs.parent,
-            NameComponent(creationArgs, name));
-    }
-
-    void GameplayManager::PreDeleteComponent(EntityId id, ComponentType type)
-    {
-        auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(id);
-        vec3 logicalPosition = transform.GetLogicalPosition();
-        currentLevel->ClearCreature(logicalPosition);
-    }
-
-    void GameplayManager::DeleteComponent(EntityId id, ComponentType type)
-    {
-        assert(type == ComponentType::PlayerController
-            || type == ComponentType::MonsterController
-            || type == ComponentType::Combat
-            || type == ComponentType::Name);
-        if (type == ComponentType::PlayerController) {
-            playerControllerComponents.DeleteObject(id);
-        }
-        else if (type == ComponentType::MonsterController) {
-            monsterControllerComponents.DeleteObject(id);
-        }
-        else if (type == ComponentType::Combat) {
-            combatComponents.DeleteObject(id);
-        }
-        else if (type == ComponentType::Name) {
-            nameComponents.DeleteObject(id);
         }
     }
 }

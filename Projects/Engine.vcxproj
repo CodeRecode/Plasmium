@@ -185,6 +185,7 @@
     <ClInclude Include="..\Source\Engine\CombatComponent.h" />
     <ClInclude Include="..\Source\Engine\GameplayEventLog.h" />
     <ClInclude Include="..\Source\Engine\FontManager.h" />
+    <ClInclude Include="..\Source\Engine\GameplayTypes.h" />
     <ClInclude Include="..\Source\Engine\HashFunctions.h" />
     <ClInclude Include="..\Source\Engine\Keybinds.h" />
     <ClInclude Include="..\Source\Engine\MonsterControllerComponent.h" />
@@ -195,7 +196,6 @@
     <ClInclude Include="..\Source\Engine\Camera.h" />
     <ClInclude Include="..\Source\Engine\CameraManager.h" />
     <ClInclude Include="..\Source\Engine\MaterialShader.h" />
-    <ClInclude Include="..\Source\Engine\ComponentManager.h" />
     <ClInclude Include="..\Source\Engine\ControllerComponent.h" />
     <ClInclude Include="..\Source\Engine\Core.h" />
     <ClInclude Include="..\Source\Engine\Entity.h" />

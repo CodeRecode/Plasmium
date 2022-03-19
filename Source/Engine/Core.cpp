@@ -36,16 +36,16 @@ namespace Plasmium
             system->Initialize();
         }
 
-        entityManager->RegisterComponentManager(ComponentType::Camera, cameraManager);
-        entityManager->RegisterComponentManager(ComponentType::Combat, gameplayManager);
-        entityManager->RegisterComponentManager(ComponentType::Model, renderer);
-        entityManager->RegisterComponentManager(ComponentType::Name, gameplayManager);
-        entityManager->RegisterComponentManager(ComponentType::MonsterController, gameplayManager);
-        entityManager->RegisterComponentManager(ComponentType::PlayerController, gameplayManager);
-        entityManager->RegisterComponentManager(ComponentType::Transform, entityManager);
-
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
         gameplayManager->LoadLevelFile(levelFile);
+
+        while (!eventQueue.Empty()) {
+            auto event = eventQueue.PopFront();
+            for (CoreSystem* system : coreSystems) {
+                system->ProcessEvent(event);
+            }
+            ProcessEvent(event);
+        }
 
         while (!window->ShouldQuit())
         {

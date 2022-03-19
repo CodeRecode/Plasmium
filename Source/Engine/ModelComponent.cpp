@@ -5,15 +5,15 @@
 
 namespace Plasmium
 {
-    ModelComponent::ModelComponent(const ComponentCreationArgs& args, FileResource modelFile) :
-        Component(args),
+    ModelComponent::ModelComponent(EntityId entityId, FileResource modelFile) :
+        Component(entityId),
         modelFile(modelFile),
         textureFile(FileResource::None())
     {
     }
 
-    ModelComponent::ModelComponent(const ComponentCreationArgs& args, FileResource modelFile, FileResource textureFile) :
-        Component(args),
+    ModelComponent::ModelComponent(EntityId entityId, FileResource modelFile, FileResource textureFile) :
+        Component(entityId),
         modelFile(modelFile),
         textureFile(textureFile)
     {

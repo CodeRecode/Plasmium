@@ -224,9 +224,6 @@
     <ClInclude Include="..\Source\Engine\ModelComponent.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Engine\ComponentManager.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Engine\Plasmath.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -331,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\CameraComponent.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\GameplayTypes.h">
+      <Filter>Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,6 @@ namespace Plasmium {
             logicalMovement.x = -1;
         }
 
-        Core::GetInstance().PostEvent(TryMoveEntityEvent(GetId(), logicalMovement, direction));
+        Core::GetInstance().PostEvent(TryMoveEntityEvent(GetIdInternal(), logicalMovement, direction));
     }
 }

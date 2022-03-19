@@ -41,29 +41,23 @@ namespace Plasmium {
         }
         if ((EventType)event.index() == EventType::MoveCamera) {
             auto& moveCameraEvent = std::get<MoveCameraEvent>(event);
-            currentCamera->SetPosition(moveCameraEvent.position);
-            currentCamera->SetRotation(moveCameraEvent.rotation);
+            //currentCamera->SetPosition(moveCameraEvent.position);
+            //currentCamera->SetRotation(moveCameraEvent.rotation);
+        }
+        if ((EventType)event.index() == EventType::EntityCreated) {
+            auto& entityCreated = std::get<EntityCreatedEvent>(event);
+            auto* camera = Core::GetInstance().
+                GetComponent<CameraComponent>(entityCreated.entityId);
+            if (camera != nullptr) {
+                currentCamera = camera;
+            }
         }
     }
 
     void CameraManager::Update(milliseconds deltaTime) {
-        currentCamera->Update(deltaTime);
-    }
-
-    void CameraManager::CreateComponent(const ComponentCreationArgs& creationArgs,
-        const vec3& postionOffset,
-        const vec3& rotation)
-    {
-        assert(creationArgs.type == ComponentType::Camera);
-        // Assume there's only one
-        currentCamera = cameraComponents.EmplaceObject(creationArgs.parent,
-            CameraComponent(creationArgs, postionOffset, rotation));
-    }
-
-    void CameraManager::DeleteComponent(EntityId id, ComponentType type)
-    {
-        assert(type == ComponentType::Camera);
-        cameraComponents.DeleteObject(id);
+        if (currentCamera != nullptr) {
+            currentCamera->Update(deltaTime);
+        }
     }
 }
 

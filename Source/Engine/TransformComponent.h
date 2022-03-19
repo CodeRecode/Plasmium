@@ -3,7 +3,7 @@
 #include "vec3.h"
 
 namespace Plasmium {
-    class TransformComponent : public Component
+    class TransformComponent : public Component<TransformComponent>
     {
     private:
         vec3 logicalPosition;
@@ -12,8 +12,8 @@ namespace Plasmium {
         vec3 scale;
 
     public:
-        TransformComponent(const ComponentCreationArgs& args, vec3 logicalPosition, vec3 position, vec3 rotation, vec3 scale) :
-            Component(args),
+        TransformComponent(EntityId entityId, vec3 logicalPosition, vec3 position, vec3 rotation, vec3 scale) :
+            Component(entityId),
             logicalPosition(logicalPosition),
             position(position), 
             rotation(rotation),
@@ -41,4 +41,5 @@ namespace Plasmium {
             return result;
         }
     };
+    ComponentType TransformComponent::type = ComponentType::Transform;
 }

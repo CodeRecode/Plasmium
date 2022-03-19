@@ -18,6 +18,28 @@ public:
 
     const HashTable<Handle, uint32>& GetLookupReference() { return lookup; }
     const Array<Object>& GetObjectsReference() { return objects; }
+
+    Handler() {}
+    Handler(const Handler<Handle, Object>& copy) {
+        *this = copy;
+    }
+    Handler(HashTable<Handle, Object>&& copy) {
+        *this = std::move(copy);
+    }
+
+    Handler<Handle, Object>& operator=(const Handler<Handle, Object>& rhs)
+    {
+        lookup = rhs.lookup;
+        objects = rhs.objects;
+        return *this;
+    }
+
+    Handler<Handle, Object>& operator=(Handler<Handle, Object>&& rhs)
+    {
+        lookup = std::move(rhs.lookup);
+        objects = std::move(rhs.objects);
+        return *this;
+    }
 };
 
 template <typename Handle, typename Object>

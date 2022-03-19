@@ -3,13 +3,17 @@
 #include "Event.h"
 
 namespace Plasmium {
-    class PlayerControllerComponent : public ControllerComponent
+    class PlayerControllerComponent :
+        public ControllerComponent,
+        public Component<PlayerControllerComponent>
     {
     private:
+        EntityId GetIdInternal() const override { return GetId(); }
     public:
-        PlayerControllerComponent(const ComponentCreationArgs& args) :
-            ControllerComponent(args)
+        PlayerControllerComponent(EntityId entityId) :
+            Component(entityId)
         {}
         void ProcessInput(const InputEvent& event);
     };
+    ComponentType PlayerControllerComponent::type = ComponentType::PlayerController;
 }

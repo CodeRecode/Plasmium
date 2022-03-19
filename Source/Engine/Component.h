@@ -1,5 +1,6 @@
 #pragma once
 #include "Array.h"
+#include "HashFunctions.h"
 
 namespace Plasmium {
     enum class ComponentType {
@@ -22,16 +23,22 @@ namespace Plasmium {
         {}
     };
 
+    template<class T>
     class Component {
     private:
-        ComponentType type;
-        EntityId parent;
+        static ComponentType type;
+        EntityId entityId;
     public:
-        Component(const ComponentCreationArgs& args) :
-            type(args.type),
-            parent(args.parent)
+        Component(EntityId entityId) :
+            entityId(entityId)
         {}
+        EntityId GetId() const { return entityId; }
 
-        EntityId GetId() const { return parent; }
+        static ComponentType GetType() { return type; }
     };
+}
+
+template <>
+inline uint32 HashFunc<Plasmium::ComponentType>(Plasmium::ComponentType value) {
+    return (uint32)value;
 }

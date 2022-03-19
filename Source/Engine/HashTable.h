@@ -105,12 +105,41 @@ public:
             (*this)[pair.first] = pair.second;
         }
     }
+    HashTable(HashTable<K, V>&& copy) {
+        *this = std::move(copy);
+    }
+    HashTable(const HashTable<K, V>& copy) {
+        *this = copy;
+    }
     ~HashTable() {
         delete[] m_data;
     }
 
-    HashTable(const HashTable<K, V>& copy) = delete;
-    HashTable<K, V>& operator=(const HashTable<K, V>& rhs) = delete;
+    HashTable<K, V>& operator=(const HashTable<K, V>& rhs)
+    {
+        Clear();
+        m_size = rhs.m_bucketCount; // Realloc same size
+        Realloc();
+        for (const auto& pair : rhs) {
+            (*this)[pair.key] = pair.value;
+        }
+        return *this;
+    }
+
+    HashTable<K, V>& operator=(HashTable<K, V>&& rhs)
+    {
+        m_data = rhs.m_data;
+        m_bucketCount = rhs.m_bucketCount;
+        m_size = rhs.m_size;
+        m_buckets = rhs.m_buckets;
+        m_nextEmpty = rhs.m_nextEmpty;
+
+        rhs.m_data = nullptr;
+        rhs.m_buckets = nullptr;
+        rhs.m_nextEmpty = nullptr;
+
+        return *this;
+    }
 
     HashTableIterator begin() const { return HashTableIterator(*this, 0); }
     HashTableIterator end() const { return HashTableIterator(*this, m_size); }

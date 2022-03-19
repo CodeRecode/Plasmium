@@ -17,8 +17,8 @@ namespace Plasmium {
 
     void CameraComponent::Update(milliseconds deltaTime)
     {
-        // Use a dead zone and lerping so camera motion isn't vomit inducing
-        auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(GetId());
+        // Use a dead zone and lerping
+        auto& transform = *Core::GetInstance().GetComponent<TransformComponent>(GetId());
         float distanceSq = (cachedPosition - transform.GetPosition()).LengthSquared();
         if (distanceSq > 8) {
             vec3 delta = transform.GetPosition() - cachedPosition;
@@ -36,6 +36,16 @@ namespace Plasmium {
         vec3 yRotation = vec3(0.0f, -rotation.x, 0.0f);
         positionOffset = mat4(1.0f).Rotate(yRotation) * positionOffset;
         this->rotation += rotation;
+    }
+
+    void CameraComponent::SetPosition(vec3 position)
+    {
+        cachedPosition = position;
+    }
+
+    void CameraComponent::SetRotation(vec3 rotation)
+    {
+        this->rotation = rotation;
     }
 
     void CameraComponent::Zoom(float move)

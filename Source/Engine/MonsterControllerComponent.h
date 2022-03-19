@@ -3,11 +3,18 @@
 #include "Event.h"
 
 namespace Plasmium {
-    class MonsterControllerComponent : public ControllerComponent {
+    class MonsterControllerComponent : 
+        public ControllerComponent, 
+        public Component<MonsterControllerComponent>
+    {
     private:
+        EntityId GetIdInternal() const override { return GetId(); }
     public:
-        MonsterControllerComponent(const ComponentCreationArgs& args) :
-            ControllerComponent(args)
+        MonsterControllerComponent(EntityId entityId) :
+            Component(entityId)
         {}
+
+        void Act();
     };
+    ComponentType MonsterControllerComponent::type = ComponentType::MonsterController;
 }

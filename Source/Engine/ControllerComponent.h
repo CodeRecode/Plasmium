@@ -1,15 +1,15 @@
 #pragma once
-#include "Types.h"
 #include "Component.h"
+#include "Types.h"
 
 namespace Plasmium {
-    class ControllerComponent : public Component
+    class ControllerComponent
     {
-    private:
+    protected:
+        virtual EntityId GetIdInternal() const = 0;
     public:
         virtual ~ControllerComponent() {};
 
-        ControllerComponent(const ComponentCreationArgs& args) : Component(args) {}
         void TryMoveOrAttack(Direction direction);
     };
 }

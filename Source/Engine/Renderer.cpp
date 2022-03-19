@@ -92,13 +92,14 @@ namespace Plasmium
         deviceContext->ClearRenderTargetView(renderTargetView, &clearColor[0]);
         deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-        auto& entityManager = Core::GetInstance().GetEntityManager();
-
         auto* camera = Core::GetInstance().GetCameraManager().GetCamera();
         mat4 viewMatrix = camera->GetViewMatrix();
 
-        for (const auto& modelComponent : modelComponents.GetObjectsReference()) {
-            auto* transformComponent = entityManager.GetTransform(modelComponent.GetId());
+        auto& modelComponents = Core::GetInstance().GetComponentArray<ModelComponent>();
+
+        for (const auto& modelComponent : modelComponents) {
+            auto* transformComponent = Core::GetInstance().GetComponent<TransformComponent>(
+                modelComponent.GetId());
 
             auto worldMatrix = mat4(1.0f);
             worldMatrix = worldMatrix.Translate(transformComponent->GetPosition());
@@ -224,33 +225,5 @@ namespace Plasmium
             auto& gameplayEventLogEvent = std::get<GameplayEventLogEvent>(event);
             gameplayEventLog.AddLog(gameplayEventLogEvent.stringId);
         }
-    }
-
-    void Renderer::CreateComponent(const ComponentCreationArgs& creationArgs,
-        const FileResource& modelFile)
-    {
-        assert(creationArgs.type == ComponentType::Model);
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
-
-        resourceManager.GetModelResource(modelFile);
-        modelComponents.EmplaceObject(creationArgs.parent, ModelComponent(creationArgs, modelFile));
-    }
-
-    void Renderer::CreateComponent(const ComponentCreationArgs& creationArgs,
-        const FileResource& modelFile,
-        const FileResource& textureFile)
-    {
-        assert(creationArgs.type == ComponentType::Model);
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
-
-        resourceManager.GetModelResource(modelFile);
-        resourceManager.GetTextureResource(textureFile);
-        modelComponents.EmplaceObject(creationArgs.parent, ModelComponent(creationArgs, modelFile, textureFile));
-    }
-
-    void Renderer::DeleteComponent(EntityId id, ComponentType type)
-    {
-        assert(type == ComponentType::Model);
-        modelComponents.DeleteObject(id);
     }
 }

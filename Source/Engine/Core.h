@@ -1,14 +1,13 @@
 #pragma once
 #include "CoreSystem.h"
+#include "EntityManager.h"
 #include "Event.h"
 #include "PerfMonitor.h"
 #include "RingBuffer.h"
 
-
 namespace Plasmium
 {
     class CameraManager;
-    class EntityManager;
     class GameplayManager;
     class Renderer;
     class ResourceManager;
@@ -46,6 +45,18 @@ namespace Plasmium
         const CameraManager& GetCameraManager() { return *cameraManager; }
         EntityManager& GetEntityManager() { return *entityManager; }
         ResourceManager& GetResourceManager() { return *resourceManager; }
+
+        template <typename T>
+        T* GetComponent(EntityId entityId)
+        {
+            return entityManager->GetComponent<T>(entityId);
+        }
+        
+        template <typename T>
+        const Array<T>& GetComponentArray()
+        {
+            return entityManager->GetComponentArray<T>();
+        }
 
         milliseconds GetFrameStartTime() const { return perfMonitor.GetFrameStartTime(); }
     };

@@ -6,17 +6,18 @@
 #include "Shader.h"
 
 namespace Plasmium {
-    class ModelComponent : public Component
+    class ModelComponent : public Component<ModelComponent>
     {
     private:
         FileResource modelFile;
         FileResource textureFile;
 
     public:
-        ModelComponent(const ComponentCreationArgs& args, FileResource modelFile);
-        ModelComponent(const ComponentCreationArgs& args, FileResource modelFile, FileResource textureFile);
+        ModelComponent(EntityId entityId, FileResource modelFile);
+        ModelComponent(EntityId entityId, FileResource modelFile, FileResource textureFile);
         void Draw(ID3D11DeviceContext* deviceContext, Shader* shader) const;
 
         bool HasTexture() const { return !textureFile.IsNone(); }
     };
+    ComponentType ModelComponent::type = ComponentType::Model;
 }

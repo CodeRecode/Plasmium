@@ -1,14 +1,12 @@
 #pragma once
 #include "CameraComponent.h"
-#include "ComponentManager.h"
 #include "CoreSystem.h"
 #include "Handler.h"
 
 namespace Plasmium {
-    class CameraManager : public CoreSystem, public ComponentManager {
+    class CameraManager : public CoreSystem {
     private:
         CameraComponent* currentCamera;
-        Handler<EntityId, CameraComponent> cameraComponents;
 
     public:
         void Initialize() override;
@@ -16,9 +14,5 @@ namespace Plasmium {
         void Update(milliseconds deltaTime) override;
 
         const Camera* GetCamera() const { return currentCamera; }
-        void CreateComponent(const ComponentCreationArgs& creationArgs,
-            const vec3& postionOffset,
-            const vec3& rotation) override;
-        void DeleteComponent(EntityId id, ComponentType type) override;
     };
 }

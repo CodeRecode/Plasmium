@@ -1,14 +1,9 @@
 #pragma once
 #include "Animation.h"
+#include "GameplayTypes.h"
 #include "Types.h"
 
 namespace Plasmium {
-    enum class FactionType {
-        Player,
-        Monster,
-        FactionCount
-    };
-
     class RuleManager {
     private:
         EntityId playerId;

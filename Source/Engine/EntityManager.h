@@ -3,64 +3,74 @@
 #include "Component.h"
 #include "Entity.h"
 #include "Handler.h"
-#include "TransformComponent.h"
-#include "ComponentManager.h"
-#include <assert.h>
 #include "Event.h"
 #include "CoreSystem.h"
-#include "PlayerControllerComponent.h"
 #include "AnimationManager.h"
 
-namespace Plasmium {
-    class EntityManager : public CoreSystem, public ComponentManager {
-    private:
-        struct TransformAnimation {
-            milliseconds endTime;
-            EntityId id;
-            vec3 positionDiff;
-            vec3 rotationDiff;
-            vec3 finalPostion;
-            vec3 finalRotation;
-        };
+#include "CameraComponent.h"
+#include "CombatComponent.h"
+#include "ModelComponent.h"
+#include "MonsterControllerComponent.h"
+#include "NameComponent.h"
+#include "PlayerControllerComponent.h"
+#include "TransformComponent.h"
 
+#include <assert.h>
+#include <variant>
+
+namespace Plasmium {
+    typedef std::variant<Handler<EntityId, CameraComponent>,
+        Handler<EntityId, CombatComponent>,
+        Handler<EntityId, ModelComponent>,
+        Handler<EntityId, MonsterControllerComponent>,
+        Handler<EntityId, NameComponent>,
+        Handler<EntityId, PlayerControllerComponent>,
+        Handler<EntityId, TransformComponent>> ComponentHandler;
+
+    class EntityManager : public CoreSystem {
+    private:
         EntityId nextEntityId;
         Handler<EntityId, Entity> entities;
-        Handler<EntityId, TransformComponent> transforms;
+        HashTable<ComponentType, ComponentHandler> componentHandlers;
 
-        HashTable<uint32, ComponentManager*> componentManagers;
         AnimationManager animationManager;
-        TransformComponent* GetTransformInternal(EntityId id) { return transforms.GetObjectPtr(id); }
 
     public:
-        Entity* CreateEntity();
-        Entity* GetEntity(EntityId id);
+        EntityId CreateEntity();
         void DeleteEntity(EntityId id);
         void DeleteAllEntities();
 
-        void RegisterComponentManager(ComponentType type, ComponentManager* manager);
-
-        const TransformComponent* GetTransform(EntityId id) { return transforms.GetObjectPtr(id); }
-
+        void Initialize() override;
         void Update(milliseconds deltaTime) override;
         void ProcessEvent(const GenericEvent& event) override;
 
-        template<typename... Args>
-        void AddComponent(Entity* entity, ComponentType type, Args&&... args)
+        template <typename T, typename... Args>
+        void AddComponent(EntityId id, Args&&... args)
         {
-            assert(componentManagers.Contains((uint32)type) && "Component manager not registered");
-            auto* manager = componentManagers[(uint32)type];
-            manager->CreateComponentBase<Args...>(
-                ComponentCreationArgs(type, entity->GetId()),
-                std::forward<Args>(args)...);
-            entity->AddComponentType(type);
+            auto& handler = std::get<Handler<EntityId, T>>(componentHandlers[T::GetType()]);
+            handler.EmplaceObject(id, T(id, std::forward<Args>(args)...));
+            entities.GetObjectPtr(id)->AddComponentType(T::GetType());
         }
 
-        void CreateComponent(const ComponentCreationArgs& creationArgs,
-            const vec3& logicalPosition,
-            const vec3& position,
-            const vec3& rotation,
-            const vec3& scale) override;
+        template <typename T>
+        T* GetComponent(EntityId id)
+        {
+            auto& handler = std::get<Handler<EntityId, T>>(componentHandlers[T::GetType()]);
+            return static_cast<T*>(handler.GetObjectPtr(id));
+        }
 
-        void DeleteComponent(EntityId id, ComponentType type) override;
+        template <typename T>
+        const Array<T>& GetComponentArray()
+        {
+            auto& handler = std::get<Handler<EntityId, T>>(componentHandlers[T::GetType()]);
+            return handler.GetObjectsReference();
+        }
+
+        template <typename T>
+        void DeleteComponent(EntityId id)
+        {
+            auto& handler = std::get<Handler<EntityId, T>>(componentHandlers[T::GetType()]);
+            return static_cast<T*>(handler.DeleteObject(id));
+        }
     };
 }

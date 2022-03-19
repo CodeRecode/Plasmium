@@ -1,6 +1,5 @@
 #pragma once
 #include "Camera.h"
-#include "ComponentManager.h"
 #include "FontManager.h"
 #include "GameplayEventLog.h"
 #include "ModelComponent.h"
@@ -22,7 +21,7 @@
 
 namespace Plasmium
 {
-    class Renderer : public CoreSystem, public ComponentManager
+    class Renderer : public CoreSystem
     {
     private:
         MaterialShader materialShader;
@@ -31,7 +30,6 @@ namespace Plasmium
 
         GameplayEventLog gameplayEventLog;
         FontManager fontManager;
-        Handler<EntityId, ModelComponent> modelComponents;
         Array<Sprite> sprites;
         Array<Text2D> debugTexts;
         
@@ -72,12 +70,5 @@ namespace Plasmium
 
         void ProcessEvent(const GenericEvent& event) override;
 
-        void CreateComponent(const ComponentCreationArgs& creationArgs,
-            const FileResource& modelFile) override;
-        void CreateComponent(const ComponentCreationArgs& creationArgs,
-            const FileResource& modelFile,
-            const FileResource& textureFile) override;
-
-        void DeleteComponent(EntityId id, ComponentType type) override;
     };
 }

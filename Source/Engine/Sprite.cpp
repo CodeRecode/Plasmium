@@ -1,6 +1,8 @@
 #include "Sprite.h"
-#include "Window.h"
+
 #include "Core.h"
+#include "ResourceManager.h"
+#include "Window.h"
 
 namespace Plasmium {
 

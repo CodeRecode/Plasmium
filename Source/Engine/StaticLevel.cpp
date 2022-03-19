@@ -53,85 +53,77 @@ namespace Plasmium {
         const char* floor3ModelFile = tileDefs["floor3"].GetString();
         for (int32 row = 0; row < (int32)height; row += 3) {
             for (int32 col = 0; col < (int32)width; col += 3) {
-                auto* entity = entityManager.CreateEntity();
-                entities.Push(entity->GetId());
+                EntityId entityId = entityManager.CreateEntity();
+                entities.Push(entityId);
                 vec3 tilePosition = vec3(col + 1.0f, -0.5f, row + 1.0f);
 
-                entityManager.AddComponent(entity,
-                    ComponentType::Transform,
+                entityManager.AddComponent<TransformComponent>(entityId,
                     vec3(tilePosition),
                     vec3(TransformComponent::LogicalPointToWorld(tilePosition)),
                     vec3(),
                     vec3(1.0f));
 
-                entityManager.AddComponent(entity,
-                    ComponentType::Model,
+                entityManager.AddComponent<ModelComponent>(entityId,
                     FileResource(floor3ModelFile));
             }
         }
 
         auto& gameObjects = document["game_objects"];
         for (auto& gameObject : gameObjects.GetArray()) {
-            auto* entity = entityManager.CreateEntity();
-            entities.Push(entity->GetId());
-
-            const char* modelFile = gameObject["model"].GetString();
-            if (gameObject.HasMember("texture")) {
-                const char* texture = gameObject["texture"].GetString();
-                entityManager.AddComponent(entity,
-                    ComponentType::Model,
-                    FileResource(modelFile),
-                    FileResource(texture));
-            }
-            else {
-                entityManager.AddComponent(entity,
-                    ComponentType::Model,
-                    FileResource(modelFile));
-            }
-
-            if (gameObject.HasMember("camera")) {
-                auto& cameraData = gameObject["camera"];
-                entityManager.AddComponent(entity,
-                    ComponentType::Camera,
-                    GetVecFromArray(cameraData["position"].GetArray()),
-                    GetVecFromArray(cameraData["rotation"].GetArray()));
-            }
-
-            if (gameObject.HasMember("name")) {
-                entityManager.AddComponent(entity,
-                    ComponentType::Name,
-                    gameObject["name"].GetString());
-            }
-
-            if (gameObject.HasMember("player_controller")) {
-                entityManager.AddComponent(entity,
-                    ComponentType::PlayerController);
-            }
-
-            if (gameObject.HasMember("monster_controller")) {
-                entityManager.AddComponent(entity,
-                    ComponentType::MonsterController);
-            }
-
-            if (gameObject.HasMember("combat")) {
-                auto& combatData = gameObject["combat"];
-                float health = combatData["health"].GetFloat();
-                float damage = combatData["damage"].GetFloat();
-                entityManager.AddComponent(entity,
-                    ComponentType::Combat, health, damage);
-            }
+            EntityId entityId = entityManager.CreateEntity();
+            entities.Push(entityId);
 
             vec3 logicalPosition = GetVecFromArray(gameObject["logical_position"].GetArray());
             vec3 position = GetVecFromArray(gameObject["position"].GetArray());
             vec3 rotation = GetVecFromArray(gameObject["rotation"].GetArray());
             vec3 scale = GetVecFromArray(gameObject["scale"].GetArray());
 
-            entityManager.AddComponent(entity,
-                ComponentType::Transform,
+            entityManager.AddComponent<TransformComponent>(entityId,
                 logicalPosition,
                 position,
                 rotation,
                 scale);
+
+            const char* modelFile = gameObject["model"].GetString();
+            if (gameObject.HasMember("texture")) {
+                const char* texture = gameObject["texture"].GetString();
+                entityManager.AddComponent<ModelComponent>(entityId,
+                    FileResource(modelFile),
+                    FileResource(texture));
+            }
+            else {
+                entityManager.AddComponent<ModelComponent>(entityId,
+                    FileResource(modelFile));
+            }
+
+            if (gameObject.HasMember("camera")) {
+                auto& cameraData = gameObject["camera"];
+                vec3 cameraRotation = GetVecFromArray(cameraData["rotation"].GetArray());
+                entityManager.AddComponent<CameraComponent>(entityId,
+                    GetVecFromArray(cameraData["position"].GetArray()),
+                    cameraRotation);
+                Core::GetInstance().PostEvent(MoveCameraEvent(position, cameraRotation));
+            }
+
+            if (gameObject.HasMember("name")) {
+                entityManager.AddComponent<NameComponent>(entityId,
+                    gameObject["name"].GetString());
+            }
+
+            if (gameObject.HasMember("player_controller")) {
+                entityManager.AddComponent<PlayerControllerComponent>(entityId);
+            }
+
+            if (gameObject.HasMember("monster_controller")) {
+                entityManager.AddComponent<MonsterControllerComponent>(entityId);
+            }
+
+            if (gameObject.HasMember("combat")) {
+                auto& combatData = gameObject["combat"];
+                float health = combatData["health"].GetFloat();
+                float damage = combatData["damage"].GetFloat();
+                entityManager.AddComponent<CombatComponent>(entityId, health, damage);
+            }
 
             // Only supports 90 degree rotations
             if (gameObject.HasMember("collider")) {
@@ -161,7 +153,7 @@ namespace Plasmium {
                 }
             }
 
-            Core::GetInstance().PostEvent(EntityCreatedEvent(entity->GetId(), logicalPosition));
+            Core::GetInstance().PostEvent(EntityCreatedEvent(entityId, logicalPosition));
         }
     }
 }

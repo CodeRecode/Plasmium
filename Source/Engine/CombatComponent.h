@@ -1,25 +1,30 @@
 #pragma once
 #include "Component.h"
+#include "GameplayTypes.h"
 
 namespace Plasmium {
-    class CombatComponent : public Component {
+    class CombatComponent : public Component<CombatComponent> {
     private:
         float healthMax;
         float currentHealth;
 
         float damage;
+        FactionType faction = FactionType::Monster;
 
     public:
-        CombatComponent(const ComponentCreationArgs& args, float health, float damage) : 
-            Component(args),
+        CombatComponent(EntityId entityId, float health, float damage) :
+            Component(entityId),
             healthMax(health),
             currentHealth(health),
             damage(damage)
         {}
 
-        float GetHealth() const { return currentHealth; }
         float GetDamage() const { return damage; }
+        FactionType GetFaction() const { return faction; }
+        float GetHealth() const { return currentHealth; }
 
         void DoDamage(float damage) { currentHealth -= damage; }
+        void SetFaction(FactionType faction) { this->faction = faction; }
     };
+    ComponentType CombatComponent::type = ComponentType::Combat;
 }
