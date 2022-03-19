@@ -16,26 +16,26 @@ namespace Plasmium {
 
         virtual void CreateComponent(const ComponentCreationArgs& creationArgs)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void CreateComponent(const ComponentCreationArgs& creationArgs,
             const char* a)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void CreateComponent(const ComponentCreationArgs& creationArgs,
             const FileResource& a)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void CreateComponent(const ComponentCreationArgs& creationArgs,
             const FileResource& a,
             const FileResource& b)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void CreateComponent(const ComponentCreationArgs & creationArgs,
@@ -43,7 +43,7 @@ namespace Plasmium {
             const vec3& b,
             const vec3& c)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void CreateComponent(const ComponentCreationArgs & creationArgs,
@@ -52,14 +52,14 @@ namespace Plasmium {
             const vec3 & c,
             const vec3& d)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void CreateComponent(const ComponentCreationArgs & creationArgs,
             float a,
             float b)
         {
-            Window::WriteError("Unhandled CreateComponent");
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
         virtual void PreDeleteComponent(EntityId id, ComponentType type) {}

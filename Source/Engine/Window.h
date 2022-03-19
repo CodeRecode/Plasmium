@@ -1,10 +1,15 @@
 #pragma once
+#include "CoreSystem.h"
+#include "FileResource.h"
+#include "HashTable.h"
 #include "Types.h"
+#include "InputTypes.h"
+#include "Keybinds.h"
+
 #define _X86_
 #include <windef.h>
 #include <string>
-#include "FileResource.h"
-#include "CoreSystem.h"
+#include <iostream>
 
 namespace Plasmium
 {
@@ -12,10 +17,12 @@ namespace Plasmium
     {
     private:
         static const uint32 KeyStateCount = 256;
+        static const uint32 KeybindFunctionCount = (uint32)KeybindFunction::KeybindFunctionCount;
         HWND handle;
         uint8 winKeyStates[KeyStateCount]{};
-        bool currentKeyStates[KeyStateCount]{};
-        bool previousKeyStates[KeyStateCount]{};
+        bool currentKeybindFunctionStates[KeybindFunctionCount]{};
+        bool previousKeybindFunctionStates[KeybindFunctionCount]{};
+        HashTable<InputKey, KeybindFunction> keybinds;
 
         bool shouldQuit = false;
         bool vsyncEnabled = true;
@@ -46,8 +53,12 @@ namespace Plasmium
         void Serialize();
         void Deserialize();
 
-        static void WriteError(std::string error);
-        static void WriteError(const char* error);
+        template <typename... Args>
+        static void WriteError(const char* error, Args&&... args) {
+            std::cerr << "ERROR: " << error;
+            (std::cerr << ... << args);
+            std::cerr << std::endl;
+        }
         static void CreateConsole();
     };
 }

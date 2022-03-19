@@ -79,7 +79,7 @@ namespace Plasmium
         if ((EventType)event.index() == EventType::Input) {
             auto& inputEvent = std::get<InputEvent>(event);
 
-            if (inputEvent.GetKeyDown(InputKey::F9)) {
+            if (inputEvent.GetKeyToggleDown(KeybindFunction::ReloadLevel)) {
                 eventQueue.Clear();
                 deferredEvents.Clear();
 

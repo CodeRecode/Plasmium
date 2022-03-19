@@ -314,6 +314,15 @@
     <ClInclude Include="..\Source\Engine\RingBuffer.h">
       <Filter>DataStructures</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Engine\RuleManager.h">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Keybinds.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\HashFunctions.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl">

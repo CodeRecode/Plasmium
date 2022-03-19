@@ -1,29 +1,11 @@
 #pragma once
 #include "Types.h"
+#include "HashFunctions.h"
+
 #include <assert.h>
 #include <string.h>
-
-template <typename T>
-uint32 HashFunc(T value) {
-    assert(false && "HashFunc not implemented");
-    return 0;
-}
-
-template <>
-inline uint32 HashFunc<uint32>(uint32 value) {
-    return value;
-}
-
-// https://stackoverflow.com/questions/8317508/hash-function-for-a-string
-template <>
-inline uint32 HashFunc<const char *>(const char* value) {
-    uint32 hash = 37, index = 0;
-    while (value[index] != 0) {
-        hash = (hash * 54059) ^ (value[index] * 76963);
-        ++index;
-    }
-    return hash;
-}
+#include <initializer_list>
+#include <utility>
 
 template<typename K, typename V>
 struct HashNode {
@@ -49,21 +31,95 @@ private:
     uint32 GetBucket(K key) const;
     HashNode<K, V>* GetNode(K key) const;
 
+    //friend class HashTableIterator;
+
 public:
+    class HashTableIterator {
+    private:
+        const HashTable<K, V>& data;
+        uint32 index;
+        int32 bucketIndex;
+        HashNode<K, V>* node;
+
+        void FindNextNode() {
+            if (node != nullptr && node->next != nullptr) {
+                node = node->next;
+                return;
+            }
+
+            while (bucketIndex < (int32)data.m_bucketCount) {
+                // Try next bucket
+                ++bucketIndex;
+                if (data.m_buckets[bucketIndex] != nullptr) {
+                    node = data.m_buckets[bucketIndex];
+                    return;
+                }
+            }
+            node = nullptr;
+        }
+
+    public:
+        HashTableIterator(const HashTable<K, V>& data, uint32 index) :
+            data(data),
+            index(index)
+        {
+            assert(index <= data.m_size);
+            node = nullptr;
+
+            if (index == data.m_size) {
+                bucketIndex = data.m_bucketCount;
+                return;
+            }
+
+            bucketIndex = -1;
+            uint32 currIndex = 0;
+            while (currIndex <= index) {
+                FindNextNode();
+                ++currIndex;
+            }
+        }
+
+        const HashNode<K,V>& operator*() { return *node; }
+        const HashNode<K, V>* operator->() { return node; }
+
+        HashTableIterator& operator++() { ++index; FindNextNode(); return *this; }
+        friend bool operator==(const HashTableIterator& a, const HashTableIterator& b)
+        {
+            return &a.data == &b.data && a.index == b.index;
+        }
+        friend bool operator!=(const HashTableIterator& a, const HashTableIterator& b)
+        {
+            return !(a == b);
+        }
+    };
+
     HashTable() : m_size(5) { 
         Realloc();
     }
-    HashTable(uint32 preallocation) : m_size(preallocation / 2) {
+    HashTable(uint32 preallocation) : m_size(preallocation / 2 + 1) {
         Realloc();
+    }
+    HashTable(std::initializer_list<std::pair<K, V>> list) : m_size(list.size() / 2 + 1) {
+        Realloc();
+        for (const auto& pair : list) {
+            (*this)[pair.first] = pair.second;
+        }
+    }
+    ~HashTable() {
+        delete[] m_data;
     }
 
     HashTable(const HashTable<K, V>& copy) = delete;
     HashTable<K, V>& operator=(const HashTable<K, V>& rhs) = delete;
 
+    HashTableIterator begin() const { return HashTableIterator(*this, 0); }
+    HashTableIterator end() const { return HashTableIterator(*this, m_size); }
+
     uint32 Size() const { return m_size; }
     bool Empty() const { return m_size == 0; }
 
     bool Contains(K key) const;
+    const V& operator[](K key) const;
     V& operator[](K key);
     void Delete(K key);
 
@@ -144,6 +200,14 @@ HashNode<K, V>* HashTable<K, V>::GetNode(K key) const {
 template <typename K, typename V>
 bool HashTable<K, V>::Contains(K key) const {
     return GetNode(key) != nullptr;
+}
+
+template <typename K, typename V>
+const V& HashTable<K, V>::operator[](K key) const
+{
+    assert(Contains(key));
+    auto node = GetNode(key);
+    return node->value;
 }
 
 template <typename K, typename V>

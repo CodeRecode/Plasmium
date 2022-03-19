@@ -1,12 +1,7 @@
 #include "Window.h"
-#include <Windows.h>
 #include <hidusage.h>
-#include <stdio.h>
-#include <iostream>
-#include <tuple>
 #include <sstream>
 #include "Core.h"
-#include "KeyCodes.h"
 
 namespace Plasmium
 {
@@ -82,17 +77,6 @@ namespace Plasmium
 
     void Window::Update(milliseconds deltaTime)
     {
-        bool _result = GetKeyboardState(static_cast<PBYTE>(winKeyStates));
-        if (!_result) {
-            assert(false);
-        }
-
-        const int32 highbit = 1 << 7;
-        memcpy(previousKeyStates, currentKeyStates, KeyStateCount);
-        for (auto keyCode : InputKeyCodes) {
-            int32 keyIndex = (int32)keyCode;
-            currentKeyStates[keyIndex] = winKeyStates[keyIndex] & highbit;
-        }
 
         float mouseWheelDelta = 0.0f;
 
@@ -132,7 +116,27 @@ namespace Plasmium
             }
         }
 
-        Core::GetInstance().PostEvent(InputEvent(currentKeyStates, previousKeyStates, mouseWheelDelta));
+        bool _result = GetKeyboardState(static_cast<PBYTE>(winKeyStates));
+        if (!_result) {
+            assert(false);
+        }
+
+        const int32 highbit = 1 << 7;
+        // Convert the mouse wheel into a binary state
+        if (mouseWheelDelta < 0) {
+            winKeyStates[(uint32)InputKey::MouseWheelUp] = highbit;
+        }
+        if (mouseWheelDelta > 0) {
+            winKeyStates[(uint32)InputKey::MouseWheelDown] = highbit;
+        }
+
+        memcpy(previousKeybindFunctionStates, currentKeybindFunctionStates, KeybindFunctionCount);
+        for (auto& keyBindPair : keybinds) {
+            currentKeybindFunctionStates[(uint32)keyBindPair.value] =
+                winKeyStates[(uint32)keyBindPair.key] & highbit;
+        }
+
+        Core::GetInstance().PostEvent(InputEvent(currentKeybindFunctionStates, previousKeybindFunctionStates));
     }
 
     void Window::Serialize()
@@ -142,8 +146,9 @@ namespace Plasmium
     void Window::Deserialize()
     {
         auto input = configFile.GetInputStream();
+        std::string keybindFileName;
 
-        std::string line, name, equal;
+        std::string line, name, equal, value;
         while (std::getline(input, line)) {
             std::stringstream sstream(line);
             sstream >> name >> equal;
@@ -165,21 +170,37 @@ namespace Plasmium
             else if (name == "window_y") {
                 sstream >> windowY;
             }
+            else if (name == "keybinds") {
+                sstream >> keybindFileName;
+            }
             else {
-                Window::WriteError("Undefined config value: ");
-                Window::WriteError(name);
+                Window::WriteError("Undefined config value: ", name);
             }
         }
-    }
+        input.close();
+        FileResource keybindFile(keybindFileName.c_str());
+        input = keybindFile.GetInputStream();
+        while (std::getline(input, line)) {
+            std::stringstream sstream(line);
+            sstream >> name >> equal >> value;
+            PlasString functionName(name.c_str());
+            PlasString keyName(value.c_str());
 
-    void Window::WriteError(std::string error)
-    {
-        std::cerr << "ERROR: " << error << std::endl;
-    }
+            if (!StringToKeybindFunctionMap.Contains(functionName)) {
+                Window::WriteError("Undefined function name: ", functionName.Get());
+                continue;
+            }
+            if (!StringToInputKeyMap.Contains(keyName)) {
+                Window::WriteError("Undefined key name: ", keyName.Get());
+                continue;
+            }
 
-    void Window::WriteError(const char* error)
-    {
-        std::cerr << "ERROR: " << error << std::endl;
+            auto function = StringToKeybindFunctionMap[functionName];
+            auto key = StringToInputKeyMap[keyName];
+
+            keybinds[key] = function;
+        }
+        input.close();
     }
 
     void Window::CreateConsole()

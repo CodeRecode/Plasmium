@@ -49,6 +49,7 @@ namespace Plasmium {
             displayModeList);
         if (FAILED(result)) {
             Window::WriteError("Could not get display mode list");
+            delete[] displayModeList;
             return defaultRate;
         }
 
@@ -61,6 +62,7 @@ namespace Plasmium {
         }
         if (windowDisplayMode == nullptr) {
             Window::WriteError("Could not get display mode for the window");
+            delete[] displayModeList;
             return defaultRate;
         }
 

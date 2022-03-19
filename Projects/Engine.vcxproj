@@ -182,6 +182,8 @@
     <ClInclude Include="..\Source\Engine\CombatComponent.h" />
     <ClInclude Include="..\Source\Engine\GameplayEventLog.h" />
     <ClInclude Include="..\Source\Engine\FontManager.h" />
+    <ClInclude Include="..\Source\Engine\HashFunctions.h" />
+    <ClInclude Include="..\Source\Engine\Keybinds.h" />
     <ClInclude Include="..\Source\Engine\MonsterControllerComponent.h" />
     <ClInclude Include="..\Source\Engine\NameComponent.h" />
     <ClInclude Include="..\Source\Engine\PerfMonitor.h" />
@@ -212,6 +214,7 @@
     <ClInclude Include="..\Source\Engine\rect.h" />
     <ClInclude Include="..\Source\Engine\RenderUtils.h" />
     <ClInclude Include="..\Source\Engine\RingBuffer.h" />
+    <ClInclude Include="..\Source\Engine\RuleManager.h" />
     <ClInclude Include="..\Source\Engine\ShaderTypes.h" />
     <ClInclude Include="..\Source\Engine\Sprite.h" />
     <ClInclude Include="..\Source\Engine\SpriteShader.h" />

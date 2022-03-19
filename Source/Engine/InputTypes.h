@@ -45,7 +45,9 @@ enum class InputKey {
     F9 = 0x78,
     F10 = 0x79,
     F11 = 0x7A,
-    F12 = 0x7B
+    F12 = 0x7B,
+    MouseWheelUp = 0x97, // Windows unassigned
+    MouseWheelDown = 0x98 // Windows unassigned
 };
 
 const InputKey InputKeyCodes[] = {

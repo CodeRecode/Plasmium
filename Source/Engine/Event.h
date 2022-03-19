@@ -2,7 +2,7 @@
 #include "Animation.h"
 #include "Component.h"
 #include "Model.h"
-#include "InputTypes.h"
+#include "Keybinds.h"
 #include "Texture.h"
 #include "Types.h"
 #include "vec3.h"
@@ -38,19 +38,18 @@ namespace Plasmium
     };
 
     struct InputEvent : BaseEvent {
-        const bool (&currentStates)[256];
-        const bool (&previousStates)[256];
-        float mouseWheelDelta;
-        InputEvent(bool (&current)[256], bool(&previous)[256], float mouseWheel) :
+        const bool (&currentStates)[(uint32)KeybindFunction::KeybindFunctionCount];
+        const bool (&previousStates)[(uint32)KeybindFunction::KeybindFunctionCount];
+        InputEvent(bool (&current)[(uint32)KeybindFunction::KeybindFunctionCount],
+            bool(&previous)[(uint32)KeybindFunction::KeybindFunctionCount]) :
             BaseEvent(EventType::Input), 
             currentStates(current),
-            previousStates(previous),
-            mouseWheelDelta(mouseWheel)
+            previousStates(previous)
         {}
-        bool GetKeyDown(InputKey key) const { return currentStates[(int)key]; }
-        bool GetKeyWasDown(InputKey key) const { return previousStates[(int)key]; }
-        bool GetKeyToggleDown(InputKey key) const { return currentStates[(int)key] && !previousStates[(int)key]; }
-        bool GetKeyToggleUp(InputKey key) const { return !currentStates[(int)key] && previousStates[(int)key]; }
+        bool GetKeyDown(KeybindFunction key) const { return currentStates[(int)key]; }
+        bool GetKeyWasDown(KeybindFunction key) const { return previousStates[(int)key]; }
+        bool GetKeyToggleDown(KeybindFunction key) const { return currentStates[(int)key] && !previousStates[(int)key]; }
+        bool GetKeyToggleUp(KeybindFunction key) const { return !currentStates[(int)key] && previousStates[(int)key]; }
     };
 
     struct MoveCameraEvent : BaseEvent {

@@ -1,6 +1,6 @@
 #include "CameraManager.h"
 #include "Core.h"
-#include "InputTypes.h"
+#include "Keybinds.h"
 
 namespace Plasmium {
 
@@ -14,26 +14,29 @@ namespace Plasmium {
 
             const float movespeed = .25f;
             const float rotationspeed = 2.0f;
-            if (inputEvent.GetKeyDown(InputKey::F3)) {
+            if (inputEvent.GetKeyDown(KeybindFunction::RotateCameraLeft)) {
                 camera.MoveRotation(vec3(rotationspeed, 0.0f, 0.0f));
             }
-            if (inputEvent.GetKeyDown(InputKey::F4)) {
+            if (inputEvent.GetKeyDown(KeybindFunction::RotateCameraRight)) {
                 camera.MoveRotation(vec3(-rotationspeed, 0.0f, 0.0f));
             }
-            if (inputEvent.GetKeyDown(InputKey::UpArrow)) {
+            if (inputEvent.GetKeyDown(KeybindFunction::MoveCameraForward)) {
                 camera.MovePositionRelative(vec2(0.0f, movespeed));
             }
-            if (inputEvent.GetKeyDown(InputKey::DownArrow)) {
+            if (inputEvent.GetKeyDown(KeybindFunction::MoveCameraBackward)) {
                 camera.MovePositionRelative(vec2(0.0f, -movespeed));
             }
-            if (inputEvent.GetKeyDown(InputKey::LeftArrow)) {
+            if (inputEvent.GetKeyDown(KeybindFunction::MoveCameraLeft)) {
                 camera.MovePositionRelative(vec2(-movespeed, 0.0f));
             }
-            if (inputEvent.GetKeyDown(InputKey::RightArrow)) {
+            if (inputEvent.GetKeyDown(KeybindFunction::MoveCameraRight)) {
                 camera.MovePositionRelative(vec2(movespeed, 0.0f));
             }
-            if (inputEvent.mouseWheelDelta != 0.0f) {
-                camera.Zoom(inputEvent.mouseWheelDelta);
+            if (inputEvent.GetKeyDown(KeybindFunction::ZoomIn)) {
+                camera.Zoom(-1.0f);
+            }
+            if (inputEvent.GetKeyDown(KeybindFunction::ZoomOut)) {
+                camera.Zoom(1.0f);
             }
         }
         if ((EventType)event.index() == EventType::MoveCamera) {

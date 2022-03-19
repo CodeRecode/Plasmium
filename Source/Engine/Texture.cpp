@@ -19,8 +19,7 @@ namespace Plasmium
             nullptr);
         
         if (FAILED(result)) {
-            std::string error = "Failed to load texture for: ";
-            Window::WriteError(error + file.GetFileName());
+            Window::WriteError("Failed to load texture for: ", file.GetFileName());
             return false;
         }
 

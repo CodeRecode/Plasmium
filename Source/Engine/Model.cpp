@@ -23,8 +23,7 @@ namespace Plasmium
             loadResult = GetFBX();
         }
         else {
-            std::string error = "Unrecognized model extension: ";
-            Window::WriteError(error + std::to_string((int32)extensionType));
+            Window::WriteError("Unrecognized model extension: ", (int32)extensionType);
             return false;
         }
 
@@ -45,8 +44,7 @@ namespace Plasmium
 
         result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
         if (FAILED(result)) {
-            std::string error = "Failed to create vertex buffer for: ";
-            Window::WriteError(error + GetFileName());
+            Window::WriteError("Failed to create vertex buffer for: ", GetFileName());
             return false;
         }
 
@@ -86,8 +84,7 @@ namespace Plasmium
 
             result = device->CreateBuffer(&indexBufferDesc, &indexData, &mib.indexBuffer);
             if (FAILED(result)) {
-                std::string error = "Failed to create index buffer for: ";
-                Window::WriteError(error + GetFileName());
+                Window::WriteError("Failed to create index buffer for: ",  GetFileName());
                 return false;
             }
 
@@ -203,8 +200,7 @@ namespace Plasmium
         FILE* input;
         fopen_s(&input, file.GetFileName(), "rb");
         if (input == nullptr) {
-            std::string error = "Failed to open file for: ";
-            Window::WriteError(error + GetFileName());
+            Window::WriteError("Failed to open file for: ", GetFileName());
             return result;
         }
 
@@ -223,8 +219,7 @@ namespace Plasmium
         fclose(input);
 
         if (scene == nullptr) {
-            std::string error = "Failed to read fbx file for: ";
-            Window::WriteError(error + GetFileName());
+            Window::WriteError("Failed to read fbx file for: ", GetFileName());
             return result;
         }
 
