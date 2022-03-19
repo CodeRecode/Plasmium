@@ -1,9 +1,10 @@
 #include "StaticLevel.h"
+
+#include "Core.h"
+#include "EntityManager.h"
 #include "Window.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
-
-#include "Core.h"
 
 namespace Plasmium {
 
@@ -36,14 +37,9 @@ namespace Plasmium {
         auto& entityManager = Core::GetInstance().GetEntityManager();
 
         auto& levelData = document["level_data"];
-        vec3 cameraPos = GetVecFromArray(levelData["camera_position"].GetArray());
-        vec3 cameraRot = GetVecFromArray(levelData["camera_rotation"].GetArray());
-        Core::GetInstance().PostEvent(MoveCameraEvent(
-            cameraPos, 
-            cameraRot));
-
         height = levelData["height"].GetUint();
         width = levelData["width"].GetUint();
+
         for (uint32 row = 0; row < height; ++row) {
             Array<Tile> tiles;
             for (uint32 col = 0; col < width; ++col) {
@@ -93,8 +89,16 @@ namespace Plasmium {
                     FileResource(modelFile));
             }
 
+            if (gameObject.HasMember("camera")) {
+                auto& cameraData = gameObject["camera"];
+                entityManager.AddComponent(entity,
+                    ComponentType::Camera,
+                    GetVecFromArray(cameraData["position"].GetArray()),
+                    GetVecFromArray(cameraData["rotation"].GetArray()));
+            }
+
             if (gameObject.HasMember("name")) {
-                entityManager.AddComponent<const char *>(entity,
+                entityManager.AddComponent(entity,
                     ComponentType::Name,
                     gameObject["name"].GetString());
             }

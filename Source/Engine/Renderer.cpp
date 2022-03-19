@@ -1,11 +1,12 @@
 #include "Renderer.h"
 
+#include "CameraManager.h"
 #include "Core.h"
+#include "EntityManager.h"
+#include "Plasmath.h"
 #include "RenderUtils.h"
+#include "ResourceManager.h"
 #include "Types.h"
-
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 namespace Plasmium
 {
@@ -49,7 +50,7 @@ namespace Plasmium
         const auto& window = Core::GetInstance().GetWindow();
         float windowHeight = (float)window.GetHeight();
         float windowWidth = (float)window.GetWidth();
-        radians fieldOfView = (radians)M_PI_4; // 90 degrees
+        radians fieldOfView = DegreesToRadians(45.0f);
         float aspectRatio = windowWidth / windowHeight;
 
         projectionMatrix = mat4::ProjectionMatrix(fieldOfView, aspectRatio, screenNear, screenFar);
@@ -93,7 +94,9 @@ namespace Plasmium
 
         auto& entityManager = Core::GetInstance().GetEntityManager();
 
-        auto& camera = Core::GetInstance().GetCameraManager().GetCamera();
+        auto* camera = Core::GetInstance().GetCameraManager().GetCamera();
+        mat4 viewMatrix = camera->GetViewMatrix();
+
         for (const auto& modelComponent : modelComponents.GetObjectsReference()) {
             auto* transformComponent = entityManager.GetTransform(modelComponent.GetId());
 
@@ -102,7 +105,7 @@ namespace Plasmium
             worldMatrix = worldMatrix.Rotate(transformComponent->GetRotation());
             worldMatrix = worldMatrix.Scale(transformComponent->GetScale());
 
-            ShaderInternal::MatrixInfo matrixInfo(projectionMatrix, camera.GetViewMatrix(), worldMatrix);
+            ShaderInternal::MatrixInfo matrixInfo(projectionMatrix, viewMatrix, worldMatrix);
             if (modelComponent.HasTexture()) {
                 textureShader.Bind(deviceContext, matrixInfo);
                 modelComponent.Draw(deviceContext, &textureShader);
@@ -114,7 +117,7 @@ namespace Plasmium
         }
 
         deviceContext->OMSetDepthStencilState(depthDisabledStencilState, 1);
-        ShaderInternal::MatrixInfo matrixInfo(orthoMatrix, camera.GetViewMatrix(), mat4(1.0f));
+        ShaderInternal::MatrixInfo matrixInfo(orthoMatrix, viewMatrix, mat4(1.0f));
         spriteShader.Bind(deviceContext, matrixInfo);
         for (auto& sprite : sprites) {
             sprite.Draw(deviceContext);

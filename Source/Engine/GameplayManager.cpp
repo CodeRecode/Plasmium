@@ -1,6 +1,8 @@
 #include "GameplayManager.h"
 
 #include "Core.h"
+#include "EntityManager.h"
+#include "ResourceManager.h"
 
 namespace Plasmium {
     void GameplayManager::LoadLevelFile(FileResource levelFile)
@@ -35,6 +37,10 @@ namespace Plasmium {
             auto& entityMove = std::get<TryMoveEntityEvent>(event);
             auto& transform = *Core::GetInstance().GetEntityManager().GetTransform(entityMove.entityId);
             vec3 targetRotation = vec3(0.0f, (int32)entityMove.direction * 45.0f, 0.0f);
+
+            if (!ruleManager.EntityCanAct(entityMove.entityId)) {
+                return;
+            }
 
             AnimateEntityParameters animationParams;
             animationParams.entityId = entityMove.entityId;
@@ -80,38 +86,44 @@ namespace Plasmium {
         }
         if ((EventType)event.index() == EventType::AnimateEntityKey) {
             auto& animationKey = std::get<AnimateEntityKeyEvent>(event).params;
+            EntityId entityId = animationKey.animationParams.entityId;
             if (animationKey.keyType == AnimationKeyType::Attack) {
                 Core::GetInstance().PostEvent(AttackEntityEvent(
-                    animationKey.animationParams.entityId, 
+                    entityId,
                     animationKey.animationParams.targetId));
             }
             else if (animationKey.keyType == AnimationKeyType::AnimationComplete) {
                 if (animationKey.animationParams.type == AnimationType::Death) {
-                    Core::GetInstance().PostEvent(DestroyEntityEvent(
-                        animationKey.animationParams.entityId));
+                    Core::GetInstance().PostEvent(DestroyEntityEvent(entityId));
                 }
+                ruleManager.ActCompleted(entityId, animationKey.animationParams.type);
             }
         }
         if ((EventType)event.index() == EventType::AttackEntity) {
             auto& attackEvent = std::get<AttackEntityEvent>(event);
-            auto& attackerCombat = *combatComponents.GetObjectPtr(attackEvent.attackerId);
-            auto& defenderCombat = *combatComponents.GetObjectPtr(attackEvent.defenderId);
+            auto* attackerCombat = combatComponents.GetObjectPtr(attackEvent.attackerId);
+            auto* defenderCombat = combatComponents.GetObjectPtr(attackEvent.defenderId);
             auto& attackerName = *nameComponents.GetObjectPtr(attackEvent.attackerId);
             auto& defenderName = *nameComponents.GetObjectPtr(attackEvent.defenderId);
 
-            defenderCombat.DoDamage(attackerCombat.GetDamage());
+            if (attackerCombat == nullptr || defenderCombat == nullptr) {
+                // Participant may have died
+                return;
+            }
+
+            defenderCombat->DoDamage(attackerCombat->GetDamage());
 
             char buffer[256];
             sprintf_s(buffer, "%s attacked %s for %i damage!",
                 attackerName.GetName(),
                 defenderName.GetName(),
-                (int32)attackerCombat.GetDamage());
+                (int32)attackerCombat->GetDamage());
 
             auto& resourceManager = Core::GetInstance().GetResourceManager();
             StringId attackString = resourceManager.CreateString(buffer);
             Core::GetInstance().PostEvent(GameplayEventLogEvent(attackString));
 
-            if (defenderCombat.GetHealth() <= 0.0f) {
+            if (defenderCombat->GetHealth() <= 0.0f) {
                 Core::GetInstance().PostEvent(EntityKilledEvent(
                     attackEvent.attackerId,
                     attackEvent.defenderId));
@@ -147,6 +159,7 @@ namespace Plasmium {
         if (creationArgs.type == ComponentType::PlayerController) {
             playerControllerComponents.EmplaceObject(creationArgs.parent,
                 PlayerControllerComponent(creationArgs));
+            ruleManager.SetPlayer(creationArgs.parent);
         }
         else if (creationArgs.type == ComponentType::MonsterController) {
             monsterControllerComponents.EmplaceObject(creationArgs.parent,

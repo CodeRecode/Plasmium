@@ -1,5 +1,8 @@
 #include "ModelComponent.h"
+
 #include "Core.h"
+#include "ResourceManager.h"
+
 namespace Plasmium
 {
     ModelComponent::ModelComponent(const ComponentCreationArgs& args, FileResource modelFile) :

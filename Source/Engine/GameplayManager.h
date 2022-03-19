@@ -7,6 +7,7 @@
 #include "MonsterControllerComponent.h"
 #include "NameComponent.h"
 #include "PlayerControllerComponent.h"
+#include "RuleManager.h"
 
 namespace Plasmium {
     class GameplayManager : public CoreSystem, public ComponentManager {
@@ -16,6 +17,7 @@ namespace Plasmium {
         Handler<EntityId, MonsterControllerComponent> monsterControllerComponents;
         Handler<EntityId, CombatComponent> combatComponents;
         Handler<EntityId, NameComponent> nameComponents;
+        RuleManager ruleManager;
 
     public:
         void LoadLevelFile(FileResource levelFile);

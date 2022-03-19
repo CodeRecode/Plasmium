@@ -1,5 +1,8 @@
 #include "GameplayEventLog.h"
+
 #include "Core.h"
+#include "ResourceManager.h"
+#include "Window.h"
 
 namespace Plasmium {
     void GameplayEventLog::AddLog(StringId id) {

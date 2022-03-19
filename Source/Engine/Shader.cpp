@@ -4,6 +4,7 @@
 #include <d3dcompiler.h>
 #include <string>
 #include <stdlib.h>
+#include "CameraManager.h"
 #include "Core.h"
 
 using namespace Plasmium::ShaderInternal;
@@ -221,9 +222,9 @@ namespace Plasmium
                 Window::WriteError("Failed to map camera buffer in shader");
                 return;
             }
-            auto& camera = Core::GetInstance().GetCameraManager().GetCamera();
+            auto* camera = Core::GetInstance().GetCameraManager().GetCamera();
             CameraInfo* cameraData = (CameraInfo*)mappedResource.pData;
-            cameraData->cameraPosition = camera.GetPosition();
+            cameraData->cameraPosition = camera->GetPosition();
             deviceContext->Unmap(cameraBuffer, 0);
             deviceContext->VSSetConstantBuffers(vsBufferIndex++, 1, &cameraBuffer);
         }

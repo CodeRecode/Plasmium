@@ -1,29 +1,30 @@
 #pragma once
-#include "CameraManager.h"
 #include "CoreSystem.h"
-#include "EntityManager.h"
 #include "Event.h"
-#include "GameplayManager.h"
 #include "PerfMonitor.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
 #include "RingBuffer.h"
-#include "Window.h"
 
 
 namespace Plasmium
 {
+    class CameraManager;
+    class EntityManager;
+    class GameplayManager;
+    class Renderer;
+    class ResourceManager;
     class Window;
+
     class Core
     {
     private:
-        CameraManager cameraManager;
-        EntityManager entityManager;
-        GameplayManager gameplayManager;
+        CameraManager* cameraManager;
+        EntityManager* entityManager;
+        GameplayManager* gameplayManager;
+        Renderer* renderer;
+        ResourceManager* resourceManager;
+        Window* window;
+
         PerfMonitor perfMonitor;
-        Renderer renderer;
-        ResourceManager resourceManager;
-        Window window;
 
         RingBuffer<GenericEvent> eventQueue;
         Array<DeferredEvent> deferredEvents;
@@ -41,10 +42,10 @@ namespace Plasmium
         void PostDeferredEvent(DeferredEvent&& event);
         void ProcessEvent(const GenericEvent& event);
 
-        const Window& GetWindow() { return window; }
-        const CameraManager& GetCameraManager() { return cameraManager; }
-        EntityManager& GetEntityManager() { return entityManager; }
-        ResourceManager& GetResourceManager() { return resourceManager; }
+        const Window& GetWindow() { return *window; }
+        const CameraManager& GetCameraManager() { return *cameraManager; }
+        EntityManager& GetEntityManager() { return *entityManager; }
+        ResourceManager& GetResourceManager() { return *resourceManager; }
 
         milliseconds GetFrameStartTime() const { return perfMonitor.GetFrameStartTime(); }
     };

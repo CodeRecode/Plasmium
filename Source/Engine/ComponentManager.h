@@ -38,6 +38,13 @@ namespace Plasmium {
             Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
         }
 
+        virtual void CreateComponent(const ComponentCreationArgs& creationArgs,
+            const vec3& a,
+            const vec3& b)
+        {
+            Window::WriteError("Unhandled CreateComponent with type: ", (uint32)creationArgs.type);
+        }
+
         virtual void CreateComponent(const ComponentCreationArgs & creationArgs,
             const vec3& a,
             const vec3& b,

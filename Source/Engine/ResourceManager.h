@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-
 #include "CoreSystem.h"
 #include "FileResource.h"
 #include "Handler.h"

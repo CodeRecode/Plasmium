@@ -7,23 +7,21 @@
 namespace Plasmium
 {
     class Camera {
-    private:
-        const vec3 up = vec3(0.0, 1.0, 0.0);
-        vec3 position;
-        vec3 rotation; // Degrees: Pitch, Roll, Yaw
-        mat4 viewMatrix;
+    protected:
+        const vec3 Up = vec3(0.0, 1.0, 0.0);
 
-        vec3 Camera::GetCameraDirection();
-        void UpdateViewMatrix();
+        vec3 GetCameraDirection() const;
     public:
-        vec3 GetPosition() const { return position; }
+        virtual vec3 GetPosition() const = 0;
+        virtual vec3 GetRotation() const = 0;
 
-        void SetPosition(vec3 newPosition);
-        void MovePosition(vec3 move);
-        void MovePositionRelative(vec2 move);
-        void Zoom(float move);
-        void SetRotation(vec3 newRotation);
-        void MoveRotation(vec3 move);
-        const mat4& GetViewMatrix() const;
+        virtual void MovePositionRelative(vec2 move) {}
+        virtual void MoveRotation(vec3 rotation) {}
+        virtual void SetPosition(vec3 position) {};
+        virtual void SetRotation(vec3 rotation) {};
+        virtual void Zoom(float move) {};
+
+        vec3 GetPositionRelative(const vec2& move) const;
+        mat4 GetViewMatrix() const;
     };
 }

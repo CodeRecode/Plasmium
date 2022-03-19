@@ -3,12 +3,13 @@
 
 namespace Plasmium {
     enum class ComponentType {
-        Transform,
-        Model,
-        PlayerController,
-        MonsterController,
+        Camera,
         Combat,
+        Model,
+        MonsterController,
         Name,
+        PlayerController,
+        Transform,
         ComponentTypeCount
     };
 

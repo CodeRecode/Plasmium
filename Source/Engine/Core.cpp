@@ -1,10 +1,15 @@
 #include "Core.h"
 
-#include "Window.h"
+#include "CameraManager.h"
 #include "Component.h"
-
+#include "EntityManager.h"
 #include "Event.h"
+#include "GameplayManager.h"
 #include "InputTypes.h"
+#include "Renderer.h"
+#include "ResourceManager.h"
+#include "Window.h"
+
 
 namespace Plasmium
 {
@@ -13,28 +18,36 @@ namespace Plasmium
         Window::CreateConsole();
         perfMonitor.Initialize();
 
-        coreSystems.Push(&window);
-        coreSystems.Push(&gameplayManager);
-        coreSystems.Push(&resourceManager);
-        coreSystems.Push(&cameraManager);
-        coreSystems.Push(&entityManager);
-        coreSystems.Push(&renderer);
+        cameraManager = new CameraManager();
+        entityManager = new EntityManager();
+        gameplayManager = new GameplayManager();
+        renderer = new Renderer();
+        resourceManager = new ResourceManager();
+        window = new Window();
+
+        coreSystems.Push(window);
+        coreSystems.Push(gameplayManager);
+        coreSystems.Push(resourceManager);
+        coreSystems.Push(cameraManager);
+        coreSystems.Push(entityManager);
+        coreSystems.Push(renderer);
 
         for (CoreSystem* system : coreSystems) {
             system->Initialize();
         }
 
-        entityManager.RegisterComponentManager(ComponentType::Model, &renderer);
-        entityManager.RegisterComponentManager(ComponentType::Transform, &entityManager);
-        entityManager.RegisterComponentManager(ComponentType::PlayerController, &gameplayManager);
-        entityManager.RegisterComponentManager(ComponentType::MonsterController, &gameplayManager);
-        entityManager.RegisterComponentManager(ComponentType::Combat, &gameplayManager);
-        entityManager.RegisterComponentManager(ComponentType::Name, &gameplayManager);
+        entityManager->RegisterComponentManager(ComponentType::Camera, cameraManager);
+        entityManager->RegisterComponentManager(ComponentType::Combat, gameplayManager);
+        entityManager->RegisterComponentManager(ComponentType::Model, renderer);
+        entityManager->RegisterComponentManager(ComponentType::Name, gameplayManager);
+        entityManager->RegisterComponentManager(ComponentType::MonsterController, gameplayManager);
+        entityManager->RegisterComponentManager(ComponentType::PlayerController, gameplayManager);
+        entityManager->RegisterComponentManager(ComponentType::Transform, entityManager);
 
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
-        gameplayManager.LoadLevelFile(levelFile);
+        gameplayManager->LoadLevelFile(levelFile);
 
-        while (!window.ShouldQuit())
+        while (!window->ShouldQuit())
         {
             milliseconds deltaTime = perfMonitor.FrameStart();
             for (CoreSystem* system : coreSystems) {
@@ -61,7 +74,9 @@ namespace Plasmium
             perfMonitor.FrameEnd();
         }
 
-        renderer.Release();
+        for (CoreSystem* system : coreSystems) {
+            system->Release();
+        }
     }
 
     void Core::PostDeferredEvent(DeferredEvent&& event)
@@ -84,10 +99,10 @@ namespace Plasmium
                 deferredEvents.Clear();
 
                 // Tear down immediately in a safe order
-                entityManager.DeleteAllEntities();
-                renderer.Release();
-                renderer.Initialize();
-                gameplayManager.ReloadCurrentLevel();
+                entityManager->DeleteAllEntities();
+                renderer->Release();
+                renderer->Initialize();
+                gameplayManager->ReloadCurrentLevel();
             }
         }
     }

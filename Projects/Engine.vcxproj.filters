@@ -147,6 +147,12 @@
     <ClCompile Include="..\Source\Engine\GameplayEventLog.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Engine\RuleManager.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\CameraComponent.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Core.h">
@@ -322,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\HashFunctions.h">
       <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\CameraComponent.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

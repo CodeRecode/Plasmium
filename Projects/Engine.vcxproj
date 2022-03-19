@@ -141,6 +141,7 @@
     <ClCompile Include="..\..\OpenFBX-master\src\ofbx.cpp" />
     <ClCompile Include="..\Source\Engine\AnimationManager.cpp" />
     <ClCompile Include="..\Source\Engine\Camera.cpp" />
+    <ClCompile Include="..\Source\Engine\CameraComponent.cpp" />
     <ClCompile Include="..\Source\Engine\CameraManager.cpp" />
     <ClCompile Include="..\Source\Engine\ControllerComponent.cpp" />
     <ClCompile Include="..\Source\Engine\EntityManager.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="..\Source\Engine\Renderer.cpp" />
     <ClCompile Include="..\Source\Engine\RendererUtils.cpp" />
     <ClCompile Include="..\Source\Engine\ResourceManager.cpp" />
+    <ClCompile Include="..\Source\Engine\RuleManager.cpp" />
     <ClCompile Include="..\Source\Engine\Serialization.cpp" />
     <ClCompile Include="..\Source\Engine\Shader.cpp" />
     <ClCompile Include="..\Source\Engine\Core.cpp" />
@@ -179,6 +181,7 @@
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Animation.h" />
     <ClInclude Include="..\Source\Engine\AnimationManager.h" />
+    <ClInclude Include="..\Source\Engine\CameraComponent.h" />
     <ClInclude Include="..\Source\Engine\CombatComponent.h" />
     <ClInclude Include="..\Source\Engine\GameplayEventLog.h" />
     <ClInclude Include="..\Source\Engine\FontManager.h" />

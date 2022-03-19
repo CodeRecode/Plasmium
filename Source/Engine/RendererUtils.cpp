@@ -1,5 +1,8 @@
 #include "RenderUtils.h"
 
+#include "Renderer.h"
+#include "Window.h"
+
 namespace Plasmium {
 
     DXGI_RATIONAL GetRefreshRate(const Window& window)

@@ -1,4 +1,5 @@
 #include "ResourceManager.h"
+
 #include "Core.h"
 #include "Event.h"
 

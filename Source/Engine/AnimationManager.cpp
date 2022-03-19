@@ -177,7 +177,7 @@ namespace Plasmium {
 
         // Move Forward
         walkAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
-            walkAnimation.keys.Back().time + 150,
+            walkAnimation.keys.Back().time + 100,
             params.endPosition,
             params.endRotation));
 

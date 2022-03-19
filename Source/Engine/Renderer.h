@@ -66,9 +66,9 @@ namespace Plasmium
 
         Renderer();
 
-        void Initialize();
+        void Initialize() override;
         void Update(milliseconds deltaTime) override;
-        void Release();
+        void Release() override;
 
         void ProcessEvent(const GenericEvent& event) override;
 
