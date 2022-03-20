@@ -332,6 +332,9 @@
     <ClInclude Include="..\Source\Engine\GameplayTypes.h">
       <Filter>Gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Engine\AllComponents.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Engine\Shaders\MaterialPixel.hlsl">

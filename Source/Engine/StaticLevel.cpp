@@ -1,5 +1,6 @@
 #include "StaticLevel.h"
 
+#include "AllComponents.h"
 #include "Core.h"
 #include "EntityManager.h"
 #include "Window.h"
@@ -34,7 +35,7 @@ namespace Plasmium {
         rapidjson::Document document;
         document.ParseStream(rapidjson::IStreamWrapper(input));
 
-        auto& entityManager = Core::GetInstance().GetEntityManager();
+        auto& entityManager = Core::GetEntityManager();
 
         auto& levelData = document["level_data"];
         height = levelData["height"].GetUint();
@@ -98,11 +99,10 @@ namespace Plasmium {
 
             if (gameObject.HasMember("camera")) {
                 auto& cameraData = gameObject["camera"];
-                vec3 cameraRotation = GetVecFromArray(cameraData["rotation"].GetArray());
                 entityManager.AddComponent<CameraComponent>(entityId,
+                    position,
                     GetVecFromArray(cameraData["position"].GetArray()),
-                    cameraRotation);
-                Core::GetInstance().PostEvent(MoveCameraEvent(position, cameraRotation));
+                    GetVecFromArray(cameraData["rotation"].GetArray()));
             }
 
             if (gameObject.HasMember("name")) {
@@ -153,7 +153,7 @@ namespace Plasmium {
                 }
             }
 
-            Core::GetInstance().PostEvent(EntityCreatedEvent(entityId, logicalPosition));
+            Core::PostEvent(EntityCreatedEvent(entityId, logicalPosition));
         }
     }
 }

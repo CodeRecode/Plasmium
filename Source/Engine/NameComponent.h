@@ -15,5 +15,4 @@ namespace Plasmium {
         }
         const char* GetName() const { return name.Get(); }
     };
-    ComponentType NameComponent::type = ComponentType::Name;
 }

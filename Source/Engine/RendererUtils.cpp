@@ -85,7 +85,7 @@ namespace Plasmium {
         ID3D11DeviceContext** deviceContext)
     {
         HRESULT result;
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
 
         DXGI_SWAP_CHAIN_DESC swapChainDesc;
         ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
@@ -170,7 +170,7 @@ namespace Plasmium {
         ID3D11DepthStencilView** depthStencilView)
     {
         HRESULT result;
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
 
         D3D11_TEXTURE2D_DESC depthBufferDesc;
         ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
@@ -269,7 +269,7 @@ namespace Plasmium {
         ID3D11RasterizerState** rasterState)
     {
         HRESULT result;
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
 
         D3D11_RASTERIZER_DESC rasterDesc;
         ZeroMemory(&rasterDesc, sizeof(rasterDesc));
@@ -312,7 +312,7 @@ namespace Plasmium {
         ID3D11ShaderResourceView** shaderResourceView)
     {
         HRESULT result;
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
 
         D3D11_TEXTURE2D_DESC textureDesc;
         ZeroMemory(&textureDesc, sizeof(textureDesc));

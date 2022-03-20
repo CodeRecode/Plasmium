@@ -222,7 +222,7 @@ namespace Plasmium
                 Window::WriteError("Failed to map camera buffer in shader");
                 return;
             }
-            auto* camera = Core::GetInstance().GetCameraManager().GetCamera();
+            auto* camera = Core::GetCameraManager().GetCamera();
             CameraInfo* cameraData = (CameraInfo*)mappedResource.pData;
             cameraData->cameraPosition = camera->GetPosition();
             deviceContext->Unmap(cameraBuffer, 0);

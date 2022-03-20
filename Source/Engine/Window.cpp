@@ -136,7 +136,7 @@ namespace Plasmium
                 winKeyStates[(uint32)keyBindPair.key] & highbit;
         }
 
-        Core::GetInstance().PostEvent(InputEvent(currentKeybindFunctionStates, previousKeybindFunctionStates));
+        Core::PostEvent(InputEvent(currentKeybindFunctionStates, previousKeybindFunctionStates));
     }
 
     void Window::Serialize()

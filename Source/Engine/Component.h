@@ -14,15 +14,6 @@ namespace Plasmium {
         ComponentTypeCount
     };
 
-    struct ComponentCreationArgs {
-        ComponentType type;
-        EntityId parent;
-        ComponentCreationArgs(ComponentType type, EntityId parent) :
-            type(type),
-            parent(parent) 
-        {}
-    };
-
     template<class T>
     class Component {
     private:

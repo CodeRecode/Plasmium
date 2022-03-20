@@ -35,9 +35,11 @@ namespace Plasmium
     public:
         Model(FileResource file);
         const char* GetFileName() { return file.GetFileName(); }
+        FileId GetId() const { return file.GetId(); }
 
         bool Initialize(ID3D11Device* device);
         void Draw(ID3D11DeviceContext* deviceContext, Shader* shader) const;
         void Release();
+
     };
 }

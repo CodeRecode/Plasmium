@@ -1,13 +1,14 @@
 #pragma once
 #include "CoreSystem.h"
-#include "EntityManager.h"
 #include "Event.h"
 #include "PerfMonitor.h"
 #include "RingBuffer.h"
 
 namespace Plasmium
 {
+    class AnimationManager;
     class CameraManager;
+    class EntityManager;
     class GameplayManager;
     class Renderer;
     class ResourceManager;
@@ -16,48 +17,41 @@ namespace Plasmium
     class Core
     {
     private:
-        CameraManager* cameraManager;
-        EntityManager* entityManager;
-        GameplayManager* gameplayManager;
-        Renderer* renderer;
-        ResourceManager* resourceManager;
-        Window* window;
+        std::shared_ptr<AnimationManager> animationManager;
+        std::shared_ptr<CameraManager> cameraManager;
+        std::shared_ptr<EntityManager> entityManager;
+        std::shared_ptr<GameplayManager> gameplayManager;
+        std::shared_ptr<Renderer> renderer;
+        std::shared_ptr<ResourceManager> resourceManager;
+        std::shared_ptr<Window> window;
 
         PerfMonitor perfMonitor;
 
         RingBuffer<GenericEvent> eventQueue;
         Array<DeferredEvent> deferredEvents;
-        Array<CoreSystem*> coreSystems;
+        Array<std::shared_ptr<CoreSystem>> coreSystems;
 
-        Core() { }
+        Core() = default;
+        ~Core() = default;
+        void ProcessAllEvents();
+        void ProcessEvent(const GenericEvent& event);
+
     public:
-        static Core& GetInstance() { 
+        void RunGame();
+
+        static Core& GetInstance() {
             static Core instance;
             return instance;
         }
-        void RunGame();
 
-        void PostEvent(GenericEvent&& event);
-        void PostDeferredEvent(DeferredEvent&& event);
-        void ProcessEvent(const GenericEvent& event);
+        static void PostEvent(GenericEvent&& event);
+        static void PostDeferredEvent(DeferredEvent&& event);
 
-        const Window& GetWindow() { return *window; }
-        const CameraManager& GetCameraManager() { return *cameraManager; }
-        EntityManager& GetEntityManager() { return *entityManager; }
-        ResourceManager& GetResourceManager() { return *resourceManager; }
+        static const Window& GetWindow() { return *GetInstance().window; }
+        static const CameraManager& GetCameraManager() { return *GetInstance().cameraManager; }
+        static EntityManager& GetEntityManager() { return *GetInstance().entityManager; }
+        static ResourceManager& GetResourceManager() { return *GetInstance().resourceManager; }
 
-        template <typename T>
-        T* GetComponent(EntityId entityId)
-        {
-            return entityManager->GetComponent<T>(entityId);
-        }
-        
-        template <typename T>
-        const Array<T>& GetComponentArray()
-        {
-            return entityManager->GetComponentArray<T>();
-        }
-
-        milliseconds GetFrameStartTime() const { return perfMonitor.GetFrameStartTime(); }
+        static milliseconds GetFrameStartTime() { return GetInstance().perfMonitor.GetFrameStartTime(); }
     };
 }

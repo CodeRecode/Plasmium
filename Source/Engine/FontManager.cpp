@@ -48,7 +48,7 @@ namespace Plasmium {
             return;
         }
 
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         float dpi = (float)GetDpiForWindow(window.GetHandle());
         D2D1_RENDER_TARGET_PROPERTIES rtProperties =
             D2D1::RenderTargetProperties(
@@ -77,7 +77,7 @@ namespace Plasmium {
 
     void FontManager::Draw(const RingBuffer<Text2D>& texts)
     {
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         renderTarget->BeginDraw();
 
         for (const auto& text : texts) {
@@ -103,7 +103,7 @@ namespace Plasmium {
 
     void FontManager::Draw(const Array<Text2D>& texts)
     {
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         renderTarget->BeginDraw();
 
         for (const auto& text : texts) {

@@ -19,5 +19,4 @@ namespace Plasmium {
 
         bool HasTexture() const { return !textureFile.IsNone(); }
     };
-    ComponentType ModelComponent::type = ComponentType::Model;
 }

@@ -16,5 +16,6 @@ namespace Plasmium
         void Release();
 
         ID3D11ShaderResourceView* GetTexture() { return texture; }
+        FileId GetId() const { return file.GetId(); }
     };
 }

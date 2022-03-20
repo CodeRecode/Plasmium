@@ -179,6 +179,7 @@
     <ClCompile Include="..\Source\Engine\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Engine\AllComponents.h" />
     <ClInclude Include="..\Source\Engine\Animation.h" />
     <ClInclude Include="..\Source\Engine\AnimationManager.h" />
     <ClInclude Include="..\Source\Engine\CameraComponent.h" />

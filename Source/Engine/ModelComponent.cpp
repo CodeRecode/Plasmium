@@ -22,7 +22,7 @@ namespace Plasmium
 
     void ModelComponent::Draw(ID3D11DeviceContext* deviceContext, Shader* shader) const
     {
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         auto& model = resourceManager.GetModelResource(modelFile);
 
         if (HasTexture()) {

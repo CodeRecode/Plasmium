@@ -65,7 +65,7 @@ namespace Plasmium {
 
             milliseconds averageTime = (systemTime / 10000.0) / processors;
 
-            Core::GetInstance().PostEvent(PerformanceCountersEvent(
+            Core::PostEvent(PerformanceCountersEvent(
                 (double)(frame - lastPerfFrame) / (perfDeltaTime / 1000.0),
                 averageTime / perfDeltaTime * 100.0));
 

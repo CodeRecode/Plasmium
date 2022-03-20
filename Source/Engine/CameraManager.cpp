@@ -1,5 +1,7 @@
 #include "CameraManager.h"
+
 #include "Core.h"
+#include "EntityManager.h"
 #include "Keybinds.h"
 
 namespace Plasmium {
@@ -8,7 +10,7 @@ namespace Plasmium {
     }
 
     void CameraManager::ProcessEvent(const GenericEvent& event) {
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         if ((EventType)event.index() == EventType::Input) {
             auto& inputEvent = std::get<InputEvent>(event);
 
@@ -46,7 +48,7 @@ namespace Plasmium {
         }
         if ((EventType)event.index() == EventType::EntityCreated) {
             auto& entityCreated = std::get<EntityCreatedEvent>(event);
-            auto* camera = Core::GetInstance().
+            auto* camera = Core::GetEntityManager().
                 GetComponent<CameraComponent>(entityCreated.entityId);
             if (camera != nullptr) {
                 currentCamera = camera;

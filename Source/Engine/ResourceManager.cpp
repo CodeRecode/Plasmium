@@ -21,7 +21,7 @@ namespace Plasmium {
         auto modelId = modelFile.GetId();
         if (!models.Contains(modelId)) {
             Model* model = models.EmplaceObject(modelId, Model(modelFile));
-            Core::GetInstance().PostEvent(ModelLoadedEvent(modelFile));
+            Core::PostEvent(ModelLoadedEvent(modelFile));
         }
 
         return *models.GetObjectPtr(modelId);
@@ -32,7 +32,7 @@ namespace Plasmium {
         auto textureId = textureFile.GetId();
         if (!textures.Contains(textureId)) {
             Texture* texture = textures.EmplaceObject(textureId, Texture(textureFile));
-            Core::GetInstance().PostEvent(TextureLoadedEvent(textureFile));
+            Core::PostEvent(TextureLoadedEvent(textureFile));
         }
 
         return *textures.GetObjectPtr(textureId);

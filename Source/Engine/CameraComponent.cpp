@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "EntityManager.h"
+#include "TransformComponent.h"
 
 namespace Plasmium {
 
@@ -18,7 +19,7 @@ namespace Plasmium {
     void CameraComponent::Update(milliseconds deltaTime)
     {
         // Use a dead zone and lerping
-        auto& transform = *Core::GetInstance().GetComponent<TransformComponent>(GetId());
+        auto& transform = *Core::GetEntityManager().GetComponent<TransformComponent>(GetId());
         float distanceSq = (cachedPosition - transform.GetPosition()).LengthSquared();
         if (distanceSq > 8) {
             vec3 delta = transform.GetPosition() - cachedPosition;

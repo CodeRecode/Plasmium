@@ -1,5 +1,6 @@
 #include "Core.h"
 
+#include "AnimationManager.h"
 #include "CameraManager.h"
 #include "Component.h"
 #include "EntityManager.h"
@@ -18,75 +19,76 @@ namespace Plasmium
         Window::CreateConsole();
         perfMonitor.Initialize();
 
-        cameraManager = new CameraManager();
-        entityManager = new EntityManager();
-        gameplayManager = new GameplayManager();
-        renderer = new Renderer();
-        resourceManager = new ResourceManager();
-        window = new Window();
+        animationManager = std::make_shared<AnimationManager>();
+        cameraManager = std::make_shared<CameraManager>();
+        entityManager = std::make_shared<EntityManager>();
+        gameplayManager = std::make_shared<GameplayManager>();
+        renderer = std::make_shared<Renderer>();
+        resourceManager = std::make_shared<ResourceManager>();
+        window = std::make_shared<Window>();
 
         coreSystems.Push(window);
         coreSystems.Push(gameplayManager);
+        coreSystems.Push(animationManager);
         coreSystems.Push(resourceManager);
         coreSystems.Push(cameraManager);
         coreSystems.Push(entityManager);
         coreSystems.Push(renderer);
 
-        for (CoreSystem* system : coreSystems) {
+        for (auto& system : coreSystems) {
             system->Initialize();
         }
 
         FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
         gameplayManager->LoadLevelFile(levelFile);
 
-        while (!eventQueue.Empty()) {
-            auto event = eventQueue.PopFront();
-            for (CoreSystem* system : coreSystems) {
-                system->ProcessEvent(event);
-            }
-            ProcessEvent(event);
-        }
+        ProcessAllEvents();
 
         while (!window->ShouldQuit())
         {
             milliseconds deltaTime = perfMonitor.FrameStart();
-            for (CoreSystem* system : coreSystems) {
+            for (auto& system : coreSystems) {
                 system->Update(deltaTime);
             }
 
-            milliseconds frameStartTime = perfMonitor.GetFrameStartTime();
-            for (uint32 index = 0; index < deferredEvents.Size(); ++index) {
-                if (frameStartTime >= deferredEvents[index].eventTime) {
-                    PostEvent(std::move(deferredEvents[index].event));
-                    deferredEvents.Delete(index);
-                    --index;
-                }
-            }
-
-            while (!eventQueue.Empty()) {
-                auto event = eventQueue.PopFront();
-                for (CoreSystem* system : coreSystems) {
-                    system->ProcessEvent(event);
-                }
-                ProcessEvent(event);
-            }
+            ProcessAllEvents();
 
             perfMonitor.FrameEnd();
         }
 
-        for (CoreSystem* system : coreSystems) {
+        for (auto& system : coreSystems) {
             system->Release();
         }
     }
 
     void Core::PostDeferredEvent(DeferredEvent&& event)
     {
-        deferredEvents.Push(std::move(event));
+        GetInstance().deferredEvents.Push(std::move(event));
     }
 
     void Core::PostEvent(GenericEvent&& eventClass)
     {
-        eventQueue.PushBack(std::move(eventClass));
+        GetInstance().eventQueue.PushBack(std::move(eventClass));
+    }
+
+    void Core::ProcessAllEvents()
+    {
+        milliseconds frameStartTime = perfMonitor.GetFrameStartTime();
+        for (uint32 index = 0; index < deferredEvents.Size(); ++index) {
+            if (frameStartTime >= deferredEvents[index].eventTime) {
+                PostEvent(std::move(deferredEvents[index].event));
+                deferredEvents.Delete(index);
+                --index;
+            }
+        }
+
+        while (!eventQueue.Empty()) {
+            auto event = eventQueue.PopFront();
+            for (auto& system : coreSystems) {
+                system->ProcessEvent(event);
+            }
+            ProcessEvent(event);
+        }
     }
 
     void Core::ProcessEvent(const GenericEvent& event)
@@ -99,6 +101,7 @@ namespace Plasmium
                 deferredEvents.Clear();
 
                 // Tear down immediately in a safe order
+                animationManager->StopAll();
                 entityManager->DeleteAllEntities();
                 renderer->Release();
                 renderer->Initialize();

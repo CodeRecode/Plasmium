@@ -26,5 +26,4 @@ namespace Plasmium {
         void DoDamage(float damage) { currentHealth -= damage; }
         void SetFaction(FactionType faction) { this->faction = faction; }
     };
-    ComponentType CombatComponent::type = ComponentType::Combat;
 }

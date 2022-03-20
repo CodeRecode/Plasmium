@@ -6,6 +6,7 @@
 #include "Plasmath.h"
 #include "RenderUtils.h"
 #include "ResourceManager.h"
+#include "TransformComponent.h"
 #include "Types.h"
 
 namespace Plasmium
@@ -47,7 +48,7 @@ namespace Plasmium
             return;
         }
 
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         float windowHeight = (float)window.GetHeight();
         float windowWidth = (float)window.GetWidth();
         radians fieldOfView = DegreesToRadians(45.0f);
@@ -62,7 +63,7 @@ namespace Plasmium
 
         fontManager.Initialize(device, swapChain);
 
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         for (auto& model : resourceManager.GetAllModels()) {
             model.Initialize(device);
         }
@@ -92,13 +93,13 @@ namespace Plasmium
         deviceContext->ClearRenderTargetView(renderTargetView, &clearColor[0]);
         deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-        auto* camera = Core::GetInstance().GetCameraManager().GetCamera();
+        auto* camera = Core::GetCameraManager().GetCamera();
         mat4 viewMatrix = camera->GetViewMatrix();
 
-        auto& modelComponents = Core::GetInstance().GetComponentArray<ModelComponent>();
+        auto& modelComponents = Core::GetEntityManager().GetComponentArray<ModelComponent>();
 
         for (const auto& modelComponent : modelComponents) {
-            auto* transformComponent = Core::GetInstance().GetComponent<TransformComponent>(
+            auto* transformComponent = Core::GetEntityManager().GetComponent<TransformComponent>(
                 modelComponent.GetId());
 
             auto worldMatrix = mat4(1.0f);
@@ -127,7 +128,7 @@ namespace Plasmium
         fontManager.Draw(debugTexts);
         fontManager.Draw(gameplayEventLog.GetLogs());
 
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         if (window.GetVsyncEnabled()) {
             swapChain->Present(1, 0);
         }
@@ -146,7 +147,7 @@ namespace Plasmium
         for (auto& sprite : sprites) {
             sprite.Release();
         }
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         for (auto& model : resourceManager.GetAllModels()) {
             model.Release();
         }
@@ -200,7 +201,7 @@ namespace Plasmium
     }
 
     void Renderer::ProcessEvent(const GenericEvent& event) {
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         if ((EventType)event.index() == EventType::ModelLoaded) {
             auto& modelEvent = std::get<ModelLoadedEvent>(event);
             auto& model = resourceManager.GetModelResource(modelEvent.file);

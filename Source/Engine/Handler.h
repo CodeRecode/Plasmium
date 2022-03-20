@@ -3,8 +3,15 @@
 #include "HashTable.h"
 #include "Types.h"
 
+template<typename Handle>
+class IHandler {
+public:
+    virtual ~IHandler() = default;
+    virtual void DeleteObject(Handle id) = 0;
+};
+
 template <typename Handle, typename Object>
-class Handler {
+class Handler : public IHandler<Handle> {
 private:
     HashTable<Handle, uint32> lookup;
     Array<Object> objects;
@@ -14,7 +21,7 @@ public:
     Object* EmplaceObject(Handle id, const Object& object);
     Object* EmplaceObject(Handle id, Object&& object);
     Object* GetObjectPtr(Handle id);
-    void DeleteObject(Handle id);
+    void DeleteObject(Handle id) override;
 
     const HashTable<Handle, uint32>& GetLookupReference() { return lookup; }
     const Array<Object>& GetObjectsReference() { return objects; }

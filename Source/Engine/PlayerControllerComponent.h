@@ -15,5 +15,4 @@ namespace Plasmium {
         {}
         void ProcessInput(const InputEvent& event);
     };
-    ComponentType PlayerControllerComponent::type = ComponentType::PlayerController;
 }

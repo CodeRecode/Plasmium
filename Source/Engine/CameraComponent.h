@@ -11,9 +11,11 @@ namespace Plasmium
         vec3 rotation;
     public:
         CameraComponent(EntityId entityId,
+            const vec3& startPostion,
             const vec3& positionOffset, 
             const vec3& rotation) :
             Component(entityId),
+            cachedPosition(startPostion),
             positionOffset(positionOffset),
             rotation(rotation)
         {}
@@ -29,5 +31,4 @@ namespace Plasmium
         void SetRotation(vec3 rotation) override;
         void Zoom(float move) override;
     };
-    ComponentType CameraComponent::type = ComponentType::Camera;
 }

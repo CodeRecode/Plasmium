@@ -5,7 +5,7 @@
 #include "vec3.h"
 
 namespace Plasmium {
-    class AnimationManager : CoreSystem {
+    class AnimationManager : public CoreSystem {
     private:
         Array<Animation> animations;
 
@@ -17,6 +17,7 @@ namespace Plasmium {
     public:
         virtual void Update(milliseconds deltaTime) override;
         void CreateAnimation(const AnimateEntityParameters& params);
+        void ProcessEvent(const GenericEvent& event) override;
         void StopAll();
     };
 }

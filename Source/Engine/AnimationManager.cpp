@@ -28,7 +28,7 @@ namespace Plasmium {
 
     void AnimationManager::CreateAttackAnimation(const AnimateEntityParameters& params)
     {
-        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+        milliseconds startTime = Core::GetFrameStartTime();
 
         Animation attackAnimation;
         attackAnimation.params = params;
@@ -74,7 +74,7 @@ namespace Plasmium {
 
     void AnimationManager::CreateBumpAnimation(const AnimateEntityParameters& params)
     {
-        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+        milliseconds startTime = Core::GetFrameStartTime();
         Animation bumpAnimation;
         bumpAnimation.params = params;
         bumpAnimation.lastUpdateTime = startTime;
@@ -119,7 +119,7 @@ namespace Plasmium {
 
     void AnimationManager::CreateDeathAnimation(const AnimateEntityParameters& params)
     {
-        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+        milliseconds startTime = Core::GetFrameStartTime();
         Animation deathAnimation;
         deathAnimation.params = params;
         deathAnimation.lastUpdateTime = startTime;
@@ -153,7 +153,7 @@ namespace Plasmium {
 
     void AnimationManager::CreateWalkAnimation(const AnimateEntityParameters& params)
     {
-        milliseconds startTime = Core::GetInstance().GetFrameStartTime();
+        milliseconds startTime = Core::GetFrameStartTime();
         Animation walkAnimation;
         walkAnimation.params = params;
         walkAnimation.lastUpdateTime = startTime;
@@ -186,7 +186,7 @@ namespace Plasmium {
 
     void AnimationManager::Update(milliseconds deltaTime)
     {
-        milliseconds currentTime = Core::GetInstance().GetFrameStartTime();
+        milliseconds currentTime = Core::GetFrameStartTime();
 
         for (uint32 animationIndex = 0; animationIndex < animations.Size(); ++animationIndex) {
             auto& animation = animations[animationIndex];
@@ -209,11 +209,11 @@ namespace Plasmium {
                 AnimateEntityKeyEventParameters keyParameters;
                 keyParameters.keyType = fromKey.type;
                 keyParameters.animationParams = animation.params;
-                Core::GetInstance().PostEvent(AnimateEntityKeyEvent(std::move(keyParameters)));
+                Core::PostEvent(AnimateEntityKeyEvent(std::move(keyParameters)));
             }
 
             if (keyIndex == animation.keys.Size() && currentTime >= toKey.time) {
-                Core::GetInstance().PostEvent(ChangeTransformEvent(
+                Core::PostEvent(ChangeTransformEvent(
                     animation.params.entityId,
                     ChangeTransformPosition | ChangeTransformRotation,
                     vec3(),
@@ -224,7 +224,7 @@ namespace Plasmium {
                 AnimateEntityKeyEventParameters keyParameters;
                 keyParameters.keyType = AnimationKeyType::AnimationComplete;
                 keyParameters.animationParams = animation.params;
-                Core::GetInstance().PostEvent(AnimateEntityKeyEvent(std::move(keyParameters)));
+                Core::PostEvent(AnimateEntityKeyEvent(std::move(keyParameters)));
 
                 animations.Delete(animationIndex);
                 --animationIndex;
@@ -243,7 +243,7 @@ namespace Plasmium {
             float zAngle = FindTurningAngle(fromKey.rotation.z, toKey.rotation.z);
             vec3 newRotation = (vec3(xAngle, yAngle, zAngle)) * (float)timeLerp + fromKey.rotation;
 
-            Core::GetInstance().PostEvent(ChangeTransformEvent(
+            Core::PostEvent(ChangeTransformEvent(
                 animation.params.entityId,
                 ChangeTransformPosition | ChangeTransformRotation,
                 vec3(),
@@ -252,6 +252,14 @@ namespace Plasmium {
                 vec3()));
 
             animation.lastUpdateTime = currentTime;
+        }
+    }
+
+    void AnimationManager::ProcessEvent(const GenericEvent& event)
+    {
+        if ((EventType)event.index() == EventType::AnimateEntity) {
+            auto& animateEntity = std::get<AnimateEntityEvent>(event);
+            CreateAnimation(animateEntity.params);
         }
     }
 

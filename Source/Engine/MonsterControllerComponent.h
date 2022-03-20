@@ -16,5 +16,4 @@ namespace Plasmium {
 
         void Act();
     };
-    ComponentType MonsterControllerComponent::type = ComponentType::MonsterController;
 }

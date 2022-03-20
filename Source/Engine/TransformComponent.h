@@ -41,5 +41,4 @@ namespace Plasmium {
             return result;
         }
     };
-    ComponentType TransformComponent::type = ComponentType::Transform;
 }

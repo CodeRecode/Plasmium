@@ -65,7 +65,7 @@ namespace Plasmium {
 
     void Sprite::AdjustArea(ID3D11DeviceContext* deviceContext)
     {
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         // Map from (0,0) to (-w/2, h/2)
         rect screenSpace;
         screenSpace.x = ((float)window.GetWidth() / -2.0f) + area.x;
@@ -101,7 +101,7 @@ namespace Plasmium {
 
     void Sprite::Draw(ID3D11DeviceContext* deviceContext) const
     {
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         auto& texture = resourceManager.GetTextureResource(textureFile);
         auto* textureValue = texture.GetTexture();
         deviceContext->PSSetShaderResources(0, 1, &textureValue);

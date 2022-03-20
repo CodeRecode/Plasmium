@@ -9,12 +9,12 @@ namespace Plasmium {
         while (logs.Size() >= LogSize) {
             logs.PopFront();
         }
-        const auto& window = Core::GetInstance().GetWindow();
+        const auto& window = Core::GetWindow();
         const float LineStart = (float)window.GetHeight() - 100.0f;
         vec4 drawColor(1.0f, 1.0f, 1.0f, 1.0f);
         rect drawArea(20, LineStart + LineHeight * logs.Size(), 600, 50);
 
-        auto& resourceManager = Core::GetInstance().GetResourceManager();
+        auto& resourceManager = Core::GetResourceManager();
         auto& string = resourceManager.GetString(id);
 
         logs.PushBack(Text2D(string.Get(), drawArea, drawColor));
