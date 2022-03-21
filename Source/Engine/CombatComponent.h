@@ -19,6 +19,7 @@ namespace Plasmium {
             damage(damage)
         {}
 
+        bool IsDead() const { return currentHealth <= 0; }
         float GetDamage() const { return damage; }
         FactionType GetFaction() const { return faction; }
         float GetHealth() const { return currentHealth; }

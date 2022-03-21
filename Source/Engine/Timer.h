@@ -4,7 +4,7 @@
 #include <windef.h>
 
 namespace Plasmium {
-    class PerfMonitor {
+    class Timer {
     private:
         HANDLE processHandle = nullptr;
 
@@ -20,11 +20,14 @@ namespace Plasmium {
         FILETIME kernelTime;
         FILETIME userTime;
 
+        uint32 lastRandom;
+
     public:
         void Initialize();
         milliseconds FrameStart();
         void FrameEnd();
 
+        uint32 GetNextRandom();
         milliseconds GetFrameStartTime() const { return frameStartTime / timeFrequency; }
     };
 }

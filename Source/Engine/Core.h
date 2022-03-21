@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreSystem.h"
 #include "Event.h"
-#include "PerfMonitor.h"
+#include "Timer.h"
 #include "RingBuffer.h"
 
 namespace Plasmium
@@ -25,7 +25,7 @@ namespace Plasmium
         std::shared_ptr<ResourceManager> resourceManager;
         std::shared_ptr<Window> window;
 
-        PerfMonitor perfMonitor;
+        Timer timer;
 
         RingBuffer<GenericEvent> eventQueue;
         Array<DeferredEvent> deferredEvents;
@@ -52,6 +52,7 @@ namespace Plasmium
         static EntityManager& GetEntityManager() { return *GetInstance().entityManager; }
         static ResourceManager& GetResourceManager() { return *GetInstance().resourceManager; }
 
-        static milliseconds GetFrameStartTime() { return GetInstance().perfMonitor.GetFrameStartTime(); }
+        static uint32 GetNextRandom() { return GetInstance().timer.GetNextRandom(); }
+        static milliseconds GetFrameStartTime() { return GetInstance().timer.GetFrameStartTime(); }
     };
 }

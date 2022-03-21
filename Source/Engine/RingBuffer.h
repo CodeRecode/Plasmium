@@ -47,9 +47,7 @@ private:
     void AdjustCapacity(uint32 newCapacity);
 
 public:
-    RingBuffer() {
-        int abc = 0;
-    }
+    RingBuffer() {}
     RingBuffer(uint32 capacity) { AdjustCapacity(capacity); }
     RingBuffer(const RingBuffer<T>& copy);
     ~RingBuffer();

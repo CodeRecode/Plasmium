@@ -9,6 +9,7 @@ namespace Plasmium {
         Attack,
         Bump,
         Death,
+        Turn,
         Walk,
         AnimationTypeCount
     };

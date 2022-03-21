@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Types.h"
+#include "vec3.h"
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -22,12 +24,62 @@ inline degrees FindTurningAngle(degrees currentFacing, degrees newFacing)
     degrees angle = fabsf(currentFacing - newFacing);
     angle = fminf(angle, 360.0f - angle);
 
-    float cosCurr = (float)cos(currentRadians);
-    float sinCurr = (float)sin(currentRadians);
-    float cosNew = (float)cos(newRadians);
-    float sinNew = (float)sin(newRadians);
+    float cosCurr = cosf(currentRadians);
+    float sinCurr = sinf(currentRadians);
+    float cosNew = cosf(newRadians);
+    float sinNew = sinf(newRadians);
     // Cross product, probably an easier way
     float direction = (sinCurr * cosNew - cosCurr * sinNew) < 0 ? 1.0f : -1.0f;
 
     return angle * direction;
+}
+
+template <typename T>
+inline T Clamp(T val, T min, T max) {
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+}
+
+namespace Plasmium {
+    inline vec3 DirectionToRotation(Direction direction)
+    {
+        return vec3(0.0f, (int32)direction * 45.0f, 0.0f);
+    }
+
+    inline vec3 DirectionToVector(Direction direction)
+    {
+        vec3 result = vec3();
+        if (direction == Direction::N || direction == Direction::NE || direction == Direction::NW) {
+            result.z = -1;
+        }
+        else if (direction == Direction::S || direction == Direction::SE || direction == Direction::SW) {
+            result.z = 1;
+        }
+
+        if (direction == Direction::E || direction == Direction::NE || direction == Direction::SE) {
+            result.x = 1;
+        }
+        else if (direction == Direction::W || direction == Direction::NW || direction == Direction::SW) {
+            result.x = -1;
+        }
+        return result;
+    }
+
+    inline Direction VectorToDirection(vec3 direction)
+    {
+        vec3 result = vec3();
+        if (direction.z < 0) {
+            if (direction.x < 0) return Direction::NW;
+            if (direction.x > 0) return Direction::NE;
+            return Direction::N;
+        }
+        if (direction.z > 0) {
+            if (direction.x < 0) return Direction::SW;
+            if (direction.x > 0) return Direction::SE;
+            return Direction::S;
+        }
+        if (direction.x < 0) return Direction::W;
+        return Direction::E;
+    }
 }

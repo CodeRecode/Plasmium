@@ -17,7 +17,7 @@ namespace Plasmium
     void Core::RunGame()
     {
         Window::CreateConsole();
-        perfMonitor.Initialize();
+        timer.Initialize();
 
         animationManager = std::make_shared<AnimationManager>();
         cameraManager = std::make_shared<CameraManager>();
@@ -46,14 +46,14 @@ namespace Plasmium
 
         while (!window->ShouldQuit())
         {
-            milliseconds deltaTime = perfMonitor.FrameStart();
+            milliseconds deltaTime = timer.FrameStart();
             for (auto& system : coreSystems) {
                 system->Update(deltaTime);
             }
 
             ProcessAllEvents();
 
-            perfMonitor.FrameEnd();
+            timer.FrameEnd();
         }
 
         for (auto& system : coreSystems) {
@@ -73,7 +73,7 @@ namespace Plasmium
 
     void Core::ProcessAllEvents()
     {
-        milliseconds frameStartTime = perfMonitor.GetFrameStartTime();
+        milliseconds frameStartTime = timer.GetFrameStartTime();
         for (uint32 index = 0; index < deferredEvents.Size(); ++index) {
             if (frameStartTime >= deferredEvents[index].eventTime) {
                 PostEvent(std::move(deferredEvents[index].event));

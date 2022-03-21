@@ -123,7 +123,7 @@
     <ClCompile Include="..\Source\Engine\Text2D.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Engine\PerfMonitor.cpp">
+    <ClCompile Include="..\Source\Engine\Timer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Engine\AnimationManager.cpp">
@@ -278,7 +278,7 @@
     <ClInclude Include="..\Source\Engine\Text2D.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Engine\PerfMonitor.h">
+    <ClInclude Include="..\Source\Engine\Timer.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Engine\AnimationManager.h">

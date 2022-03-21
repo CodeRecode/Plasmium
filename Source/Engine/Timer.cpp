@@ -1,19 +1,19 @@
-#include "PerfMonitor.h"
+#include "Timer.h"
 
 #include "Core.h"
 
 namespace Plasmium {
-    uint64 FileTimeToUint64(const FILETIME& ac_FileTime)
+    uint64 FileTimeToUint64(const FILETIME& fileTime)
     {
-        ULARGE_INTEGER lv_Large;
+        ULARGE_INTEGER largeInt;
 
-        lv_Large.LowPart = ac_FileTime.dwLowDateTime;
-        lv_Large.HighPart = ac_FileTime.dwHighDateTime;
+        largeInt.LowPart = fileTime.dwLowDateTime;
+        largeInt.HighPart = fileTime.dwHighDateTime;
 
-        return lv_Large.QuadPart;
+        return largeInt.QuadPart;
     }
 
-    void PerfMonitor::Initialize()
+    void Timer::Initialize()
     {
         SYSTEM_INFO info;
         GetSystemInfo(&info);
@@ -32,16 +32,17 @@ namespace Plasmium {
             &userTime);
 
         lastFrameTime = lastPerfTime;
+        lastRandom = (uint32)lastPerfTime; // Random Seed
     }
 
-    milliseconds PerfMonitor::FrameStart()
+    milliseconds Timer::FrameStart()
     {
         QueryPerformanceCounter((LARGE_INTEGER*)&frameStartTime);
         milliseconds deltaTime = (frameStartTime - lastFrameTime) / timeFrequency;
         return deltaTime;
     }
 
-    void PerfMonitor::FrameEnd()
+    void Timer::FrameEnd()
     {
         ++frame;
         lastFrameTime = frameStartTime;
@@ -72,5 +73,11 @@ namespace Plasmium {
             lastPerfTime = frameStartTime;
             lastPerfFrame = frame;
         }
+    }
+
+    uint32 Timer::GetNextRandom() {
+        // https://en.wikipedia.org/wiki/Linear_congruential_generator
+        lastRandom = (48271 * lastRandom) % INT_MAX;
+        return lastRandom;
     }
 }

@@ -18,6 +18,9 @@ namespace Plasmium {
         case AnimationType::Death:
             CreateDeathAnimation(params);
             break;
+        case AnimationType::Turn:
+            CreateTurnAnimation(params);
+            break;
         case AnimationType::Walk:
             CreateWalkAnimation(params);
             break;
@@ -151,6 +154,29 @@ namespace Plasmium {
         animations.Push(deathAnimation);
     }
 
+    void AnimationManager::CreateTurnAnimation(const AnimateEntityParameters& params)
+    {
+        milliseconds startTime = Core::GetFrameStartTime();
+        Animation turnAnimation;
+        turnAnimation.params = params;
+        turnAnimation.lastUpdateTime = startTime;
+
+        // Start
+        turnAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            startTime,
+            params.startPosition,
+            params.startRotation));
+
+        float angle = FindTurningAngle(params.startRotation.y, params.endRotation.y);
+        // take ~1ms per degree
+        turnAnimation.keys.Push(AnimationKey(AnimationKeyType::None,
+            turnAnimation.keys.Back().time + fabsf(angle) + 10,
+            params.startPosition,
+            params.endRotation));
+
+        animations.Push(turnAnimation);
+    }
+
     void AnimationManager::CreateWalkAnimation(const AnimateEntityParameters& params)
     {
         milliseconds startTime = Core::GetFrameStartTime();
@@ -163,7 +189,6 @@ namespace Plasmium {
             startTime,
             params.startPosition,
             params.startRotation));
-
 
         if (params.endRotation != params.startRotation) {
             float angle = FindTurningAngle(params.startRotation.y, params.endRotation.y);

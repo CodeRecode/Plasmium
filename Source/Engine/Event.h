@@ -27,6 +27,7 @@ namespace Plasmium
         EntityCreated,
         DestroyComponent,
         DestroyEntity,
+        PassTurn,
         GameplayEventLog,
         EventTypeCount
     };
@@ -65,14 +66,14 @@ namespace Plasmium
     struct TryMoveEntityEvent : BaseEvent {
         EntityId entityId;
         vec3 relativeLogicalPosition;
-        Direction direction;
+        vec3 rotation;
         TryMoveEntityEvent(EntityId entityId,
             vec3 relativeLogicalPosition,
-            Direction direction) :
+            vec3 rotation) :
             BaseEvent(EventType::TryMoveEntity),
             entityId(entityId),
             relativeLogicalPosition(relativeLogicalPosition),
-            direction(direction)
+            rotation(rotation)
         {}
     };
 
@@ -197,6 +198,14 @@ namespace Plasmium
         {}
     };
 
+    struct PassTurnEvent : BaseEvent {
+        EntityId entityId;
+        PassTurnEvent(EntityId entityId) :
+            BaseEvent(EventType::PassTurn),
+            entityId(entityId)
+        {}
+    };
+
     struct GameplayEventLogEvent : BaseEvent {
         StringId stringId;
         GameplayEventLogEvent(StringId stringId) :
@@ -220,6 +229,7 @@ namespace Plasmium
         EntityCreatedEvent,
         DestroyComponentEvent,
         DestroyEntityEvent,
+        PassTurnEvent,
         GameplayEventLogEvent> GenericEvent;
 
     struct DeferredEvent {

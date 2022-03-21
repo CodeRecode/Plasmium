@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "CombatComponent.h"
 #include "EntityManager.h"
+#include "Plasmath.h"
 #include "PlayerControllerComponent.h"
 #include "MonsterControllerComponent.h"
 #include "NameComponent.h"
@@ -49,7 +50,6 @@ namespace Plasmium {
         if ((EventType)event.index() == EventType::TryMoveEntity) {
             auto& entityMove = std::get<TryMoveEntityEvent>(event);
             auto& transform = *Core::GetEntityManager().GetComponent<TransformComponent>(entityMove.entityId);
-            vec3 targetRotation = vec3(0.0f, (int32)entityMove.direction * 45.0f, 0.0f);
 
             if (!ruleManager.EntityCanAct(entityMove.entityId)) {
                 return;
@@ -60,7 +60,7 @@ namespace Plasmium {
             animationParams.startPosition = transform.GetPosition();
             animationParams.endPosition = transform.GetPosition();
             animationParams.startRotation = transform.GetRotation();
-            animationParams.endRotation = targetRotation;
+            animationParams.endRotation = entityMove.rotation;
 
             vec3 logicalDestination = transform.GetLogicalPosition() + entityMove.relativeLogicalPosition;
             if (HasCreature(logicalDestination)) {
@@ -111,6 +111,10 @@ namespace Plasmium {
                 }
                 ruleManager.ActCompleted(entityId, animationKey.animationParams.type);
             }
+        }
+        if ((EventType)event.index() == EventType::PassTurn) {
+            auto& passTurnEvent = std::get<PassTurnEvent>(event);
+            ruleManager.ActCompleted(passTurnEvent.entityId, AnimationType::AnimationTypeCount);
         }
         if ((EventType)event.index() == EventType::AttackEntity) {
             auto& attackEvent = std::get<AttackEntityEvent>(event);

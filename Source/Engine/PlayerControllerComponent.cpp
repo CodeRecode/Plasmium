@@ -1,4 +1,6 @@
 #include "PlayerControllerComponent.h"
+
+#include "Core.h"
 #include "InputTypes.h"
 
 namespace Plasmium {
@@ -27,6 +29,9 @@ namespace Plasmium {
         }
         else if (event.GetKeyToggleDown(KeybindFunction::MovePlayerSE)) {
             TryMoveOrAttack(Direction::SE);
+        }
+        else if (event.GetKeyToggleDown(KeybindFunction::PlayerWait)) {
+            Core::PostEvent(PassTurnEvent(GetId()));
         }
     }
 }

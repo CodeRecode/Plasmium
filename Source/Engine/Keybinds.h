@@ -23,6 +23,7 @@ enum class KeybindFunction {
     MovePlayerSE,
     MovePlayerE,
     MovePlayerNE,
+    PlayerWait,
     KeybindFunctionCount
 };
 
@@ -31,7 +32,7 @@ inline uint32 HashFunc<InputKey>(InputKey value) {
     return (int32)value;
 }
 
-const HashTable<Plasmium::PlasString, KeybindFunction> StringToKeybindFunctionMap{
+inline const HashTable<Plasmium::PlasString, KeybindFunction> StringToKeybindFunctionMap{
     {Plasmium::PlasString("Quit"), KeybindFunction::Quit},
     {Plasmium::PlasString("ReloadLevel"), KeybindFunction::ReloadLevel},
     {Plasmium::PlasString("RotateCameraLeft"), KeybindFunction::RotateCameraLeft},
@@ -49,10 +50,11 @@ const HashTable<Plasmium::PlasString, KeybindFunction> StringToKeybindFunctionMa
     {Plasmium::PlasString("MovePlayerS"), KeybindFunction::MovePlayerS},
     {Plasmium::PlasString("MovePlayerSE"), KeybindFunction::MovePlayerSE},
     {Plasmium::PlasString("MovePlayerE"), KeybindFunction::MovePlayerE},
-    {Plasmium::PlasString("MovePlayerNE"), KeybindFunction::MovePlayerNE}
+    {Plasmium::PlasString("MovePlayerNE"), KeybindFunction::MovePlayerNE},
+    {Plasmium::PlasString("PlayerWait"), KeybindFunction::PlayerWait}
 };
 
-const HashTable<Plasmium::PlasString, InputKey> StringToInputKeyMap{
+inline const HashTable<Plasmium::PlasString, InputKey> StringToInputKeyMap{
     {Plasmium::PlasString("Escape"), InputKey::Escape},
     {Plasmium::PlasString("LeftMouse"), InputKey::LeftMouse},
     {Plasmium::PlasString("RightMouse"), InputKey::RightMouse},

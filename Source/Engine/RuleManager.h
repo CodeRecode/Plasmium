@@ -9,7 +9,9 @@ namespace Plasmium {
         EntityId playerId;
         FactionType currentTurn = FactionType::Player;
         bool playerIsActing = false;
+        Array<EntityId> monstersToAct;
         bool IsPlayer(EntityId id) { return id == playerId; }
+        bool ActPassesTurn(AnimationType animationType);
 
     public:
         bool EntityCanAct(EntityId id);

@@ -12,6 +12,7 @@ namespace Plasmium {
         void CreateAttackAnimation(const AnimateEntityParameters& params);
         void CreateBumpAnimation(const AnimateEntityParameters& params);
         void CreateDeathAnimation(const AnimateEntityParameters& params);
+        void CreateTurnAnimation(const AnimateEntityParameters& params);
         void CreateWalkAnimation(const AnimateEntityParameters& params);
 
     public:
