@@ -27,6 +27,7 @@ namespace Plasmium {
         milliseconds FrameStart();
         void FrameEnd();
 
+        void SetSeed(uint32 newSeed) { lastRandom = newSeed; }
         uint32 GetNextRandom();
         milliseconds GetFrameStartTime() const { return frameStartTime / timeFrequency; }
     };

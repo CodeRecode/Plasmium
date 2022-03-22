@@ -153,6 +153,9 @@
     <ClCompile Include="..\Source\Engine\CameraComponent.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Engine\ProceduralLevel.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Core.h">
@@ -334,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\AllComponents.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\ProceduralLevel.h">
+      <Filter>Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,14 +7,21 @@
 #include "PlayerControllerComponent.h"
 #include "MonsterControllerComponent.h"
 #include "NameComponent.h"
+#include "ProceduralLevel.h"
 #include "TransformComponent.h"
 #include "ResourceManager.h"
+#include "Window.h"
 
 namespace Plasmium {
     void GameplayManager::LoadLevelFile(FileResource levelFile)
     {
         auto & resourceManager = Core::GetResourceManager();
-        currentLevel = &resourceManager.GetStaticLevelResource(levelFile);
+        if (levelFile.GetFileExtensionType() == FileExentionType::Level) {
+            currentLevel = &resourceManager.GetStaticLevelResource(levelFile);
+        }
+        else {
+            currentLevel = new ProceduralLevel(levelFile);
+        }
         currentLevel->Load();
     }
 
@@ -60,7 +67,7 @@ namespace Plasmium {
             animationParams.startPosition = transform.GetPosition();
             animationParams.endPosition = transform.GetPosition();
             animationParams.startRotation = transform.GetRotation();
-            animationParams.endRotation = entityMove.rotation;
+            animationParams.endRotation = VectorToRotation(entityMove.relativeLogicalPosition);
 
             vec3 logicalDestination = transform.GetLogicalPosition() + entityMove.relativeLogicalPosition;
             if (HasCreature(logicalDestination)) {
@@ -109,12 +116,32 @@ namespace Plasmium {
                 if (animationKey.animationParams.type == AnimationType::Death) {
                     Core::PostEvent(DestroyEntityEvent(entityId));
                 }
-                ruleManager.ActCompleted(entityId, animationKey.animationParams.type);
+
+                ActionType actionType = ActionType::Idle;
+                switch (animationKey.animationParams.type) {
+                case AnimationType::Attack:
+                    actionType = ActionType::Attack;
+                    break;
+                case AnimationType::Bump:
+                    actionType = ActionType::Bump;
+                    break;
+                case AnimationType::Walk:
+                    actionType = ActionType::Move;
+                    break;
+                case AnimationType::Death:
+                case AnimationType::Turn:
+                    actionType = ActionType::Idle;
+                    break;
+                default:
+                    Window::WriteError("Unknown animation type, could not map to actiontype");
+                    break;
+                }
+                ruleManager.ActCompleted(entityId, actionType);
             }
         }
         if ((EventType)event.index() == EventType::PassTurn) {
             auto& passTurnEvent = std::get<PassTurnEvent>(event);
-            ruleManager.ActCompleted(passTurnEvent.entityId, AnimationType::AnimationTypeCount);
+            ruleManager.ActCompleted(passTurnEvent.entityId, ActionType::Idle);
         }
         if ((EventType)event.index() == EventType::AttackEntity) {
             auto& attackEvent = std::get<AttackEntityEvent>(event);

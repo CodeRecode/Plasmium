@@ -1,0 +1,28 @@
+{
+	"room_defs": [[100, 100]],
+	"creature_defs": {
+		"player": "Configs\\Archetypes\\Player.arch"
+	},
+	"tile_defs": {
+		"floor1": "Assets\\kaykit_fbx\\tileBrickB_small.fbx",
+		"floor2": "Assets\\kaykit_fbx\\tileBrickB_medium.fbx",
+		"floor3": "Assets\\kaykit_fbx\\tileBrickB_large.fbx"
+	},
+	"wall_defs": {
+		"wall": "Assets\\kaykit_fbx\\wall.fbx",
+		"corner": "Assets\\kaykit_fbx\\wallCorner.fbx",
+		"wall_end": "Assets\\kaykit_fbx\\wall_end.fbx",
+		"door": "Assets\\kaykit_fbx\\wall_door.fbx"
+	},
+	"1x1_decoration_defs": [
+		"Assets\\kaykit_fbx\\barrel.fbx",
+		"Assets\\kaykit_fbx\\bucket.fbx",
+		"Assets\\kaykit_fbx\\crate.fbx",
+		"Assets\\kaykit_fbx\\crateDark.fbx",
+		"Assets\\kaykit_fbx\\lootSackA.fbx",
+		"Assets\\kaykit_fbx\\lootSackB.fbx",
+		"Assets\\kaykit_fbx\\pillar.fbx",
+		"Assets\\kaykit_fbx\\pots.fbx",
+		"Assets\\kaykit_fbx\\tableSmall.fbx"
+	]
+}

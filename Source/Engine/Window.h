@@ -33,7 +33,7 @@ namespace Plasmium
         int32 windowX = 1000;
         int32 windowY = 300;
 
-        FileResource configFile{ "Config.ini" };
+        FileResource configFile{ "Configs\\Config.ini" };
 
         friend class FileResource;
 

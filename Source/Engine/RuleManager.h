@@ -1,5 +1,5 @@
 #pragma once
-#include "Animation.h"
+#include "Array.h"
 #include "GameplayTypes.h"
 #include "Types.h"
 
@@ -11,11 +11,11 @@ namespace Plasmium {
         bool playerIsActing = false;
         Array<EntityId> monstersToAct;
         bool IsPlayer(EntityId id) { return id == playerId; }
-        bool ActPassesTurn(AnimationType animationType);
+        bool ActPassesTurn(ActionType actionType);
 
     public:
         bool EntityCanAct(EntityId id);
         void SetPlayer(EntityId id) { playerId = id; }
-        void ActCompleted(EntityId id, AnimationType animationType);
+        void ActCompleted(EntityId id, ActionType actionType);
     };
 }

@@ -1,0 +1,9 @@
+{
+	"name": "Grumpy Wizard",
+	"monster_controller": {},
+	"combat": {
+		"health": 20,
+		"damage": 5
+	},
+	"model": "Assets\\kaykit_fbx\\character_mage.fbx",
+}

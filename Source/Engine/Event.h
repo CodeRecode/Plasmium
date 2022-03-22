@@ -66,14 +66,11 @@ namespace Plasmium
     struct TryMoveEntityEvent : BaseEvent {
         EntityId entityId;
         vec3 relativeLogicalPosition;
-        vec3 rotation;
         TryMoveEntityEvent(EntityId entityId,
-            vec3 relativeLogicalPosition,
-            vec3 rotation) :
+            vec3 relativeLogicalPosition) :
             BaseEvent(EventType::TryMoveEntity),
             entityId(entityId),
-            relativeLogicalPosition(relativeLogicalPosition),
-            rotation(rotation)
+            relativeLogicalPosition(relativeLogicalPosition)
         {}
     };
 

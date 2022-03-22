@@ -41,6 +41,8 @@ inline T Clamp(T val, T min, T max) {
     return val;
 }
 
+
+
 namespace Plasmium {
     inline vec3 DirectionToRotation(Direction direction)
     {
@@ -81,5 +83,10 @@ namespace Plasmium {
         }
         if (direction.x < 0) return Direction::W;
         return Direction::E;
+    }
+
+    inline vec3 VectorToRotation(vec3 vector)
+    {
+        return vec3(0.0f, -RadiansToDegrees(atan2f(vector.x, -vector.z)), 0.0f);
     }
 }

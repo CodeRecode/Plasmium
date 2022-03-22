@@ -6,6 +6,6 @@
 namespace Plasmium {
     void ControllerComponent::TryMoveOrAttack(Direction direction)
     {
-        Core::PostEvent(TryMoveEntityEvent(GetIdInternal(), DirectionToVector(direction), DirectionToRotation(direction)));
+        Core::PostEvent(TryMoveEntityEvent(GetIdInternal(), DirectionToVector(direction)));
     }
 }

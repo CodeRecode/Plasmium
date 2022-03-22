@@ -4,6 +4,8 @@
 *.o
 *.obj
 *.cso
+*.iobj
+*.ipdb
 
 # Precompiled Headers
 *.gch
@@ -38,6 +40,8 @@
 
 # Folders
 Assets/*
+Projects/Engine/Debug/*
+Projects/UnitTest/Debug/*
 Debug/*
 Release/*
 .vs/*

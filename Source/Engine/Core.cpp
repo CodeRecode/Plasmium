@@ -39,7 +39,7 @@ namespace Plasmium
             system->Initialize();
         }
 
-        FileResource levelFile = FileResource("Assets\\SampleLevel.lvl");
+        FileResource levelFile = FileResource("Configs\\Levels\\ProcLevel.plvl");
         gameplayManager->LoadLevelFile(levelFile);
 
         ProcessAllEvents();

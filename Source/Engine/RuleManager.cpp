@@ -6,9 +6,8 @@
 #include "MonsterControllerComponent.h"
 
 namespace Plasmium {
-    bool RuleManager::ActPassesTurn(AnimationType animationType) {
-        return animationType != AnimationType::Bump
-            && animationType != AnimationType::Death;
+    bool RuleManager::ActPassesTurn(ActionType actionType) {
+        return actionType != ActionType::Bump;
     }
 
     bool RuleManager::EntityCanAct(EntityId id)
@@ -24,7 +23,7 @@ namespace Plasmium {
         return true;
     }
 
-    void RuleManager::ActCompleted(EntityId id, AnimationType animationType)
+    void RuleManager::ActCompleted(EntityId id, ActionType actionType)
     {
         if (!IsPlayer(id)) {
             while (!monstersToAct.Empty()) {
@@ -44,7 +43,7 @@ namespace Plasmium {
         }
 
         playerIsActing = false;
-        if (ActPassesTurn(animationType)) {
+        if (ActPassesTurn(actionType)) {
             currentTurn = FactionType::Monster;
             auto& monsters = Core::GetEntityManager().GetComponentArray<MonsterControllerComponent>();
             for (auto& monster : monsters) {

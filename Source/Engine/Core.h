@@ -52,6 +52,7 @@ namespace Plasmium
         static EntityManager& GetEntityManager() { return *GetInstance().entityManager; }
         static ResourceManager& GetResourceManager() { return *GetInstance().resourceManager; }
 
+        static void SetSeed(uint32 seed) { return GetInstance().timer.SetSeed(seed); }
         static uint32 GetNextRandom() { return GetInstance().timer.GetNextRandom(); }
         static milliseconds GetFrameStartTime() { return GetInstance().timer.GetFrameStartTime(); }
     };

@@ -11,10 +11,12 @@ namespace Plasmium
 {
     enum class FileExentionType {
         Unknown,
-        Level,
+        Archetype,
         Config,
         FBX,
+        Level,
         OBJ,
+        ProceduralLevel,
         FileExentionTypeCount
     };
     class FileResource {

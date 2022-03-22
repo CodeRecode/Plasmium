@@ -23,9 +23,7 @@ namespace Plasmium {
                 logicalMove.x = Clamp<float>(logicalMove.x, -1.0f, 1.0f);
                 logicalMove.z = Clamp<float>(logicalMove.z, -1.0f, 1.0f);
 
-                Core::PostEvent(TryMoveEntityEvent(GetIdInternal(), 
-                    logicalMove, 
-                    DirectionToRotation(VectorToDirection(logicalMove))));
+                Core::PostEvent(TryMoveEntityEvent(GetIdInternal(), logicalMove));
                 return;
             }
         }
@@ -37,7 +35,6 @@ namespace Plasmium {
         }
         else if (decisionWeight >= 25) {
             // Turn
-
             Direction turnDirection = (Direction)(Core::GetNextRandom() %
                 (uint32)Direction::DirectionCount);
 

@@ -1,0 +1,13 @@
+{
+	"name": "Brave Knight",
+	"player_controller": {},
+	"camera": {
+		"position": [0, 12, -12],
+		"rotation": [90, -45, 0]
+	},
+	"combat": {
+		"health": 100,
+		"damage": 10
+	},
+	"model": "Assets\\kaykit_fbx\\character_knight.fbx"
+}

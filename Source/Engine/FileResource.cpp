@@ -14,14 +14,20 @@ namespace Plasmium {
                 break;
             }
         }
-        if (strstr(startIndex, "lvl")) {
-            return FileExentionType::Level;
+        if (strstr(startIndex, "arch")) {
+            return FileExentionType::Archetype;
         }
         else if (strstr(startIndex, "ini")) {
             return FileExentionType::Config;
         }
         else if (strstr(startIndex, "fbx")) {
             return FileExentionType::FBX;
+        }
+        else if (strstr(startIndex, "plvl")) {
+            return FileExentionType::ProceduralLevel;
+        }
+        else if (strstr(startIndex, "lvl")) {
+            return FileExentionType::Level;
         }
         else if (strstr(startIndex, "obj")) {
             return FileExentionType::OBJ;

@@ -6,4 +6,12 @@ namespace Plasmium {
         Monster,
         FactionCount
     };
+
+    enum class ActionType {
+        Attack,
+        Bump,
+        Idle,
+        Move,
+        ActionTypeCount
+    };
 }

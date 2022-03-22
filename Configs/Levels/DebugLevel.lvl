@@ -1,0 +1,67 @@
+{
+	"level_data": {
+		"height": 0,
+		"width": 0,
+		"camera_position": [0, 3, 4],
+		"camera_rotation": [90, -45, 0]
+	},
+	"tile_defs": {
+		"floor1": "Assets\\kaykit_fbx\\tileBrickB_small.fbx",
+		"floor2": "Assets\\kaykit_fbx\\tileBrickB_medium.fbx",
+		"floor3": "Assets\\kaykit_fbx\\tileBrickB_large.fbx"
+	},
+	"game_objects": [
+		{
+			"model": "Assets\\cube.obj",
+			"texture": "Assets\\Wood032_2K_Color.png",
+			"position": [0.0, 0.0, 0.0],
+			"rotation": [0.0, 0.0, 0.0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		{
+			"model": "Assets\\cube.obj",
+			"texture": "Assets\\Wood032_2K_Color.png",
+			"position": [1.0, 1.0, 0.0],
+			"rotation": [0.0, 45.0, 0.0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		{
+			"model": "Assets\\cube.obj",
+			"texture": "Assets\\Wood032_2K_Color.png",
+			"position": [1.5, 0.0, 0.0],
+			"rotation": [0.0, -10.0, 0.0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		{
+			"model": "Assets\\kaykit_fbx\\tileBrickB_large.fbx",
+			"position": [0.0, -2.0, 0.0],
+			"rotation": [0.0, 0.0, 0.0],
+			"scale": [1.0, 1.0, 1.0]
+		},
+		{
+			"model": "Assets\\kaykit_fbx\\character_knight.fbx",
+			"position": [0.0, 0.0, -2.0],
+			"rotation": [0.0, 180.0, 0.0],
+			"scale": [1.0, 1.0, 1.0]
+		},
+		{
+			"model": "Assets\\kaykit_fbx\\potionMedium_blue.fbx",
+			"position": [1.0, 0.0, -2.0],
+			"rotation": [0.0, 0.0, 0.0],
+			"scale": [1.0, 1.0, 1.0]
+		},
+		{
+			"model": "Assets\\kaykit_fbx\\potionSmall_blue.fbx",
+			"position": [2.0, 0.0, -2.0],
+			"rotation": [0.0, 0.0, 0.0],
+			"scale": [1.0, 1.0, 1.0]
+		},
+		{
+			"model": "Assets\\barrel.obj",
+			"texture": "Assets\\Metal013_2K_Color.png",
+			"position": [-3.0, -1.0, 0.0],
+			"rotation": [0.0, 0.0, 0.0],
+			"scale": [1.0, 1.0, 1.0]
+		}
+	]
+}
