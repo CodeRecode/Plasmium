@@ -22,7 +22,7 @@ namespace Plasmium
         HRESULT Initialize(ID3D11Device* device, const char* shaderName);
 
     public:
-        virtual void Bind(ID3D11DeviceContext* deviceContext, const ShaderInternal::MatrixInfo& matrices);
+        virtual void Bind(ID3D11DeviceContext* deviceContext, const ShaderInternal::MatrixInfoRef& matrices);
         virtual void SetMaterial(ID3D11DeviceContext* deviceContext, const Material& material) {}
         virtual void Release();
     };

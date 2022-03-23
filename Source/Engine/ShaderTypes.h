@@ -2,6 +2,17 @@
 #include "mat4.h"
 
 namespace Plasmium::ShaderInternal {
+    struct MatrixInfoRef
+    {
+        const mat4& projection;
+        const mat4& view;
+        const mat4& world;
+        MatrixInfoRef(const mat4& projection, const mat4& view, const mat4& world) :
+            projection(projection),
+            view(view),
+            world(world)
+        {}
+    };
     struct MatrixInfo
     {
         mat4 projection;

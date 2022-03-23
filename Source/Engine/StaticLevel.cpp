@@ -15,12 +15,6 @@ namespace Plasmium {
         Deserialize(file.GetInputStream());
     }
 
-    void StaticLevel::Unload()
-    {
-        entities.Clear();
-        map.Clear();
-    }
-
     void StaticLevel::SerializeJSON(std::ofstream& output)
     {
         assert(false);

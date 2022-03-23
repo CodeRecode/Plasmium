@@ -8,6 +8,12 @@
 
 namespace Plasmium {
 
+    void Level::Unload()
+    {
+        entities.Clear();
+        map.Clear();
+    }
+
     void Level::SetDimensions(uint32 height, uint32 width)
     {
         map.Clear();
@@ -115,7 +121,7 @@ namespace Plasmium {
                 for (uint32 col = 0; col < colliderWidth; ++col) {
                     vec3 square((float)col, 0, (float)row);
                     square += transform.GetLogicalPosition() + start;
-                    map[(uint32)square.z][(uint32)square.x].SetWalkable(false);
+                    map[(uint32)square.z][(uint32)square.x].SetGeometry(TileGeometry::Wall);
                 }
             }
         }

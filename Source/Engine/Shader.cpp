@@ -195,7 +195,7 @@ namespace Plasmium
         return result;
     }
 
-    void Shader::Bind(ID3D11DeviceContext* deviceContext, const MatrixInfo& matrices)
+    void Shader::Bind(ID3D11DeviceContext* deviceContext, const MatrixInfoRef& matrices)
     {
         HRESULT result;
         D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -209,9 +209,9 @@ namespace Plasmium
             }
 
             MatrixInfo* matrixData = (MatrixInfo*)mappedResource.pData;
-            matrixData->projection = matrices.projection.Transpose();
-            matrixData->view = matrices.view.Transpose();
-            matrixData->world = matrices.world.Transpose();
+            matrixData->projection = matrices.projection;
+            matrixData->view = matrices.view;
+            matrixData->world = matrices.world;
             deviceContext->Unmap(matrixBuffer, 0);
             deviceContext->VSSetConstantBuffers(vsBufferIndex++, 1, &matrixBuffer);
         }
@@ -254,7 +254,6 @@ namespace Plasmium
 
     void Shader::Release()
     {
-
         if (lightBuffer != nullptr) {
             lightBuffer->Release();
             lightBuffer = nullptr;

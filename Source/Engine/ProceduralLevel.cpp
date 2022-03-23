@@ -20,12 +20,6 @@ namespace Plasmium {
         Deserialize(file.GetInputStream());
     }
 
-    void ProceduralLevel::Unload()
-    {
-        entities.Clear();
-        map.Clear();
-    }
-
     void ProceduralLevel::Deserialize(std::ifstream& input)
     {
         rapidjson::Document document;
@@ -33,16 +27,112 @@ namespace Plasmium {
 
         auto& entityManager = Core::GetEntityManager();
 
-        auto& roomDefs = document["room_defs"].GetArray();
-        auto& room1 = roomDefs[0].GetArray();
-        vec2 roomDims = vec2(room1[0].GetFloat(), room1[1].GetFloat());
-        SetDimensions((uint32)roomDims.x, (uint32)roomDims.y);
+        auto& levelData = document["level_data"];
+        SetDimensions(levelData["height"].GetUint(), levelData["width"].GetUint());
+        uint32 squareCount = levelData["square_count"].GetUint();
 
-        CreateRoom(document, rect(10, 0, 8, 8));
-        CreateRoom(document, rect(0, 0, 5, 5));
+        for (uint32 i = 0; i < squareCount; ++i) {
+            PlaceFloors();
+        }
+
+        for (uint32 row = 0; row < GetHeight(); ++row) {
+            for (uint32 col = 0; col < GetWidth(); ++col) {
+                CheckAndSetIsWall(row, col);
+            }
+        }
+
+        for (uint32 row = 0; row < GetHeight(); ++row) {
+            for (uint32 col = 0; col < GetWidth(); ++col) {
+                Tile& tile = map[row][col];
+                if (tile.GetRoomIndex() != -1 || tile.GetGeometry() != TileGeometry::Floor) {
+                    continue;
+                }
+                FindRoomsFloodFill(row, col, rooms.Size());
+                rooms.Push(vec2(row, col));
+            }
+        }
+
+        auto& tileDefs = document["tile_defs"];
+        FileResource floor1ModelFile = FileResource(tileDefs["floor1"].GetString());
+
+        FileResource debugTexture = FileResource("Assets\\Wood032_2K_Color.png");
+
+        for (uint32 row = 0; row < GetHeight(); ++row) {
+            for (uint32 col = 0; col < GetWidth(); ++col) {
+                Tile& tile = map[row][col];
+                if (tile.GetGeometry() == TileGeometry::Floor) {
+                    CreateTile(row, col, floor1ModelFile);
+                }
+                else if (tile.GetGeometry() == TileGeometry::Wall) {
+                    CreateTexturedTile(row, col, floor1ModelFile, debugTexture);
+                }
+            }
+        }
 
         auto& creatureDefs = document["creature_defs"];
-        CreateCreature(13, 3, 180.0f, FileResource(creatureDefs["player"].GetString()));
+        CreateCreature(25, 25, 180.0f, FileResource(creatureDefs["player"].GetString()));
+    }
+
+    void ProceduralLevel::PlaceFloors()
+    {
+        uint32 height = Core::GetNextRandom() % 6 + 3;
+        uint32 width = Core::GetNextRandom() % 6 + 3;
+        rect absoluteDimensions;
+        absoluteDimensions.top = (float)(Core::GetNextRandom() % (GetHeight() - height));
+        absoluteDimensions.left = (float)(Core::GetNextRandom() % (GetWidth() - width));
+
+        absoluteDimensions.bottom = absoluteDimensions.top + height;
+        absoluteDimensions.right = absoluteDimensions.left + width;
+
+        for (float row = absoluteDimensions.top; row <= absoluteDimensions.bottom; ++row) {
+            for (float col = absoluteDimensions.left; col <= absoluteDimensions.right; ++col) {
+                map[row][col].SetGeometry(TileGeometry::Floor);
+            }
+        }
+    }
+
+    void ProceduralLevel::FindRoomsFloodFill(uint32 row, uint32 col, uint32 roomIndex)
+    {
+        if (row < 0 || col < 0 || row >= GetHeight() || col >= GetWidth()) {
+            return;
+        }
+
+        Tile& tile = map[row][col];
+        if (tile.GetRoomIndex() != -1 || tile.GetGeometry() != TileGeometry::Floor) {
+            return;
+        }
+
+        tile.SetRoomIndex(roomIndex);
+        FindRoomsFloodFill(row + 1, col, roomIndex);
+        FindRoomsFloodFill(row - 1, col, roomIndex);
+        FindRoomsFloodFill(row, col + 1, roomIndex);
+        FindRoomsFloodFill(row, col - 1, roomIndex);
+    }
+
+    void ProceduralLevel::CheckAndSetIsWall(uint32 row, uint32 col)
+    {
+        Tile& tile = map[row][col];
+        if (tile.GetGeometry() != TileGeometry::Floor) {
+            return;
+        }
+
+        if (row == 0 || col == 0 || row == GetHeight() - 1 || col == GetWidth() - 1) {
+            tile.SetGeometry(TileGeometry::Wall);
+            return;
+        }
+
+        bool isEdge = map[row + 1][col].GetGeometry() == TileGeometry::None
+            || map[row - 1][col].GetGeometry() == TileGeometry::None
+            || map[row][col + 1].GetGeometry() == TileGeometry::None
+            || map[row][col - 1].GetGeometry() == TileGeometry::None
+            || map[row + 1][col + 1].GetGeometry() == TileGeometry::None
+            || map[row + 1][col - 1].GetGeometry() == TileGeometry::None
+            || map[row - 1][col + 1].GetGeometry() == TileGeometry::None
+            || map[row - 1][col - 1].GetGeometry() == TileGeometry::None;
+
+        if (isEdge) {
+            tile.SetGeometry(TileGeometry::Wall);
+        }
     }
 
     void ProceduralLevel::CreateRoom(rapidjson::Document& document, rect dimensions)
@@ -125,6 +215,25 @@ namespace Plasmium {
             vec3(1.0f));
 
         entityManager.AddComponent<ModelComponent>(entityId, modelFile);
+    }
+
+    void ProceduralLevel::CreateTexturedTile(float row,
+        float col,
+        FileResource modelFile,
+        FileResource textureFile)
+    {
+        auto& entityManager = Core::GetEntityManager();
+        EntityId entityId = entityManager.CreateEntity();
+        entities.Push(entityId);
+        vec3 tilePosition = vec3(col, -0.5f, row);
+
+        entityManager.AddComponent<TransformComponent>(entityId,
+            vec3(),
+            vec3(TransformComponent::LogicalPointToWorld(tilePosition)),
+            vec3(),
+            vec3(1.0f));
+
+        entityManager.AddComponent<ModelComponent>(entityId, modelFile, textureFile);
     }
 
     void ProceduralLevel::CreateWalls(rapidjson::Value& wallDefs,

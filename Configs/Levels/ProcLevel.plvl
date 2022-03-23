@@ -1,5 +1,10 @@
 {
-	"room_defs": [[100, 100]],
+	"level_data": {
+		"height": 60,
+		"width": 60,
+		"square_count": 35
+	},
+	"room_defs": [],
 	"creature_defs": {
 		"player": "Configs\\Archetypes\\Player.arch"
 	},

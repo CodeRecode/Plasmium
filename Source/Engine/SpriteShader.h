@@ -25,7 +25,7 @@ namespace Plasmium
 
     public:
         void Initialize(ID3D11Device* device);
-        void Bind(ID3D11DeviceContext* deviceContext, const ShaderInternal::MatrixInfo& matrices);
+        void Bind(ID3D11DeviceContext* deviceContext, const ShaderInternal::MatrixInfoRef& matrices);
         void Release() override;
     };
 }

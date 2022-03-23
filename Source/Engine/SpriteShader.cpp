@@ -37,7 +37,7 @@ namespace Plasmium {
         }
     }
 
-    void SpriteShader::Bind(ID3D11DeviceContext* deviceContext, const MatrixInfo& matrices)
+    void SpriteShader::Bind(ID3D11DeviceContext* deviceContext, const MatrixInfoRef& matrices)
     {
         Shader::Bind(deviceContext, matrices);
         deviceContext->PSSetSamplers(0, 1, &samplerState);

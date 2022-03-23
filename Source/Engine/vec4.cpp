@@ -2,14 +2,13 @@
 #include "math.h"
 #include "vec4.h"
 
+#include <string>
+
 namespace Plasmium
 {
     vec4& vec4::operator=(const vec4& rhs)
     {
-        x = rhs.x;
-        y = rhs.y;
-        z = rhs.z;
-        w = rhs.w;
+        std::memcpy(&x, &rhs.x, sizeof(float) * 4);
         return *this;
     }
 

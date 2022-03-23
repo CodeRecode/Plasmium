@@ -15,7 +15,6 @@ namespace Plasmium {
     public:
         StaticLevel(FileResource file) : file(file) {}
         void Load() override;
-        void Unload() override;
 
         FileId GetId() const { return file.GetId(); }
     };

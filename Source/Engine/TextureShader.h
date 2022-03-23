@@ -10,7 +10,7 @@ namespace Plasmium
         ID3D11SamplerState* samplerState = nullptr;
     public:
         void Initialize(ID3D11Device* device);
-        void Bind(ID3D11DeviceContext* deviceContext, const ShaderInternal::MatrixInfo& matrices) override;
+        void Bind(ID3D11DeviceContext* deviceContext, const ShaderInternal::MatrixInfoRef& matrices) override;
         void Release() override;
     };
 }

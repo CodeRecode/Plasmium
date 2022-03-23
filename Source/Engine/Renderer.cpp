@@ -102,12 +102,9 @@ namespace Plasmium
             auto* transformComponent = Core::GetEntityManager().GetComponent<TransformComponent>(
                 modelComponent.GetId());
 
-            auto worldMatrix = mat4(1.0f);
-            worldMatrix = worldMatrix.Translate(transformComponent->GetPosition());
-            worldMatrix = worldMatrix.Rotate(transformComponent->GetRotation());
-            worldMatrix = worldMatrix.Scale(transformComponent->GetScale());
-
-            ShaderInternal::MatrixInfo matrixInfo(projectionMatrix, viewMatrix, worldMatrix);
+            ShaderInternal::MatrixInfoRef matrixInfo(projectionMatrix,
+                viewMatrix, 
+                transformComponent->GetWorldMatrix());
             if (modelComponent.HasTexture()) {
                 textureShader.Bind(deviceContext, matrixInfo);
                 modelComponent.Draw(deviceContext, &textureShader);
@@ -119,7 +116,7 @@ namespace Plasmium
         }
 
         deviceContext->OMSetDepthStencilState(depthDisabledStencilState, 1);
-        ShaderInternal::MatrixInfo matrixInfo(orthoMatrix, viewMatrix, mat4(1.0f));
+        ShaderInternal::MatrixInfoRef matrixInfo(orthoMatrix, viewMatrix, mat4(1.0f));
         spriteShader.Bind(deviceContext, matrixInfo);
         for (auto& sprite : sprites) {
             sprite.Draw(deviceContext);

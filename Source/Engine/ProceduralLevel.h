@@ -2,6 +2,7 @@
 #include "Level.h"
 #include "FileResource.h"
 #include "rect.h"
+#include "vec2.h"
 
 #include <fstream>
 
@@ -12,10 +13,14 @@ namespace Plasmium {
     private:
         FileResource file;
         uint32 seed = 0;
+        Array<vec2> rooms;
 
         void Deserialize(std::ifstream& input);
-        void CreateRoom(rapidjson::Document& document, rect dimensions);
+        void PlaceFloors();
+        void FindRoomsFloodFill(uint32 row, uint32 col, uint32 roomIndex);
+        void CheckAndSetIsWall(uint32 row, uint32 col);
 
+        void CreateRoom(rapidjson::Document& document, rect dimensions);
         void CreateTiles(rapidjson::Value& tileDefs,
             const float RowStart,
             const float Rows, 
@@ -24,6 +29,10 @@ namespace Plasmium {
         void CreateTile(float row,
             float col,
             FileResource modelFile);
+        void CreateTexturedTile(float row,
+            float col,
+            FileResource modelFile,
+            FileResource textureFile);
         void CreateWalls(rapidjson::Value& wallDefs,
             const float RowStart,
             const float Rows,
@@ -41,7 +50,6 @@ namespace Plasmium {
     public:
         ProceduralLevel(FileResource file) : file(file) {}
         void Load() override;
-        void Unload() override;
 
         FileId GetId() const { return file.GetId(); }
     };

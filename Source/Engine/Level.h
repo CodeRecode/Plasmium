@@ -34,7 +34,7 @@ namespace Plasmium {
         Level() {}
         virtual ~Level() {}
         virtual void Load() = 0;
-        virtual void Unload() = 0;
+        virtual void Unload();
         bool IsWalkable(vec3 logicalPostion);
         void SetCreature(EntityId entityId, vec3 logicalPostion);
         bool HasCreature(vec3 logicalPostion);
