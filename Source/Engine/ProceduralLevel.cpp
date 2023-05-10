@@ -3,6 +3,7 @@
 #include "AllComponents.h"
 #include "Core.h"
 #include "EntityManager.h"
+#include "Plasmath.h"
 #include "vec2.h"
 
 #include <rapidjson/document.h>
@@ -47,15 +48,61 @@ namespace Plasmium {
                 if (tile.GetRoomIndex() != -1 || tile.GetGeometry() != TileGeometry::Floor) {
                     continue;
                 }
-                FindRoomsFloodFill(row, col, rooms.Size());
-                rooms.Push(vec2(row, col));
+                ProceduralRoom room;
+                room.dimensions.left = col;
+                room.dimensions.right = col;
+                room.dimensions.top = row;
+                room.dimensions.bottom = row;
+
+                rooms.Push(room);
+                FindRoomsFloodFill(row, col, rooms.Size() - 1);
+                rooms[rooms.Size() - 1].SetCenter();
             }
+        }
+
+        Array<std::pair<float, ProceduralRoom>> roomsByDistance;
+        vec2 lastCenter = vec2();
+        for (auto& room : rooms) {
+            roomsByDistance.Push(std::make_pair(lastCenter.DistanceSquared(room.center), room));
+        }
+        std::qsort(roomsByDistance.begin(), 
+            roomsByDistance.Size(), 
+            sizeof(std::pair<float, ProceduralRoom>), 
+            [](const void* a, const void* b) {
+                const auto pair1 = *(std::pair<float, ProceduralRoom>*)(a);
+                const auto pair2 = *(std::pair<float, ProceduralRoom>*)(b);
+                return (int32)(pair2.first - pair1.first); // Reverse order
+            });
+
+        while (roomsByDistance.Size() > 1) {
+            CreateConnector(roomsByDistance[roomsByDistance.Size() - 1].second, 
+                roomsByDistance[roomsByDistance.Size() - 2].second);
+            if (roomsByDistance.Size() > 2) {
+                CreateConnector(roomsByDistance[roomsByDistance.Size() - 1].second,
+                    roomsByDistance[roomsByDistance.Size() - 3].second);
+            }
+
+            roomsByDistance.Pop();
+            lastCenter = roomsByDistance[roomsByDistance.Size() - 1].second.center;
+            for (auto& pair : roomsByDistance) {
+                pair.first = lastCenter.DistanceSquared(pair.second.center);
+            }
+            std::qsort(roomsByDistance.begin(),
+                roomsByDistance.Size(),
+                sizeof(std::pair<float, ProceduralRoom>),
+                [](const void* a, const void* b) {
+                const auto pair1 = *(std::pair<float, ProceduralRoom>*)(a);
+                const auto pair2 = *(std::pair<float, ProceduralRoom>*)(b);
+                return (int32)(pair2.first - pair1.first); // Reverse order
+            });
         }
 
         auto& tileDefs = document["tile_defs"];
         FileResource floor1ModelFile = FileResource(tileDefs["floor1"].GetString());
 
         FileResource debugTexture = FileResource("Assets\\Wood032_2K_Color.png");
+        FileResource debugTexture2 = FileResource("Assets\\Metal013_2K_Color.png");
+        FileResource debugTexture3 = FileResource("Assets\\Concrete015_4K_Color.jpg");
 
         for (uint32 row = 0; row < GetHeight(); ++row) {
             for (uint32 col = 0; col < GetWidth(); ++col) {
@@ -66,26 +113,39 @@ namespace Plasmium {
                 else if (tile.GetGeometry() == TileGeometry::Wall) {
                     CreateTexturedTile(row, col, floor1ModelFile, debugTexture);
                 }
+                else if (tile.GetGeometry() == TileGeometry::Hallway) {
+                    CreateTexturedTile(row, col, floor1ModelFile, debugTexture2);
+                }
+                else if (tile.GetGeometry() == TileGeometry::Doorway) {
+                    CreateTexturedTile(row, col, floor1ModelFile, debugTexture3);
+                }
             }
         }
 
+        // Place the player on a walkable tile
         auto& creatureDefs = document["creature_defs"];
-        CreateCreature(25, 25, 180.0f, FileResource(creatureDefs["player"].GetString()));
+        uint32 row = Core::GetNextRandom() % GetHeight();
+        uint32 col = Core::GetNextRandom() % GetWidth();
+        while (!map[row][col].IsWalkable()) {
+            row = Core::GetNextRandom() % GetHeight();
+            col = Core::GetNextRandom() % GetWidth();
+        }
+        CreateCreature(row, col, 180.0f, FileResource(creatureDefs["player"].GetString()));
     }
 
     void ProceduralLevel::PlaceFloors()
     {
-        uint32 height = Core::GetNextRandom() % 6 + 3;
-        uint32 width = Core::GetNextRandom() % 6 + 3;
-        rect absoluteDimensions;
-        absoluteDimensions.top = (float)(Core::GetNextRandom() % (GetHeight() - height));
-        absoluteDimensions.left = (float)(Core::GetNextRandom() % (GetWidth() - width));
+        uint32 height = Core::GetNextRandom() % 5 + 4;
+        uint32 width = Core::GetNextRandom() % 5 + 4;
+        rect<uint32> absoluteDimensions;
+        absoluteDimensions.top = Core::GetNextRandom() % (GetHeight() - height);
+        absoluteDimensions.left = Core::GetNextRandom() % (GetWidth() - width);
 
         absoluteDimensions.bottom = absoluteDimensions.top + height;
         absoluteDimensions.right = absoluteDimensions.left + width;
 
-        for (float row = absoluteDimensions.top; row <= absoluteDimensions.bottom; ++row) {
-            for (float col = absoluteDimensions.left; col <= absoluteDimensions.right; ++col) {
+        for (uint32 row = absoluteDimensions.top; row <= absoluteDimensions.bottom; ++row) {
+            for (uint32 col = absoluteDimensions.left; col <= absoluteDimensions.right; ++col) {
                 map[row][col].SetGeometry(TileGeometry::Floor);
             }
         }
@@ -101,6 +161,11 @@ namespace Plasmium {
         if (tile.GetRoomIndex() != -1 || tile.GetGeometry() != TileGeometry::Floor) {
             return;
         }
+        auto& roomDimensions = rooms[roomIndex].dimensions;
+        roomDimensions.top = min(row - 1, roomDimensions.top);
+        roomDimensions.left = min(col - 1, roomDimensions.left);
+        roomDimensions.bottom = max(row + 1, roomDimensions.bottom);
+        roomDimensions.right = max(col + 1, roomDimensions.right);
 
         tile.SetRoomIndex(roomIndex);
         FindRoomsFloodFill(row + 1, col, roomIndex);
@@ -135,78 +200,21 @@ namespace Plasmium {
         }
     }
 
-    void ProceduralLevel::CreateRoom(rapidjson::Document& document, rect dimensions)
+    void ProceduralLevel::CreateConnector(ProceduralRoom& start, ProceduralRoom& end)
     {
-        auto& tileDefs = document["tile_defs"];
-        CreateTiles(tileDefs, dimensions.x, dimensions.height, dimensions.y, dimensions.width);
+        vec2 delta = (end.center - start.center);
 
-        auto& wallDefs = document["wall_defs"];
-        CreateWalls(wallDefs, dimensions.x, dimensions.height, dimensions.y, dimensions.width);
+
     }
 
-    void ProceduralLevel::CreateTiles(rapidjson::Value& tileDefs,
-        const float RowStart,
-        const float Rows,
-        const float ColStart,
-        const float Cols)
-    {
-        FileResource floor1ModelFile = FileResource(tileDefs["floor1"].GetString());
-        FileResource floor2ModelFile = FileResource(tileDefs["floor2"].GetString());
-        FileResource floor3ModelFile = FileResource(tileDefs["floor3"].GetString());
-
-        // Fill with 3x3s
-        for (float row = RowStart; row + 3 <= RowStart + Rows; row += 3) {
-            for (float col = ColStart; col + 3 <= ColStart + Cols; col += 3) {
-                CreateTile(row + 1.0f, col + 1.0f, floor3ModelFile);
-            }
-        }
-        // Fill last column
-        uint32 remainingColTiles = (uint32)Cols % 3;
-        if (remainingColTiles > 0) {
-            float row = RowStart;
-            for (; row + remainingColTiles <= RowStart + Rows; row += remainingColTiles) {
-                if (remainingColTiles == 2) {
-                    CreateTile(row + 0.5f, ColStart + Cols - 1.5f, floor2ModelFile);
-                }
-                else {
-                    CreateTile(row, ColStart + Cols - 1.0f, floor1ModelFile);
-                }
-            }
-            // Last 2x2 couldn't fit, use 2 1x1s
-            if (row < Rows) {
-                CreateTile(row, ColStart + Cols - 1.0f, floor1ModelFile);
-                CreateTile(row, ColStart + Cols - 2.0f, floor1ModelFile);
-            }
-        }
-
-        // Fill last row
-        uint32 remainingRowTiles = (uint32)Rows % 3;
-        if (remainingRowTiles > 0) {
-            float col = ColStart;
-            for (; col + remainingRowTiles <= ColStart + Cols - remainingColTiles; col += remainingRowTiles) {
-                if (remainingRowTiles == 2) {
-                    CreateTile(RowStart + Rows - 1.5f, col + 0.5f, floor2ModelFile);
-                }
-                else {
-                    CreateTile(RowStart + Rows - 1.0f, col, floor1ModelFile);
-                }
-            }
-            // Last 2x2 couldn't fit, use 2 1x1s
-            if (col < Cols) {
-                CreateTile(RowStart + Rows - 1.0f, col, floor1ModelFile);
-                CreateTile(RowStart + Rows - 2.0f, col, floor1ModelFile);
-            }
-        }
-    }
-
-    void ProceduralLevel::CreateTile(float row, 
-        float col, 
+    void ProceduralLevel::CreateTile(uint32 row, 
+        uint32 col,
         FileResource modelFile)
     {
         auto& entityManager = Core::GetEntityManager();
         EntityId entityId = entityManager.CreateEntity();
         entities.Push(entityId);
-        vec3 tilePosition = vec3(col, -0.5f, row);
+        vec3 tilePosition = vec3((float)col, -0.5f, (float)row);
 
         entityManager.AddComponent<TransformComponent>(entityId,
             vec3(),
@@ -217,15 +225,15 @@ namespace Plasmium {
         entityManager.AddComponent<ModelComponent>(entityId, modelFile);
     }
 
-    void ProceduralLevel::CreateTexturedTile(float row,
-        float col,
+    void ProceduralLevel::CreateTexturedTile(uint32 row,
+        uint32 col,
         FileResource modelFile,
         FileResource textureFile)
     {
         auto& entityManager = Core::GetEntityManager();
         EntityId entityId = entityManager.CreateEntity();
         entities.Push(entityId);
-        vec3 tilePosition = vec3(col, -0.5f, row);
+        vec3 tilePosition = vec3((float)col, -0.5f, (float)row);
 
         entityManager.AddComponent<TransformComponent>(entityId,
             vec3(),
@@ -300,7 +308,8 @@ namespace Plasmium {
             vec3(1.0f));
 
         rapidjson::Document archetypeDocument;
-        archetypeDocument.ParseStream(rapidjson::IStreamWrapper(archetype.GetInputStream()));
+        auto& inputStream = archetype.GetInputStream();
+        archetypeDocument.ParseStream(rapidjson::IStreamWrapper(inputStream));
         AddComponents(entityManager, entityId, archetypeDocument);
 
         Core::PostEvent(EntityCreatedEvent(entityId, logicalPosition));

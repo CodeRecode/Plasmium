@@ -63,6 +63,10 @@ namespace Plasmium
         return (x * rhs.x) + (y * rhs.y);
     }
 
+    float vec2::DistanceSquared(const vec2& rhs) const {
+        return (x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y);
+    }
+
     vec2 operator+(const vec2& lhs, const vec2& rhs)
     {
         return vec2(lhs.x + rhs.x, lhs.y + rhs.y);

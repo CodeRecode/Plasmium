@@ -3,7 +3,7 @@
 #include <cstring>
 
 namespace Plasmium {
-    Text2D::Text2D(const char* string, rect drawArea, vec4 drawColor) :
+    Text2D::Text2D(const char* string, rect<> drawArea, vec4 drawColor) :
         drawArea(drawArea),
         drawColor(drawColor)
     {

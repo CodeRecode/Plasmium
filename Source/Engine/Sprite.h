@@ -22,17 +22,17 @@ namespace Plasmium
 
         const uint32 VertexCount = 6;
         FileResource textureFile;
-        rect area;
+        rect<> area;
 
         void AdjustArea(ID3D11DeviceContext* deviceContext);
 
     public:
-        Sprite(FileResource textureFile, rect area) :
+        Sprite(FileResource textureFile, rect<> area) :
             textureFile(textureFile),
             area(area)
         {}
         const FileResource& GetTextureFile() const { return textureFile; }
-        const rect& GetRect() const { return area; }
+        const rect<>& GetRect() const { return area; }
 
         void Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
         void Draw(ID3D11DeviceContext* deviceContext) const;

@@ -133,6 +133,11 @@ namespace Plasmium {
        return IsPositionInBounds(logicalPostion) && GetTile(logicalPostion).IsWalkable();
     }
 
+    bool Level::HasWall(vec3 logicalPostion)
+    {
+        return IsPositionInBounds(logicalPostion) && GetTile(logicalPostion).GetGeometry() == TileGeometry::Wall;
+    }
+
     bool Level::HasCreature(vec3 logicalPostion)
     {
         return IsPositionInBounds(logicalPostion) && GetTile(logicalPostion).HasCreature();

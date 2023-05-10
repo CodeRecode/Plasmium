@@ -81,7 +81,7 @@ namespace Plasmium {
         renderTarget->BeginDraw();
 
         for (const auto& text : texts) {
-            const rect& area = text.GetDrawArea();
+            const rect<>& area = text.GetDrawArea();
             D2D1_RECT_F layoutRect = D2D1::RectF(
                 area.x,
                 area.y,
@@ -107,7 +107,7 @@ namespace Plasmium {
         renderTarget->BeginDraw();
 
         for (const auto& text : texts) {
-            const rect& area = text.GetDrawArea();
+            const rect<>& area = text.GetDrawArea();
             D2D1_RECT_F layoutRect = D2D1::RectF(
                 area.x,
                 area.y,

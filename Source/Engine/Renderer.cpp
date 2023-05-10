@@ -71,7 +71,7 @@ namespace Plasmium
             texture.Initialize(device);
         }
 
-        sprites.Push(Sprite(FileResource("Assets\\EventLog.png"), rect(10, window.GetHeight() - 110.0f, 550, 100)));
+        sprites.Push(Sprite(FileResource("Assets\\EventLog.png"), rect(10.0f, window.GetHeight() - 110.0f, 550.0f, 100.0f)));
         for (auto& sprite : sprites) {
             sprite.Initialize(device, deviceContext);
         }
@@ -79,7 +79,7 @@ namespace Plasmium
         // Add counter debug text to slot 0 and 1
         if (debugTexts.Size() == 0) {
             vec4 drawColor(0.0f, 1.0f, 0.0f, 0.9f);
-            rect drawArea((float)window.GetWidth() - 200, 10, 200, 100);
+            rect drawArea((float)window.GetWidth() - 200, 10.0f, 200.0f, 100.0f);
             debugTexts.Push(Text2D("Debug Counter", drawArea, drawColor));
             drawArea.top += 20;
             debugTexts.Push(Text2D("Debug Counter", drawArea, drawColor));
@@ -88,6 +88,7 @@ namespace Plasmium
 
     void Renderer::Update(milliseconds deltaTime)
     {
+
         deviceContext->OMSetDepthStencilState(depthStencilState, 1);
         deviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
         deviceContext->ClearRenderTargetView(renderTargetView, &clearColor[0]);
@@ -162,6 +163,10 @@ namespace Plasmium
         if (blendingStateEnabled != nullptr) {
             blendingStateEnabled->Release();
             blendingStateEnabled = nullptr;
+        }
+        if (rasterState != nullptr) {
+            rasterState->Release();
+            rasterState = nullptr;
         }
         if (depthStencilView != nullptr) {
             depthStencilView->Release();

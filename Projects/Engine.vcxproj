@@ -158,7 +158,6 @@
     <ClCompile Include="..\Source\Engine\Timer.cpp" />
     <ClCompile Include="..\Source\Engine\PlasString.cpp" />
     <ClCompile Include="..\Source\Engine\PlayerControllerComponent.cpp" />
-    <ClCompile Include="..\Source\Engine\rect.cpp" />
     <ClCompile Include="..\Source\Engine\Renderer.cpp" />
     <ClCompile Include="..\Source\Engine\RendererUtils.cpp" />
     <ClCompile Include="..\Source\Engine\ResourceManager.cpp" />

@@ -13,6 +13,20 @@
 #include "Window.h"
 
 namespace Plasmium {
+    bool GameplayManager::IsWalkable(vec3 logicalPostion, vec3 relativeMove) const
+    { 
+        // Diagonal move, check we're not walking through a wall corner
+        if (relativeMove.LengthSquared() > 1.0f) {
+            vec3 xComponent = vec3(relativeMove.x, 0.0f, 0.0f);
+            vec3 zComponent = vec3(0.0f, 0.0f, relativeMove.z);
+            if (currentLevel->HasWall(logicalPostion - xComponent) ||
+                currentLevel->HasWall(logicalPostion - zComponent)) {
+                return false;
+            }
+        }
+        return currentLevel->IsWalkable(logicalPostion); 
+    }
+
     void GameplayManager::LoadLevelFile(FileResource levelFile)
     {
         auto & resourceManager = Core::GetResourceManager();
@@ -81,7 +95,7 @@ namespace Plasmium {
                 }
             }
             
-            if (!IsWalkable(logicalDestination)) {
+            if (!IsWalkable(logicalDestination, entityMove.relativeLogicalPosition)) {
                 animationParams.type = AnimationType::Bump;
                 Core::PostEvent(AnimateEntityEvent(std::move(animationParams)));
             }

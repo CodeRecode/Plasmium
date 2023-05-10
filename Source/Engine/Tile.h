@@ -6,7 +6,8 @@ namespace Plasmium {
         None, 
         Floor,
         Wall,
-        Doorway
+        Doorway,
+        Hallway
     };
 
     class Tile {

@@ -25,6 +25,7 @@ namespace Plasmium
         float Length() const;
         float LengthSquared() const;
         float Dot(const vec2& rhs) const;
+        float DistanceSquared(const vec2& rhs) const;
     };
 
     vec2 operator+(const vec2& lhs, const vec2& rhs);

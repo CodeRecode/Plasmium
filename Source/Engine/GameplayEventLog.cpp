@@ -12,7 +12,7 @@ namespace Plasmium {
         const auto& window = Core::GetWindow();
         const float LineStart = (float)window.GetHeight() - 100.0f;
         vec4 drawColor(1.0f, 1.0f, 1.0f, 1.0f);
-        rect drawArea(20, LineStart + LineHeight * logs.Size(), 600, 50);
+        rect drawArea(20.0f, LineStart + LineHeight * logs.Size(), 600.0f, 50.0f);
 
         auto& resourceManager = Core::GetResourceManager();
         auto& string = resourceManager.GetString(id);
@@ -21,7 +21,7 @@ namespace Plasmium {
 
         uint32 index = 0;
         for (auto& log : logs) {
-            log.ChangeDrawArea(rect(20, LineStart + LineHeight * index, 600, 50));
+            log.ChangeDrawArea(rect(20.0f, LineStart + LineHeight * index, 600.0f, 50.0f));
             ++index;
         }
     }

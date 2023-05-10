@@ -68,23 +68,6 @@ namespace Plasmium {
         return result;
     }
 
-    inline Direction VectorToDirection(vec3 direction)
-    {
-        vec3 result = vec3();
-        if (direction.z < 0) {
-            if (direction.x < 0) return Direction::NW;
-            if (direction.x > 0) return Direction::NE;
-            return Direction::N;
-        }
-        if (direction.z > 0) {
-            if (direction.x < 0) return Direction::SW;
-            if (direction.x > 0) return Direction::SE;
-            return Direction::S;
-        }
-        if (direction.x < 0) return Direction::W;
-        return Direction::E;
-    }
-
     inline vec3 VectorToRotation(vec3 vector)
     {
         return vec3(0.0f, -RadiansToDegrees(atan2f(vector.x, -vector.z)), 0.0f);

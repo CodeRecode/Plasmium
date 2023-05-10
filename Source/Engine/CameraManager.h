@@ -6,7 +6,7 @@
 namespace Plasmium {
     class CameraManager : public CoreSystem {
     private:
-        CameraComponent* currentCamera;
+        CameraComponent* currentCamera = nullptr;
 
     public:
         void Initialize() override;

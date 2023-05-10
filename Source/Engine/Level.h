@@ -36,6 +36,7 @@ namespace Plasmium {
         virtual void Load() = 0;
         virtual void Unload();
         bool IsWalkable(vec3 logicalPostion);
+        bool HasWall(vec3 logicalPostion);
         void SetCreature(EntityId entityId, vec3 logicalPostion);
         bool HasCreature(vec3 logicalPostion);
         EntityId GetCreature(vec3 logicalPostion);

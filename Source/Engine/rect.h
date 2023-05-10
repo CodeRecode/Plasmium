@@ -4,22 +4,33 @@
 
 namespace Plasmium
 {
+    template <typename T = float>
     class rect {
     private:
     public:
         union {
-            struct { float x, y, width, height; };
-            struct { float left, top, right, bottom; };
+            struct { T x, y, width, height; };
+            struct { T left, top, right, bottom; };
         };
         rect() : x(0), y(0), width(0), height(0) {}
-        rect(float x, float y, float width, float height) :
+        rect(T x, T y, T width, T height) :
             x(x),
             y(y),
             width(width),
             height(height)
         {}
-    };
 
-    bool operator==(const rect& lhs, const rect& rhs);
-    bool operator!=(const rect& lhs, const rect& rhs);
+        friend bool operator==(const rect&lhs, const rect&rhs)
+        {
+            return lhs.x == rhs.x &&
+                lhs.y == rhs.y &&
+                lhs.width == rhs.width &&
+                lhs.height == rhs.height;
+        }
+
+        friend bool operator!=(const rect& lhs, const rect& rhs)
+        {
+            return !(lhs == rhs);
+        }
+    };
 }

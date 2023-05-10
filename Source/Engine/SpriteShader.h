@@ -21,7 +21,7 @@ namespace Plasmium
         };
         ID3D11SamplerState* samplerState = nullptr;
 
-        rect lastArea;
+        rect<> lastArea;
 
     public:
         void Initialize(ID3D11Device* device);

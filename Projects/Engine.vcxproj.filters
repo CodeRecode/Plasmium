@@ -111,9 +111,6 @@
     <ClCompile Include="..\Source\Engine\SpriteShader.cpp">
       <Filter>Rendering\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Engine\rect.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Engine\Sprite.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
