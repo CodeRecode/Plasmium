@@ -17,7 +17,12 @@ namespace Plasmium {
         bool hasCreature = false;
         int32 roomIndex = -1;
     public:
-        bool IsWalkable() const { return (geometry == TileGeometry::Floor) && !hasCreature; }
+        bool IsWalkable() const {
+            if (hasCreature) {
+                return false;
+            }
+            return geometry == TileGeometry::Floor || geometry == TileGeometry::Doorway || geometry == TileGeometry::Hallway;
+        }
 
         EntityId HasCreature() const { return hasCreature; }
         EntityId GetCreature() const { return creature; }

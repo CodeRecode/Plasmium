@@ -30,11 +30,16 @@ namespace Plasmium {
 
     }
 
+    bool Level::IsPositionInBounds(uint32 row, uint32 col)
+    {
+        return row >= 0 && row < height&& col >= 0 && col < width;
+    }
+
     bool Level::IsPositionInBounds(vec3 logicalPostion)
     {
         uint32 row = (uint32)logicalPostion.z;
         uint32 col = (uint32)logicalPostion.x;
-        return row >= 0 && row < height&& col >= 0 && col < width;
+        return IsPositionInBounds(row, col);
     }
 
     Tile& Level::GetTile(vec3 logicalPostion)

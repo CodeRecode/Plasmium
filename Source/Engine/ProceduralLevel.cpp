@@ -18,10 +18,10 @@ namespace Plasmium {
             seed = Core::GetNextRandom();
         }
         Core::SetSeed(seed);
-        Deserialize(file.GetInputStream());
+        Generate(file.GetInputStream());
     }
 
-    void ProceduralLevel::Deserialize(std::ifstream& input)
+    void ProceduralLevel::Generate(std::ifstream& input)
     {
         rapidjson::Document document;
         document.ParseStream(rapidjson::IStreamWrapper(input));
@@ -49,14 +49,16 @@ namespace Plasmium {
                     continue;
                 }
                 ProceduralRoom room;
+                room.index = rooms.Size();
+
                 room.dimensions.left = col;
                 room.dimensions.right = col;
                 room.dimensions.top = row;
                 room.dimensions.bottom = row;
 
                 rooms.Push(room);
-                FindRoomsFloodFill(row, col, rooms.Size() - 1);
-                rooms[rooms.Size() - 1].SetCenter();
+                FindRoomsFloodFill(row, col, room.index);
+                rooms[room.index].SetCenter();
             }
         }
 
@@ -100,9 +102,9 @@ namespace Plasmium {
         auto& tileDefs = document["tile_defs"];
         FileResource floor1ModelFile = FileResource(tileDefs["floor1"].GetString());
 
-        FileResource debugTexture = FileResource("Assets\\Wood032_2K_Color.png");
+        FileResource debugTexture = FileResource("Assets\\Concrete015_4K_Color.jpg");
         FileResource debugTexture2 = FileResource("Assets\\Metal013_2K_Color.png");
-        FileResource debugTexture3 = FileResource("Assets\\Concrete015_4K_Color.jpg");
+        FileResource debugTexture3 = FileResource("Assets\\Wood032_2K_Color.png");
 
         for (uint32 row = 0; row < GetHeight(); ++row) {
             for (uint32 col = 0; col < GetWidth(); ++col) {
@@ -162,10 +164,10 @@ namespace Plasmium {
             return;
         }
         auto& roomDimensions = rooms[roomIndex].dimensions;
-        roomDimensions.top = min(row - 1, roomDimensions.top);
-        roomDimensions.left = min(col - 1, roomDimensions.left);
-        roomDimensions.bottom = max(row + 1, roomDimensions.bottom);
-        roomDimensions.right = max(col + 1, roomDimensions.right);
+        roomDimensions.top = min(row, roomDimensions.top);
+        roomDimensions.left = min(col, roomDimensions.left);
+        roomDimensions.bottom = max(row, roomDimensions.bottom);
+        roomDimensions.right = max(col, roomDimensions.right);
 
         tile.SetRoomIndex(roomIndex);
         FindRoomsFloodFill(row + 1, col, roomIndex);
@@ -202,9 +204,112 @@ namespace Plasmium {
 
     void ProceduralLevel::CreateConnector(ProceduralRoom& start, ProceduralRoom& end)
     {
-        vec2 delta = (end.center - start.center);
+        // Check the first square and fill it if it's not already a floor
+        if (map[start.center.x][start.center.y].GetGeometry() != TileGeometry::Floor) {
+            map[start.center.x][start.center.y].SetGeometry(TileGeometry::Floor);
+            for (int32 rowI = -1; rowI <= 1; ++rowI) {
+                for (int32 colI = -1; colI <= 1; ++colI) {
+                    uint32 row = start.center.x + rowI;
+                    uint32 col = start.center.y + colI;
+                    if (!IsPositionInBounds(row, col)) {
+                        continue;
+                    }
+                    map[row][col].SetGeometry(TileGeometry::Floor);
+                    CheckAndSetIsWall(row, col);
+                }
+            }
+        }
 
+        int32 currRow = start.center.x;
+        int32 currCol = start.center.y;
+        int32 endRow = end.center.x;
+        int32 endCol = end.center.y;
 
+        int32 dir = (endRow - currRow);
+        if (dir != 0) {
+            dir = dir / abs(dir);
+        }
+
+        // Up/Down
+        while (currRow != endRow) {
+            currRow += dir;
+            auto& tile = map[currRow][currCol];
+            if (tile.IsWalkable()) {
+                continue;
+            }
+
+            if (tile.GetGeometry() == TileGeometry::Wall) {
+                if (tile.GetRoomIndex() != -1) {
+                    auto& room = rooms[tile.GetRoomIndex()];
+                    if (room.IsEdge(currRow, currCol)) {
+                        tile.SetGeometry(TileGeometry::Doorway);
+                    }
+                    else {
+                        tile.SetGeometry(TileGeometry::Floor);
+                    }
+                }
+                else {
+                    tile.SetGeometry(TileGeometry::Hallway);
+                }
+            }
+            else { // None
+                tile.SetGeometry(TileGeometry::Hallway);
+            }
+
+            if (IsPositionInBounds(currRow, currCol - 1) &&
+                map[currRow][currCol - 1].GetGeometry() == TileGeometry::None) {
+                map[currRow][currCol - 1].SetGeometry(TileGeometry::Floor);
+                CheckAndSetIsWall(currRow, currCol - 1);
+            }
+            if (IsPositionInBounds(currRow, currCol + 1) &&
+                map[currRow][currCol + 1].GetGeometry() == TileGeometry::None) {
+                map[currRow][currCol + 1].SetGeometry(TileGeometry::Floor);
+                CheckAndSetIsWall(currRow, currCol + 1);
+            }
+        }
+
+        dir = (endCol - currCol);
+        if (dir != 0) {
+            dir = dir / abs(dir);
+        }
+
+        // Left/Right
+        while (currCol != endCol) {
+            currCol += dir;
+            auto& tile = map[currRow][currCol];
+            if (tile.IsWalkable()) {
+                continue;
+            }
+
+            if (tile.GetGeometry() == TileGeometry::Wall) {
+                if (tile.GetRoomIndex() != -1) {
+                    auto& room = rooms[tile.GetRoomIndex()];
+                    if (room.IsEdge(currRow, currCol)) {
+                        tile.SetGeometry(TileGeometry::Doorway);
+                    }
+                    else {
+                        tile.SetGeometry(TileGeometry::Hallway);
+                    }
+                }
+                else {
+                    tile.SetGeometry(TileGeometry::Hallway);
+                }
+            }
+            else { // None
+                tile.SetGeometry(TileGeometry::Hallway);
+            }
+
+            if (IsPositionInBounds(currRow - 1, currCol) &&
+                map[currRow - 1][currCol].GetGeometry() == TileGeometry::None) {
+                map[currRow - 1][currCol].SetGeometry(TileGeometry::Floor);
+                CheckAndSetIsWall(currRow - 1, currCol);
+            }
+            if (IsPositionInBounds(currRow + 1, currCol) &&
+                map[currRow + 1][currCol].GetGeometry() == TileGeometry::None) {
+                map[currRow + 1][currCol].SetGeometry(TileGeometry::Floor);
+                CheckAndSetIsWall(currRow + 1, currCol);
+            }
+        }
     }
 
     void ProceduralLevel::CreateTile(uint32 row, 

@@ -10,8 +10,20 @@ namespace Plasmium {
     class EntityManager;
 
     struct ProceduralRoom {
+        uint32 index;
         vec2 center;
         rect<uint32> dimensions;
+
+        bool IsEdge(uint32 row, uint32 col) {
+            if (col < dimensions.left || col > dimensions.right) {
+                return false;
+            }
+            if (row < dimensions.top || row > dimensions.bottom) {
+                return false;
+            }
+
+            return row == dimensions.top || row == dimensions.bottom || col == dimensions.left || col == dimensions.right;
+        }
 
         void SetCenter() {
             center.x = (dimensions.bottom - dimensions.top) / 2.0f + dimensions.top;
@@ -25,7 +37,7 @@ namespace Plasmium {
         uint32 seed = 0;
         Array<ProceduralRoom> rooms;
 
-        void Deserialize(std::ifstream& input);
+        void Generate(std::ifstream& input);
         void PlaceFloors();
         void FindRoomsFloodFill(uint32 row, uint32 col, uint32 roomIndex);
         void CheckAndSetIsWall(uint32 row, uint32 col);

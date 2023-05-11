@@ -18,6 +18,7 @@ namespace Plasmium {
         Array<Array<Tile>> map;
 
         void SetDimensions(uint32 height, uint32 width);
+        bool IsPositionInBounds(uint32 row, uint32 col);
         bool IsPositionInBounds(vec3 logicalPostion);
         Tile& GetTile(vec3 logicalPostion);
 
